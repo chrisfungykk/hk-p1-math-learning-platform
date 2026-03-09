@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <rect width="640" height="360" fill="#E0F7FA"/>
+  <text x="320" y="45" text-anchor="middle" font-size="28" font-weight="bold" fill="#00695C" font-family="sans-serif">圖形拼砌 Composing Shapes</text>
+  <!-- Triangle 1 -->
+  <polygon points="160,80 120,160 200,160" fill="#26A69A"/>
+  <!-- Triangle 2 -->
+  <polygon points="280,80 240,160 320,160" fill="#80CBC4"/>
+  <!-- Arrow -->
+  <text x="320" y="210" text-anchor="middle" font-size="28" font-family="sans-serif">⬇️</text>
+  <!-- Combined square -->
+  <rect x="280" y="240" width="80" height="70" rx="4" fill="#26A69A"/>
+  <text x="320" y="340" text-anchor="middle" font-size="20" font-weight="bold" fill="#00695C" font-family="sans-serif">正方形！</text>
+</svg>

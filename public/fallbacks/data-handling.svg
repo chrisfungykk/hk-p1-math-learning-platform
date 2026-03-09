@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <rect width="640" height="360" fill="#F1F8E9"/>
+  <text x="320" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#33691E" font-family="sans-serif">數據處理 Data Handling</text>
+  <text x="320" y="65" text-anchor="middle" font-size="16" fill="#558B2F" font-family="sans-serif">最喜歡的水果 Favourite Fruit</text>
+  <!-- Bars -->
+  <rect x="120" y="140" width="48" height="100" rx="6" fill="#E53935"/>
+  <text x="144" y="130" text-anchor="middle" font-size="14" font-weight="bold" fill="#E53935" font-family="sans-serif">5</text>
+  <text x="144" y="265" text-anchor="middle" font-size="24" font-family="sans-serif">🍎</text>
+  <rect x="220" y="180" width="48" height="60" rx="6" fill="#FDD835"/>
+  <text x="244" y="170" text-anchor="middle" font-size="14" font-weight="bold" fill="#FDD835" font-family="sans-serif">3</text>
+  <text x="244" y="265" text-anchor="middle" font-size="24" font-family="sans-serif">🍌</text>
+  <rect x="320" y="100" width="48" height="140" rx="6" fill="#7B1FA2"/>
+  <text x="344" y="90" text-anchor="middle" font-size="14" font-weight="bold" fill="#7B1FA2" font-family="sans-serif">7</text>
+  <text x="344" y="265" text-anchor="middle" font-size="24" font-family="sans-serif">🍇</text>
+  <rect x="420" y="160" width="48" height="80" rx="6" fill="#FB8C00"/>
+  <text x="444" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#FB8C00" font-family="sans-serif">4</text>
+  <text x="444" y="265" text-anchor="middle" font-size="24" font-family="sans-serif">🍊</text>
+</svg>
