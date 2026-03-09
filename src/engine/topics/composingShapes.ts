@@ -50,7 +50,6 @@ export function generateComposingShapesQuestions(difficulty: DifficultyLevel, co
 
 function generateCombineQuestion(): Question {
   const comp = BASIC_COMPOSITIONS[randomInt(0, BASIC_COMPOSITIONS.length - 1)];
-  const partsList = comp.parts.join('和');
   const prompt = `兩個${comp.parts[0]}可以拼成什麼形狀？`;
 
   const distractors = new Set<string>();

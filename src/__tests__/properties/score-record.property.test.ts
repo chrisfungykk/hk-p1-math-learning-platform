@@ -2,7 +2,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { ScoreRecord, TopicScoreBreakdown } from '../../types';
-import { STORAGE_KEY } from '../../constants';
 
 const ALL_TOPIC_IDS = [
   'counting', 'addition-10', 'subtraction-10', 'shapes', 'compare-length-height', 'ordering-sequences',
