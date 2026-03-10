@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/hk-p1-math-learning-platform/',
   plugins: [tailwindcss(), react()],
   test: {
     globals: true,
