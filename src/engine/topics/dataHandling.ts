@@ -1,156 +1,117 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
 
-interface PictogramItem {
-  name: string;
-  emoji: string;
-}
+interface PictogramItem { name: string; emoji: string; }
 
 const ITEMS: PictogramItem[] = [
-  { name: '蘋果', emoji: '🍎' },
-  { name: '香蕉', emoji: '🍌' },
-  { name: '橙', emoji: '🍊' },
-  { name: '草莓', emoji: '🍓' },
-  { name: '葡萄', emoji: '🍇' },
-  { name: '西瓜', emoji: '🍉' },
-  { name: '星星', emoji: '⭐' },
-  { name: '花', emoji: '🌸' },
+  { name: '蘋果', emoji: '🍎' }, { name: '香蕉', emoji: '🍌' },
+  { name: '橙', emoji: '🍊' }, { name: '草莓', emoji: '🍓' },
+  { name: '葡萄', emoji: '🍇' }, { name: '西瓜', emoji: '🍉' },
 ];
+
+interface PictogramData { items: { item: PictogramItem; count: number }[]; }
 
 /**
  * 數據處理 (Simple Data Handling / Pictograms)
- * Easy: read simple pictogram (2-3 items)
- * Medium: compare quantities
- * Hard: find totals
+ * Easy: read pictogram, count items
+ * Medium: compare most/least, "how many more"
+ * Hard: find totals, difference, multi-step questions
  */
 export function generateDataHandlingQuestions(difficulty: DifficultyLevel, count: number): Question[] {
   const questions: Question[] = [];
-
   for (let i = 0; i < count; i++) {
-    const data = generatePictogramData(difficulty);
+    const data = genData(difficulty);
     switch (difficulty) {
       case 'easy':
-        questions.push(generateReadQuestion(data));
+        questions.push(randomInt(0, 1) === 0 ? generateRead(data) : generateCountAll(data));
         break;
       case 'medium':
-        questions.push(generateCompareQuestion(data));
+        questions.push(randomInt(0, 1) === 0 ? generateCompare(data) : generateHowManyMore(data));
         break;
       case 'hard':
-        questions.push(generateTotalQuestion(data));
+        questions.push([() => generateTotal(data), () => generateDifference(data), () => generateMultiStep(data)][randomInt(0, 2)]());
         break;
     }
   }
-
   return questions;
 }
 
-interface PictogramData {
-  items: { item: PictogramItem; count: number }[];
+function genData(difficulty: DifficultyLevel): PictogramData {
+  const n = difficulty === 'easy' ? randomInt(2, 3) : difficulty === 'medium' ? 3 : randomInt(3, 4);
+  const maxC = difficulty === 'easy' ? 6 : difficulty === 'medium' ? 8 : 10;
+  const selected = shuffleArray(ITEMS).slice(0, n);
+  return { items: selected.map(item => ({ item, count: randomInt(1, maxC) })) };
 }
 
-function generatePictogramData(difficulty: DifficultyLevel): PictogramData {
-  const numItems = difficulty === 'easy' ? randomInt(2, 3) : difficulty === 'medium' ? 3 : randomInt(3, 4);
-  const selected = shuffleArray(ITEMS).slice(0, numItems);
-  const maxCount = difficulty === 'easy' ? 5 : difficulty === 'medium' ? 8 : 10;
-
-  return {
-    items: selected.map(item => ({
-      item,
-      count: randomInt(1, maxCount),
-    })),
-  };
+function display(data: PictogramData): string {
+  return data.items.map(d => `${d.item.emoji} ${d.item.name}：${d.item.emoji.repeat(d.count)}`).join('\n');
 }
 
-function buildPictogramDisplay(data: PictogramData): string {
-  return data.items
-    .map(d => `${d.item.emoji}${d.item.name}：${d.item.emoji.repeat(d.count)}`)
-    .join('\n');
+function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, min: number, max: number, explanation: string): Question {
+  const d = new Set<number>([correct]);
+  d.add(correct + 1); if (correct - 1 >= min) d.add(correct - 1); d.add(correct + 2 <= max ? correct + 2 : randomInt(min, max));
+  while (d.size < 4) d.add(randomInt(min, max));
+  const options = shuffleArray(Array.from(d).slice(0, 4).map(String));
+  return { id: generateId(), topicId: 'data-handling', difficulty, prompt, options,
+    correctAnswerIndex: options.indexOf(correct.toString()), explanation, graphicType: 'pictogram' };
 }
 
-function generateReadQuestion(data: PictogramData): Question {
-  const targetIdx = randomInt(0, data.items.length - 1);
-  const target = data.items[targetIdx];
-  const correctAnswer = target.count;
-
-  const display = buildPictogramDisplay(data);
-  const prompt = `圖表中，${target.item.emoji}${target.item.name}有幾個？\n${display}`;
-
-  const distractors = new Set<number>();
-  distractors.add(correctAnswer);
-  while (distractors.size < 4) {
-    let d = correctAnswer + randomInt(-2, 3);
-    if (d < 1) d = 1;
-    distractors.add(d);
-  }
-
-  const options = shuffleArray(Array.from(distractors).map(String));
-  const correctAnswerIndex = options.indexOf(correctAnswer.toString());
-
-  return {
-    id: generateId(),
-    topicId: 'data-handling',
-    difficulty: 'easy',
-    prompt,
-    options,
-    correctAnswerIndex,
-    explanation: `數一數圖表中的${target.item.emoji}，${target.item.name}有 ${correctAnswer} 個。`,
-    graphicType: 'pictogram',
-  };
+function generateRead(data: PictogramData): Question {
+  const t = data.items[randomInt(0, data.items.length - 1)];
+  return makeQ('easy', `圖表中，${t.item.name}有幾個？\n${display(data)}`, t.count, 1, 10,
+    `數一數，${t.item.name}有 ${t.count} 個。`);
 }
 
-function generateCompareQuestion(data: PictogramData): Question {
+function generateCountAll(data: PictogramData): Question {
+  const total = data.items.reduce((s, d) => s + d.count, 0);
+  return makeQ('easy', `圖表中所有東西加起來一共有幾個？\n${display(data)}`, total, 1, 30,
+    `全部加起來：${data.items.map(d => d.count).join(' + ')} = ${total}。`);
+}
+
+function generateCompare(data: PictogramData): Question {
   const sorted = [...data.items].sort((a, b) => b.count - a.count);
   const isMost = randomInt(0, 1) === 0;
   const target = isMost ? sorted[0] : sorted[sorted.length - 1];
   const label = isMost ? '最多' : '最少';
-
-  const display = buildPictogramDisplay(data);
-  const prompt = `哪種東西${label}？\n${display}`;
-
-  const correctAnswer = target.item.name;
-
+  const prompt = `哪種東西${label}？\n${display(data)}`;
   const options = shuffleArray(data.items.map(d => d.item.name));
-  const correctAnswerIndex = options.indexOf(correctAnswer);
-
-  return {
-    id: generateId(),
-    topicId: 'data-handling',
-    difficulty: 'medium',
-    prompt,
-    options,
-    correctAnswerIndex,
-    explanation: `${target.item.emoji}${target.item.name}${label}，有 ${target.count} 個。`,
-    graphicType: 'pictogram',
-  };
+  return { id: generateId(), topicId: 'data-handling', difficulty: 'medium', prompt, options,
+    correctAnswerIndex: options.indexOf(target.item.name),
+    explanation: `${target.item.name}${label}，有 ${target.count} 個。`, graphicType: 'pictogram' };
 }
 
-function generateTotalQuestion(data: PictogramData): Question {
-  const total = data.items.reduce((sum, d) => sum + d.count, 0);
+function generateHowManyMore(data: PictogramData): Question {
+  const sorted = [...data.items].sort((a, b) => b.count - a.count);
+  const most = sorted[0];
+  const least = sorted[sorted.length - 1];
+  const diff = most.count - least.count;
+  const prompt = `${most.item.name}比${least.item.name}多幾個？\n${display(data)}`;
+  return makeQ('medium', prompt, diff, 0, 15,
+    `${most.item.name}有 ${most.count} 個，${least.item.name}有 ${least.count} 個，相差 ${diff} 個。`);
+}
 
-  const display = buildPictogramDisplay(data);
-  const prompt = `圖表中所有東西加起來一共有幾個？\n${display}`;
+function generateTotal(data: PictogramData): Question {
+  const total = data.items.reduce((s, d) => s + d.count, 0);
+  return makeQ('hard', `圖表中所有東西加起來一共有幾個？\n${display(data)}`, total, 1, 40,
+    `全部加起來：${data.items.map(d => `${d.item.name}(${d.count})`).join(' + ')} = ${total}。`);
+}
 
-  const correctAnswer = total;
+function generateDifference(data: PictogramData): Question {
+  if (data.items.length < 2) return generateTotal(data);
+  const a = data.items[0];
+  const b = data.items[1];
+  const diff = Math.abs(a.count - b.count);
+  const prompt = `${a.item.name}和${b.item.name}相差幾個？\n${display(data)}`;
+  return makeQ('hard', prompt, diff, 0, 15,
+    `${a.item.name}有 ${a.count} 個，${b.item.name}有 ${b.count} 個，相差 ${diff} 個。`);
+}
 
-  const distractors = new Set<number>();
-  distractors.add(correctAnswer);
-  while (distractors.size < 4) {
-    let d = correctAnswer + randomInt(-4, 4);
-    if (d < 1) d = 1;
-    distractors.add(d);
-  }
-
-  const options = shuffleArray(Array.from(distractors).map(String));
-  const correctAnswerIndex = options.indexOf(correctAnswer.toString());
-
-  return {
-    id: generateId(),
-    topicId: 'data-handling',
-    difficulty: 'hard',
-    prompt,
-    options,
-    correctAnswerIndex,
-    explanation: `把所有東西加起來：${data.items.map(d => `${d.item.name}(${d.count})`).join(' + ')} = ${total}。`,
-    graphicType: 'pictogram',
-  };
+function generateMultiStep(data: PictogramData): Question {
+  if (data.items.length < 2) return generateTotal(data);
+  const a = data.items[0];
+  const b = data.items[1];
+  const sum = a.count + b.count;
+  const prompt = `${a.item.name}和${b.item.name}一共有幾個？\n${display(data)}`;
+  return makeQ('hard', prompt, sum, 1, 25,
+    `${a.count} + ${b.count} = ${sum}。${a.item.name}和${b.item.name}一共有 ${sum} 個。`);
 }

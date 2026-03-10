@@ -14,148 +14,174 @@ const BASIC_COMPOSITIONS: ShapeComposition[] = [
   { parts: ['三角形', '三角形'], result: '菱形', description: '兩個三角形可以拼成一個菱形' },
 ];
 
-const SHAPE_PARTS: Record<string, string[]> = {
-  '正方形': ['三角形', '三角形'],
-  '長方形': ['正方形', '正方形'],
-  '六邊形': ['三角形', '三角形', '三角形', '三角形', '三角形', '三角形'],
+const SHAPE_PARTS: Record<string, { part: string; count: number }> = {
+  '正方形': { part: '三角形', count: 2 },
+  '長方形': { part: '正方形', count: 2 },
+  '六邊形': { part: '三角形', count: 6 },
 };
 
 const ALL_SHAPES = ['三角形', '正方形', '長方形', '圓形', '菱形', '六邊形'];
 
 /**
  * 圖形拼砌 (Composing Shapes)
- * Easy: combine 2 shapes — what do they make?
- * Medium: identify parts of a shape
- * Hard: decompose complex shapes
+ * Easy: combine 2 shapes, simple "what does it make"
+ * Medium: identify parts, "how many triangles to make...", word problems
+ * Hard: decomposition, cutting problems, spatial reasoning, multi-step
  */
 export function generateComposingShapesQuestions(difficulty: DifficultyLevel, count: number): Question[] {
   const questions: Question[] = [];
-
   for (let i = 0; i < count; i++) {
     switch (difficulty) {
       case 'easy':
-        questions.push(generateCombineQuestion());
+        questions.push([generateCombineQuestion, generateSimpleDecompose][randomInt(0, 1)]());
         break;
       case 'medium':
-        questions.push(generateIdentifyPartsQuestion());
+        questions.push([generateIdentifyPartsQuestion, generateHowManyToMake, generateWordProblemMedium][randomInt(0, 2)]());
         break;
       case 'hard':
-        questions.push(generateDecomposeQuestion());
+        questions.push([generateCuttingProblem, generateMultiStepCompose, generateSpatialReasoning][randomInt(0, 2)]());
         break;
     }
   }
-
   return questions;
 }
+
+function makeComposeQuestion(difficulty: DifficultyLevel, prompt: string, correct: string, pool: string[], explanation: string): Question {
+  const distractors = new Set<string>();
+  distractors.add(correct);
+  for (const d of pool) { if (distractors.size < 4) distractors.add(d); }
+  const fillers = ['三角形', '正方形', '長方形', '圓形', '菱形', '六邊形', '1個', '2個', '3個', '4個'];
+  for (const f of fillers) { if (distractors.size >= 4) break; distractors.add(f); }
+  const options = shuffleArray(Array.from(distractors).slice(0, 4));
+  return {
+    id: generateId(), topicId: 'composing-shapes', difficulty, prompt, options,
+    correctAnswerIndex: options.indexOf(correct), explanation, graphicType: 'shape-compose',
+  };
+}
+
+// --- Easy ---
 
 function generateCombineQuestion(): Question {
   const comp = BASIC_COMPOSITIONS[randomInt(0, BASIC_COMPOSITIONS.length - 1)];
   const prompt = `兩個${comp.parts[0]}可以拼成什麼形狀？`;
-
-  const distractors = new Set<string>();
-  distractors.add(comp.result);
-  while (distractors.size < 4) {
-    distractors.add(ALL_SHAPES[randomInt(0, ALL_SHAPES.length - 1)]);
-  }
-
-  const options = shuffleArray(Array.from(distractors));
-  const correctAnswerIndex = options.indexOf(comp.result);
-
-  return {
-    id: generateId(),
-    topicId: 'composing-shapes',
-    difficulty: 'easy',
-    prompt,
-    options,
-    correctAnswerIndex,
-    explanation: `${comp.description}。`,
-    graphicType: 'shape-compose',
-  };
+  return makeComposeQuestion('easy', prompt, comp.result, ALL_SHAPES, `${comp.description}。`);
 }
+
+function generateSimpleDecompose(): Question {
+  const scenarios = [
+    { prompt: '一個正方形可以分成幾個三角形？', correct: '2個', explanation: '一個正方形沿對角線可以分成2個三角形。' },
+    { prompt: '一個長方形可以分成幾個正方形？', correct: '2個', explanation: '一個長方形可以分成2個正方形。' },
+    { prompt: '一個圓形可以分成幾個半圓？', correct: '2個', explanation: '一個圓形從中間分開，可以得到2個半圓。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  return makeComposeQuestion('easy', s.prompt, s.correct,
+    ['1個', '2個', '3個', '4個'], s.explanation);
+}
+
+// --- Medium ---
 
 function generateIdentifyPartsQuestion(): Question {
   const shapeNames = Object.keys(SHAPE_PARTS);
   const shapeName = shapeNames[randomInt(0, shapeNames.length - 1)];
-  const parts = SHAPE_PARTS[shapeName];
-  const partCount = parts.length;
-  const partName = parts[0];
-
-  const prompt = `一個${shapeName}可以分成幾個${partName}？`;
-  const correctAnswer = `${partCount}個`;
-
-  const distractors = new Set<string>();
-  distractors.add(correctAnswer);
-  while (distractors.size < 4) {
-    const d = randomInt(1, 8);
-    distractors.add(`${d}個`);
-  }
-
-  const options = shuffleArray(Array.from(distractors));
-  const correctAnswerIndex = options.indexOf(correctAnswer);
-
-  return {
-    id: generateId(),
-    topicId: 'composing-shapes',
-    difficulty: 'medium',
-    prompt,
-    options,
-    correctAnswerIndex,
-    explanation: `一個${shapeName}可以分成${partCount}個${partName}。`,
-    graphicType: 'shape-compose',
-  };
+  const info = SHAPE_PARTS[shapeName];
+  const prompt = `一個${shapeName}可以分成幾個${info.part}？`;
+  const correct = `${info.count}個`;
+  return makeComposeQuestion('medium', prompt, correct,
+    ['1個', '2個', '3個', '4個', '6個'],
+    `一個${shapeName}可以分成 ${info.count} 個${info.part}。`);
 }
 
-function generateDecomposeQuestion(): Question {
+function generateHowManyToMake(): Question {
+  const scenarios = [
+    { prompt: '要用幾個三角形才能拼成一個正方形？', correct: '2個', explanation: '需要2個三角形拼成一個正方形。' },
+    { prompt: '要用幾個正方形才能拼成一個長方形？', correct: '2個', explanation: '需要2個正方形拼成一個長方形。' },
+    { prompt: '要用幾個三角形才能拼成一個六邊形？', correct: '6個', explanation: '需要6個三角形拼成一個六邊形。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  return makeComposeQuestion('medium', s.prompt, s.correct,
+    ['1個', '2個', '3個', '4個', '6個'], s.explanation);
+}
+
+function generateWordProblemMedium(): Question {
+  const n = randomInt(2, 3);
+  const trianglesPerSquare = 2;
+  const total = n * trianglesPerSquare;
+  const prompt = `小明要拼 ${n} 個正方形，每個正方形需要 2 個三角形。他一共需要幾個三角形？`;
+  const correct = `${total}個`;
+  return makeComposeQuestion('medium', prompt, correct,
+    [`${total}個`, `${total + 1}個`, `${total - 1}個`, `${n}個`],
+    `每個正方形需要 2 個三角形，${n} 個正方形需要 2 × ${n} = ${total} 個三角形。`);
+}
+
+// --- Hard ---
+
+function generateCuttingProblem(): Question {
   const scenarios = [
     {
-      prompt: '一個長方形剪一刀，可以變成哪兩個形狀？',
-      correct: '兩個正方形',
-      explanation: '把長方形從中間剪開，可以得到兩個正方形。',
+      prompt: '一個長方形剪一刀，最多可以變成幾個部分？',
+      correct: '2個',
+      explanation: '剪一刀最多把一個形狀分成2個部分。',
     },
     {
-      prompt: '一個正方形沿對角線剪一刀，可以變成什麼？',
+      prompt: '一個正方形沿對角線剪一刀，可以得到什麼形狀？',
       correct: '兩個三角形',
       explanation: '正方形沿對角線剪開，可以得到兩個三角形。',
     },
     {
-      prompt: '用三個三角形可以拼成什麼形狀？',
-      correct: '梯形',
-      explanation: '三個三角形可以拼成一個梯形。',
+      prompt: '一個長方形沿中間橫切一刀，可以得到什麼？',
+      correct: '兩個長方形',
+      explanation: '長方形沿中間橫切，可以得到兩個較小的長方形。',
     },
     {
-      prompt: '一個圓形可以分成幾個半圓？',
-      correct: '2個',
-      explanation: '一個圓形從中間分開，可以得到2個半圓。',
+      prompt: '一個正方形剪兩刀（橫一刀、直一刀），最多可以變成幾個部分？',
+      correct: '4個',
+      explanation: '橫一刀分成2個，再直一刀每個再分成2個，共4個部分。',
     },
   ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  return makeComposeQuestion('hard', s.prompt, s.correct,
+    ['1個', '2個', '3個', '4個', '兩個三角形', '兩個長方形', '兩個正方形'],
+    s.explanation);
+}
 
-  const scenario = scenarios[randomInt(0, scenarios.length - 1)];
+function generateMultiStepCompose(): Question {
+  const squares = randomInt(2, 4);
+  const trianglesPerSquare = 2;
+  const extraTriangles = randomInt(1, 3);
+  const total = squares * trianglesPerSquare + extraTriangles;
+  const prompt = `小美用三角形拼圖案。她拼了 ${squares} 個正方形（每個用 2 個三角形），還剩下 ${extraTriangles} 個三角形。她一共有幾個三角形？`;
+  const correct = `${total}個`;
+  return makeComposeQuestion('hard', prompt, correct,
+    [`${total}個`, `${total + 1}個`, `${total - 1}個`, `${squares * trianglesPerSquare}個`],
+    `${squares} 個正方形用了 ${squares} × 2 = ${squares * trianglesPerSquare} 個三角形，加上剩下的 ${extraTriangles} 個，一共 ${total} 個。`);
+}
 
-  const possibleAnswers = [
-    '兩個正方形', '兩個三角形', '兩個長方形', '兩個圓形',
-    '梯形', '菱形', '六邊形', '2個', '3個', '4個',
+function generateSpatialReasoning(): Question {
+  const scenarios = [
+    {
+      prompt: '用3個三角形可以拼成什麼形狀？',
+      correct: '梯形',
+      explanation: '3個三角形可以拼成一個梯形。',
+    },
+    {
+      prompt: '把一個大三角形分成4個小三角形，需要剪幾刀？',
+      correct: '3刀',
+      pool: ['1刀', '2刀', '3刀', '4刀'],
+      explanation: '需要3刀才能把一個大三角形分成4個小三角形。',
+    },
+    {
+      prompt: '兩個相同的長方形可以拼成什麼形狀？',
+      correct: '正方形',
+      explanation: '兩個相同的長方形可以拼成一個正方形。',
+    },
+    {
+      prompt: '一個六邊形可以分成幾個三角形？',
+      correct: '6個',
+      pool: ['3個', '4個', '5個', '6個'],
+      explanation: '一個六邊形可以分成6個三角形。',
+    },
   ];
-
-  const distractors = new Set<string>();
-  distractors.add(scenario.correct);
-  while (distractors.size < 4) {
-    const d = possibleAnswers[randomInt(0, possibleAnswers.length - 1)];
-    if (d !== scenario.correct) {
-      distractors.add(d);
-    }
-  }
-
-  const options = shuffleArray(Array.from(distractors));
-  const correctAnswerIndex = options.indexOf(scenario.correct);
-
-  return {
-    id: generateId(),
-    topicId: 'composing-shapes',
-    difficulty: 'hard',
-    prompt: scenario.prompt,
-    options,
-    correctAnswerIndex,
-    explanation: scenario.explanation,
-    graphicType: 'shape-compose',
-  };
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  const pool = s.pool ?? ALL_SHAPES;
+  return makeComposeQuestion('hard', s.prompt, s.correct, pool, s.explanation);
 }
