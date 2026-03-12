@@ -8,21 +8,23 @@ function renderWithRouter(ui: React.ReactElement, { route = '/' } = {}) {
 }
 
 describe('HomeScreen', () => {
-  it('renders two semester cards with correct Chinese labels', () => {
+  it('renders school name and topic cards', () => {
     renderWithRouter(<HomeScreen />);
 
-    expect(screen.getByText('上學期')).toBeInTheDocument();
-    expect(screen.getByText('下學期')).toBeInTheDocument();
+    expect(screen.getByText('📚 小一數學')).toBeInTheDocument();
+    expect(screen.getByText('聖公會青衣主恩小學')).toBeInTheDocument();
+    expect(screen.getByText('數數')).toBeInTheDocument();
+    expect(screen.getByText('基本加法')).toBeInTheDocument();
   });
 
-  it('semester cards link to correct routes', () => {
+  it('renders exam prep and past paper links', () => {
     renderWithRouter(<HomeScreen />);
 
-    const sem1Link = screen.getByText('上學期').closest('a');
-    const sem2Link = screen.getByText('下學期').closest('a');
+    const examLink = screen.getByText('📝 考試準備').closest('a');
+    expect(examLink).toHaveAttribute('href', '/exam/sem1');
 
-    expect(sem1Link).toHaveAttribute('href', '/semester/sem1');
-    expect(sem2Link).toHaveAttribute('href', '/semester/sem2');
+    const pastPaperLink = screen.getByText('📄 模擬試卷').closest('a');
+    expect(pastPaperLink).toHaveAttribute('href', '/past-paper');
   });
 
   it('renders a score history link pointing to /scores', () => {

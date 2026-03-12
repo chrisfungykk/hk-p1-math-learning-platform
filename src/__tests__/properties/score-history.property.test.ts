@@ -6,8 +6,11 @@ import type { ScoreRecord } from '../../types';
 import { sortRecordsByDate } from '../../utils/scoreHistory';
 
 const SEMESTER_TOPIC_MAP: Record<string, string[]> = {
-  sem1: ['counting', 'addition-10', 'subtraction-10', 'shapes', 'compare-length-height', 'ordering-sequences'],
-  sem2: ['addition-20', 'subtraction-20', 'telling-time', 'coins-notes', 'composing-shapes', 'data-handling'],
+  sem1: [
+    'counting', 'addition-10', 'subtraction-10', 'addition-20', 'subtraction-20',
+    'ordering-sequences', 'shapes', 'composing-shapes', 'compare-length-height',
+    'telling-time', 'coins-notes', 'data-handling',
+  ],
 };
 
 /**
@@ -15,7 +18,7 @@ const SEMESTER_TOPIC_MAP: Record<string, string[]> = {
  */
 const scoreRecordArb: fc.Arbitrary<ScoreRecord> = fc.record({
   id: fc.uuid(),
-  semester: fc.constantFrom('sem1' as const, 'sem2' as const),
+  semester: fc.constantFrom('sem1' as const),
   difficulty: fc.constantFrom('easy' as const, 'medium' as const, 'hard' as const),
   totalQuestions: fc.integer({ min: 1, max: 30 }),
   date: fc.integer({
@@ -84,16 +87,13 @@ describe('Property 5: Score records are sorted by date', () => {
   });
 });
 
-const ALL_TOPIC_IDS = [
-  ...SEMESTER_TOPIC_MAP.sem1,
-  ...SEMESTER_TOPIC_MAP.sem2,
-];
+const ALL_TOPIC_IDS = [...SEMESTER_TOPIC_MAP.sem1];
 
 /**
  * Arbitrary for filter combinations: optional semester and/or topicId.
  */
 const filterArb = fc.record({
-  semester: fc.option(fc.constantFrom('sem1' as const, 'sem2' as const), { nil: undefined }),
+  semester: fc.option(fc.constantFrom('sem1' as const), { nil: undefined }),
   topicId: fc.option(fc.constantFrom(...ALL_TOPIC_IDS), { nil: undefined }),
 });
 

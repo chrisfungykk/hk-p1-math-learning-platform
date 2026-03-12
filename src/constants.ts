@@ -4,12 +4,20 @@ export const SEMESTERS: SemesterDefinition[] = [
   {
     id: 'sem1',
     name: '上學期',
-    topics: ['counting', 'addition-10', 'subtraction-10', 'shapes', 'compare-length-height', 'ordering-sequences'],
-  },
-  {
-    id: 'sem2',
-    name: '下學期',
-    topics: ['addition-20', 'subtraction-20', 'telling-time', 'coins-notes', 'composing-shapes', 'data-handling'],
+    topics: [
+      'counting',
+      'addition-10',
+      'subtraction-10',
+      'addition-20',
+      'subtraction-20',
+      'ordering-sequences',
+      'shapes',
+      'composing-shapes',
+      'compare-length-height',
+      'telling-time',
+      'coins-notes',
+      'data-handling',
+    ],
   },
 ];
 

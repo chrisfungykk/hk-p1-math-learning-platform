@@ -80,11 +80,11 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
     generateQuestions: generateOrderingQuestions,
   },
 
-  // ── Semester 2 (下學期) ──────────────────────────────────────
+  // ── All topics (上學期) ──────────────────────────────────────
   'addition-20': {
     id: 'addition-20',
     name: '20以內加法',
-    semester: 'sem2',
+    semester: 'sem1',
     animationComposition: Addition20Animation,
     fallbackImage: '/fallbacks/addition-20.svg',
     generateQuestions: generateAddition20Questions,
@@ -92,7 +92,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'subtraction-20': {
     id: 'subtraction-20',
     name: '20以內減法',
-    semester: 'sem2',
+    semester: 'sem1',
     animationComposition: Subtraction20Animation,
     fallbackImage: '/fallbacks/subtraction-20.svg',
     generateQuestions: generateSubtraction20Questions,
@@ -100,7 +100,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'telling-time': {
     id: 'telling-time',
     name: '認識時間',
-    semester: 'sem2',
+    semester: 'sem1',
     animationComposition: TellingTimeAnimation,
     fallbackImage: '/fallbacks/telling-time.svg',
     generateQuestions: generateTellingTimeQuestions,
@@ -108,7 +108,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'coins-notes': {
     id: 'coins-notes',
     name: '認識貨幣',
-    semester: 'sem2',
+    semester: 'sem1',
     animationComposition: CoinsNotesAnimation,
     fallbackImage: '/fallbacks/coins-notes.svg',
     generateQuestions: generateCoinsNotesQuestions,
@@ -116,7 +116,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'composing-shapes': {
     id: 'composing-shapes',
     name: '圖形拼砌',
-    semester: 'sem2',
+    semester: 'sem1',
     animationComposition: ComposingShapesAnimation,
     fallbackImage: '/fallbacks/composing-shapes.svg',
     generateQuestions: generateComposingShapesQuestions,
@@ -124,7 +124,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'data-handling': {
     id: 'data-handling',
     name: '數據處理',
-    semester: 'sem2',
+    semester: 'sem1',
     animationComposition: DataHandlingAnimation,
     fallbackImage: '/fallbacks/data-handling.svg',
     generateQuestions: generateDataHandlingQuestions,

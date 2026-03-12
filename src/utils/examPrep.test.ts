@@ -10,13 +10,14 @@ describe('generateExamQuestions', () => {
   });
 
   it('returns exactly totalCount questions when specified within bounds', () => {
-    const questions = generateExamQuestions('sem2', 'medium', 20);
-    expect(questions.length).toBe(20);
+    const questions = generateExamQuestions('sem1', 'medium', 28);
+    expect(questions.length).toBe(28);
   });
 
-  it('clamps totalCount to 15 minimum', () => {
+  it('clamps totalCount to minimum (at least 2 per topic)', () => {
     const questions = generateExamQuestions('sem1', 'easy', 5);
-    expect(questions.length).toBe(15);
+    // With 12 topics × 2 minimum each = 24 minimum
+    expect(questions.length).toBe(24);
   });
 
   it('clamps totalCount to 30 maximum', () => {
@@ -31,7 +32,7 @@ describe('generateExamQuestions', () => {
   });
 
   it('assigns at least 2 questions per topic', () => {
-    const questions = generateExamQuestions('sem2', 'medium', 18);
+    const questions = generateExamQuestions('sem1', 'medium', 18);
     const counts = new Map<string, number>();
     for (const q of questions) {
       counts.set(q.topicId, (counts.get(q.topicId) ?? 0) + 1);

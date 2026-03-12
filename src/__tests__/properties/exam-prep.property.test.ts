@@ -12,7 +12,7 @@ describe('Property 9: Exam preparation covers multiple topics', () => {
   it('for any semester, exam questions must include questions from at least two distinct topics', () => {
     fc.assert(
       fc.property(
-        fc.constantFrom<'sem1' | 'sem2'>('sem1', 'sem2'),
+        fc.constantFrom<'sem1'>('sem1'),
         fc.constantFrom<DifficultyLevel>('easy', 'medium', 'hard', 'challenge'),
         (semester, difficulty) => {
           const questions = generateExamQuestions(semester, difficulty);
@@ -30,7 +30,7 @@ describe('Property 10: Exam preparation question count bounds', () => {
   it('the number of generated questions must be at least 15 and at most 30', () => {
     fc.assert(
       fc.property(
-        fc.constantFrom<'sem1' | 'sem2'>('sem1', 'sem2'),
+        fc.constantFrom<'sem1'>('sem1'),
         fc.constantFrom<DifficultyLevel>('easy', 'medium', 'hard', 'challenge'),
         fc.integer({ min: 1, max: 50 }),
         (semester, difficulty, totalCount) => {
@@ -49,7 +49,7 @@ describe('Property 11: Exam preparation per-topic breakdown invariant', () => {
   it('sum of breakdown correct === summary correct, and sum of breakdown total === summary total', () => {
     fc.assert(
       fc.property(
-        fc.constantFrom<'sem1' | 'sem2'>('sem1', 'sem2'),
+        fc.constantFrom<'sem1'>('sem1'),
         fc.constantFrom<DifficultyLevel>('easy', 'medium', 'hard', 'challenge'),
         (semester, difficulty) => {
           const questions = generateExamQuestions(semester, difficulty);
