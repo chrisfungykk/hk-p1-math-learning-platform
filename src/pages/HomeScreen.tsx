@@ -42,13 +42,21 @@ export default function HomeScreen() {
       </h2>
       <p className="text-gray-500 text-sm">聖公會青衣主恩小學</p>
 
-      {/* 考試準備 — top hero section */}
-      <Link
-        to={`/exam/${semester.id}`}
-        className="w-full max-w-3xl min-h-20 min-w-12 flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-2xl md:text-3xl font-extrabold px-6 py-5 shadow-xl hover:scale-[1.03] transition-transform ring-2 ring-purple-300"
-      >
-        📝 考試準備
-      </Link>
+      {/* Hero section — 考試準備 + 模擬試卷 side by side */}
+      <div className="flex gap-4 w-full max-w-3xl">
+        <Link
+          to={`/exam/${semester.id}`}
+          className="flex-1 min-h-20 min-w-12 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xl md:text-2xl font-extrabold px-4 py-5 shadow-xl hover:scale-[1.03] transition-transform ring-2 ring-purple-300"
+        >
+          📝 考試準備
+        </Link>
+        <Link
+          to="/past-paper"
+          className="flex-1 min-h-20 min-w-12 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xl md:text-2xl font-extrabold px-4 py-5 shadow-xl hover:scale-[1.03] transition-transform ring-2 ring-amber-300"
+        >
+          📄 模擬試卷
+        </Link>
+      </div>
 
       {/* Topic grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full max-w-3xl">
@@ -70,17 +78,11 @@ export default function HomeScreen() {
         })}
       </div>
 
-      {/* Secondary actions */}
-      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-3xl">
-        <Link
-          to="/past-paper"
-          className="min-h-12 min-w-12 flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xl font-bold px-6 py-4 shadow-lg hover:scale-105 transition-transform"
-        >
-          📄 模擬試卷
-        </Link>
+      {/* Secondary action */}
+      <div className="w-full max-w-3xl">
         <Link
           to="/scores"
-          className="min-h-12 min-w-12 flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xl font-bold px-6 py-4 shadow-lg hover:scale-105 transition-transform"
+          className="min-h-12 min-w-12 w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xl font-bold px-6 py-4 shadow-lg hover:scale-105 transition-transform"
         >
           📊 成績記錄
         </Link>
