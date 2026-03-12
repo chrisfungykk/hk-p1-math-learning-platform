@@ -1,18 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
-  <rect width="640" height="360" fill="#F1F8E9"/>
-  <text x="320" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#33691E" font-family="sans-serif">數據處理 Data Handling</text>
-  <text x="320" y="65" text-anchor="middle" font-size="16" fill="#558B2F" font-family="sans-serif">最喜歡的水果 Favourite Fruit</text>
-  <!-- Bars -->
-  <rect x="120" y="140" width="48" height="100" rx="6" fill="#E53935"/>
-  <text x="144" y="130" text-anchor="middle" font-size="14" font-weight="bold" fill="#E53935" font-family="sans-serif">5</text>
-  <text x="144" y="265" text-anchor="middle" font-size="24" font-family="sans-serif">🍎</text>
-  <rect x="220" y="180" width="48" height="60" rx="6" fill="#FDD835"/>
-  <text x="244" y="170" text-anchor="middle" font-size="14" font-weight="bold" fill="#FDD835" font-family="sans-serif">3</text>
-  <text x="244" y="265" text-anchor="middle" font-size="24" font-family="sans-serif">🍌</text>
-  <rect x="320" y="100" width="48" height="140" rx="6" fill="#7B1FA2"/>
-  <text x="344" y="90" text-anchor="middle" font-size="14" font-weight="bold" fill="#7B1FA2" font-family="sans-serif">7</text>
-  <text x="344" y="265" text-anchor="middle" font-size="24" font-family="sans-serif">🍇</text>
-  <rect x="420" y="160" width="48" height="80" rx="6" fill="#FB8C00"/>
-  <text x="444" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#FB8C00" font-family="sans-serif">4</text>
-  <text x="444" y="265" text-anchor="middle" font-size="24" font-family="sans-serif">🍊</text>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8EAF6"/>
+      <stop offset="100%" style="stop-color:#C5CAE9"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)" rx="16"/>
+  <text x="320" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#283593" font-family="sans-serif">📊 數據處理 Data Handling</text>
+  <!-- Pictogram title -->
+  <text x="320" y="75" text-anchor="middle" font-size="15" fill="#3949AB" font-family="sans-serif">最喜歡的水果 Favourite Fruit</text>
+  <!-- Y-axis -->
+  <line x1="120" y1="90" x2="120" y2="280" stroke="#3949AB" stroke-width="2"/>
+  <line x1="120" y1="280" x2="560" y2="280" stroke="#3949AB" stroke-width="2"/>
+  <!-- Y-axis labels -->
+  <text x="110" y="284" text-anchor="end" font-size="12" fill="#283593" font-family="sans-serif">0</text>
+  <text x="110" y="246" text-anchor="end" font-size="12" fill="#283593" font-family="sans-serif">2</text>
+  <text x="110" y="208" text-anchor="end" font-size="12" fill="#283593" font-family="sans-serif">4</text>
+  <text x="110" y="170" text-anchor="end" font-size="12" fill="#283593" font-family="sans-serif">6</text>
+  <text x="110" y="132" text-anchor="end" font-size="12" fill="#283593" font-family="sans-serif">8</text>
+  <!-- Grid lines -->
+  <line x1="120" y1="242" x2="560" y2="242" stroke="#C5CAE9" stroke-width="1"/>
+  <line x1="120" y1="204" x2="560" y2="204" stroke="#C5CAE9" stroke-width="1"/>
+  <line x1="120" y1="166" x2="560" y2="166" stroke="#C5CAE9" stroke-width="1"/>
+  <line x1="120" y1="128" x2="560" y2="128" stroke="#C5CAE9" stroke-width="1"/>
+  <!-- Bar 1: Apple (6) -->
+  <rect x="155" y="166" width="60" height="114" rx="4" fill="#EF5350" opacity="0.85"/>
+  <text x="185" y="298" text-anchor="middle" font-size="24" font-family="sans-serif">🍎</text>
+  <text x="185" y="160" text-anchor="middle" font-size="14" font-weight="bold" fill="#C62828" font-family="sans-serif">6</text>
+  <!-- Bar 2: Banana (4) -->
+  <rect x="255" y="204" width="60" height="76" rx="4" fill="#FDD835" opacity="0.85"/>
+  <text x="285" y="298" text-anchor="middle" font-size="24" font-family="sans-serif">🍌</text>
+  <text x="285" y="198" text-anchor="middle" font-size="14" font-weight="bold" fill="#F57F17" font-family="sans-serif">4</text>
+  <!-- Bar 3: Orange (8) -->
+  <rect x="355" y="128" width="60" height="152" rx="4" fill="#FF9800" opacity="0.85"/>
+  <text x="385" y="298" text-anchor="middle" font-size="24" font-family="sans-serif">🍊</text>
+  <text x="385" y="122" text-anchor="middle" font-size="14" font-weight="bold" fill="#E65100" font-family="sans-serif">8</text>
+  <!-- Bar 4: Grape (3) -->
+  <rect x="455" y="223" width="60" height="57" rx="4" fill="#AB47BC" opacity="0.85"/>
+  <text x="485" y="298" text-anchor="middle" font-size="24" font-family="sans-serif">🍇</text>
+  <text x="485" y="217" text-anchor="middle" font-size="14" font-weight="bold" fill="#7B1FA2" font-family="sans-serif">3</text>
+  <!-- Axis labels -->
+  <text x="80" y="195" text-anchor="middle" font-size="12" fill="#283593" font-family="sans-serif" transform="rotate(-90,80,195)">人數</text>
+  <text x="340" y="315" text-anchor="middle" font-size="13" fill="#283593" font-family="sans-serif">水果種類</text>
+  <!-- Question -->
+  <rect x="120" y="325" width="400" height="30" rx="10" fill="#283593" opacity="0.1"/>
+  <text x="320" y="346" text-anchor="middle" font-size="15" fill="#1A237E" font-family="sans-serif">最多人喜歡邊種水果？🍊 橙 最受歡迎！</text>
 </svg>

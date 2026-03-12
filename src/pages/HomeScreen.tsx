@@ -10,11 +10,12 @@ const TOPIC_EMOJIS: Record<string, string> = {
   'addition-20': '🧮',
   'subtraction-20': '📐',
   'shapes': '🔷',
-  'compare-length-height': '📏',
-  'ordering-sequences': '🔄',
-  'telling-time': '🕐',
   'coins-notes': '💰',
+  'word-problems': '📝',
   'composing-shapes': '🧩',
+  'compare-length-height': '📏',
+  'telling-time': '🕐',
+  'ordering-sequences': '🔄',
   'data-handling': '📊',
 };
 

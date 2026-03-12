@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { shapeSvg } from '../../utils/illustrations';
 
 interface ShapeInfo {
   name: string;
@@ -81,8 +82,10 @@ function makeShapeQuestion(difficulty: DifficultyLevel, prompt: string, correct:
 function generateIdentifyQuestion(): Question {
   const shapes = BASIC_2D;
   const target = shapes[randomInt(0, shapes.length - 1)];
-  return makeShapeQuestion('easy', `以下哪一個是${target.name}？`, target.name,
+  const q = makeShapeQuestion('easy', `以下哪一個是${target.name}？`, target.name,
     shapes.map(s => s.name), `${target.name}${target.description}。`);
+  q.illustration = shapeSvg(target.name);
+  return q;
 }
 
 function generateCountSidesEasy(): Question {
@@ -114,8 +117,10 @@ function generatePropertyQuestion(): Question {
 
 function generate3DRecognition(): Question {
   const target = SHAPES_3D[randomInt(0, SHAPES_3D.length - 1)];
-  return makeShapeQuestion('medium', `以下哪一個是${target.name}？ ${target.emoji}`, target.name,
+  const q = makeShapeQuestion('medium', `以下哪一個是${target.name}？ ${target.emoji}`, target.name,
     SHAPES_3D.map(s => s.name), `${target.name}${target.description}。`);
+  q.illustration = shapeSvg(target.name);
+  return q;
 }
 
 function generateTrueFalseStyle(): Question {

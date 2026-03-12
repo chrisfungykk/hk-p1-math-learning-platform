@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { countDotsSvg } from '../../utils/illustrations';
 
 const OBJECTS = ['🍎 蘋果', '🍌 香蕉', '⭐ 星星', '🌸 花', '🐟 魚', '🦋 蝴蝶', '🐤 小雞', '✏️ 鉛筆'];
 
@@ -33,8 +34,10 @@ function generateCountObjects(difficulty: DifficultyLevel): Question {
   const emoji = obj.split(' ')[0];
   const name = obj.split(' ')[1];
   const prompt = `數一數，這裡有幾個${name}？\n${emoji.repeat(correctAnswer)}`;
-  return makeQ(difficulty, 'counting', prompt, correctAnswer, 1, maxNum,
+  const q = makeQ(difficulty, 'counting', prompt, correctAnswer, 1, maxNum,
     `正確答案是 ${correctAnswer}。一共有 ${correctAnswer} 個${name}。`);
+  q.illustration = countDotsSvg(correctAnswer);
+  return q;
 }
 
 function generateWhichNumber(_difficulty?: DifficultyLevel): Question {

@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { clockSvg } from '../../utils/illustrations';
 
 const CLOCK_EMOJIS: Record<number, string> = {
   1: '🕐', 2: '🕑', 3: '🕒', 4: '🕓', 5: '🕔', 6: '🕕',
@@ -47,7 +48,8 @@ function generateExactHour(): Question {
   return { id: generateId(), topicId: 'telling-time', difficulty: 'easy',
     prompt: `時鐘顯示幾點？${emoji}`, options,
     correctAnswerIndex: options.indexOf(correct),
-    explanation: `時鐘顯示 ${correct}，即是${hour}點正。`, graphicType: 'clock' };
+    explanation: `時鐘顯示 ${correct}，即是${hour}點正。`, graphicType: 'clock',
+    illustration: clockSvg(hour, 0) };
 }
 
 function generateDailyRoutine(): Question {
@@ -92,7 +94,8 @@ function generateHalfHour(): Question {
   return { id: generateId(), topicId: 'telling-time', difficulty: 'medium',
     prompt: `時鐘顯示幾點？${emoji}`, options,
     correctAnswerIndex: options.indexOf(correct),
-    explanation: `時鐘顯示 ${correct}，即是${hour}點半。`, graphicType: 'clock' };
+    explanation: `時鐘顯示 ${correct}，即是${hour}點半。`, graphicType: 'clock',
+    illustration: clockSvg(hour, 30) };
 }
 
 function generateHowLong(): Question {
@@ -148,7 +151,8 @@ function generateQuarterHour(): Question {
   return { id: generateId(), topicId: 'telling-time', difficulty: 'hard',
     prompt: `時鐘顯示幾點？${emoji}\n（長針指向 ${mins === 0 ? '12' : mins === 15 ? '3' : mins === 30 ? '6' : '9'}）`,
     options, correctAnswerIndex: options.indexOf(correct),
-    explanation: `時鐘顯示 ${correct}，即是${label}。`, graphicType: 'clock' };
+    explanation: `時鐘顯示 ${correct}，即是${label}。`, graphicType: 'clock',
+    illustration: clockSvg(hour, mins) };
 }
 
 function generateElapsedTime(): Question {

@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { tenFrameSvg, countDotsSvg } from '../../utils/illustrations';
 
 /**
  * 20以內加法 (Addition within 20) — HK P1 1N4 standard
@@ -37,7 +38,9 @@ function generatePictureAdd(): Question {
   const b = randomInt(3, Math.min(8, 18 - a));
   const ans = a + b;
   const prompt = `數一數，一共有幾個？\n${emoji.repeat(a)}  和  ${emoji.repeat(b)}`;
-  return makeQ('easy', prompt, ans, `${a} + ${b} = ${ans}`);
+  const q = makeQ('easy', prompt, ans, `${a} + ${b} = ${ans}`);
+  q.illustration = countDotsSvg(a, '#42A5F5');
+  return q;
 }
 
 function generateWordEasy(): Question {
@@ -61,8 +64,10 @@ function generateCrossTen(): Question {
   const b = randomInt(10 - a + 1, Math.min(9, 18 - a));
   const ans = a + b;
   const complement = 10 - a;
-  return makeQ('medium', `用湊十法計算：${a} + ${b} = ?\n提示：${a} + ${complement} = 10`, ans,
+  const q = makeQ('medium', `用湊十法計算：${a} + ${b} = ?\n提示：${a} + ${complement} = 10`, ans,
     `湊十法：${a} + ${complement} = 10，10 + ${b - complement} = ${ans}`);
+  q.illustration = tenFrameSvg(a);
+  return q;
 }
 
 function generateColumnForm(): Question {

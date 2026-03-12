@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { SEMESTERS, DIFFICULTY_LABELS } from '../constants';
 import { TOPIC_REGISTRY } from '../data/topicRegistry';
 import type { DifficultyLevel, Question } from '../types';
+import QuestionIllustration from '../components/QuestionIllustration';
 
 const DIFFICULTY_OPTIONS: { value: DifficultyLevel; color: string }[] = [
   { value: 'easy', color: 'bg-green-500' },
@@ -117,6 +118,7 @@ export default function PastPaperMode() {
                   <p className="font-medium text-gray-800 whitespace-pre-line">
                     {questionNum}. {q.prompt}
                   </p>
+                  {q.illustration && <div className="pl-4"><QuestionIllustration svg={q.illustration} /></div>}
                   <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-2 pl-4">
                     {q.options.map((opt, oIdx) => (
                       <label key={oIdx} className={`flex items-start gap-2 text-sm ${

@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { countDotsSvg } from '../../utils/illustrations';
 
 /**
  * 排列和序列 (Ordering and Sequences)
@@ -93,11 +94,13 @@ function generateArrangeNumbers(): Question {
   distractors.add([...sorted].reverse().join(', '));
   while (distractors.size < 4) distractors.add(shuffleArray(arr).join(', '));
   const options = shuffleArray(Array.from(distractors));
-  return {
+  const q: Question = {
     id: generateId(), topicId: 'ordering-sequences', difficulty: 'easy', prompt, options,
     correctAnswerIndex: options.indexOf(correct),
     explanation: `從小到大排列：${correct}。`, graphicType: 'sequence',
   };
+  q.illustration = countDotsSvg(arr[0], '#66BB6A');
+  return q;
 }
 
 function generateCompareOrder(): Question {

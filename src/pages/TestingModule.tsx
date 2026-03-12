@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import type { DifficultyLevel, Question } from '../types';
+import QuestionIllustration from '../components/QuestionIllustration';
 import { DIFFICULTY_LABELS } from '../constants';
 import { TOPIC_REGISTRY } from '../data/topicRegistry';
 import { generateQuestions } from '../engine/questionGenerator';
@@ -188,7 +189,10 @@ export default function TestingModule() {
                   <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-orange-100 text-orange-700 font-bold text-sm">
                     {qIdx + 1}
                   </span>
-                  <p className="text-base md:text-lg font-bold text-gray-800 whitespace-pre-line flex-1">{q.prompt}</p>
+                  <div className="flex-1">
+                    <p className="text-base md:text-lg font-bold text-gray-800 whitespace-pre-line">{q.prompt}</p>
+                    {q.illustration && <QuestionIllustration svg={q.illustration} />}
+                  </div>
                 </div>
 
                 {/* Options */}

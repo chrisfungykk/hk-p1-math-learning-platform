@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { lengthBarsSvg } from '../../utils/illustrations';
 
 interface ComparisonItem { name: string; emoji: string; }
 
@@ -89,6 +90,7 @@ function generateCmCompare(): Question {
     correctAnswerIndex: options.indexOf(correct),
     explanation: `${a} 厘米 ${a > b ? '>' : '<'} ${b} 厘米，所以${correct}比較長。`,
     graphicType: 'comparison',
+    illustration: lengthBarsSvg(a, b, `甲 ${a}cm`, `乙 ${b}cm`),
   };
 }
 

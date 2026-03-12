@@ -11,6 +11,7 @@ export interface Question {
   correctAnswerIndex: number;
   explanation: string;       // Brief explanation shown on incorrect answer
   graphicType?: string;      // Optional graphic hint (e.g., 'counting-objects', 'shape')
+  illustration?: string;     // Optional small inline SVG string rendered alongside the prompt
 }
 
 export interface QuestionGeneratorConfig {

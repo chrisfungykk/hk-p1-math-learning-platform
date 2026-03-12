@@ -4,6 +4,7 @@ import { TOPIC_REGISTRY } from '../data/topicRegistry';
 import { DIFFICULTY_LABELS } from '../constants';
 import RemotionAnimationPlayer from '../components/RemotionAnimationPlayer';
 import type { DifficultyLevel, Question } from '../types';
+import QuestionIllustration from '../components/QuestionIllustration';
 
 const DIFFICULTY_OPTIONS: DifficultyLevel[] = ['easy', 'medium', 'hard', 'challenge'];
 const PRACTICE_COUNT = 5;
@@ -137,6 +138,7 @@ export default function LearningModule() {
                   <p className="text-lg font-bold mb-3">
                     {qIdx + 1}. {q.prompt}
                   </p>
+                  {q.illustration && <QuestionIllustration svg={q.illustration} />}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {q.options.map((opt, optIdx) => {
                       let btnClass = 'bg-gray-100 hover:bg-gray-200 text-gray-800';

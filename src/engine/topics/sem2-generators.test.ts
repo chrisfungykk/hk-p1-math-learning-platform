@@ -1,12 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { generateAddition20Questions } from './addition20';
-import { generateSubtraction20Questions } from './subtraction20';
-import { generateTellingTimeQuestions } from './tellingTime';
-import { generateCoinsNotesQuestions } from './coinsNotes';
+import { generateWordProblemsQuestions } from './wordProblems';
 import { generateComposingShapesQuestions } from './composingShapes';
-import { generateDataHandlingQuestions } from './dataHandling';
-import { generateShapesQuestions } from './shapes';
 import { generateCompareLengthQuestions } from './compareLength';
+import { generateTellingTimeQuestions } from './tellingTime';
+import { generateOrderingQuestions } from './ordering';
+import { generateDataHandlingQuestions } from './dataHandling';
 import type { DifficultyLevel, Question } from '../../types';
 
 const difficulties: DifficultyLevel[] = ['easy', 'medium', 'hard'];
@@ -26,49 +24,13 @@ function assertValidQuestions(questions: Question[], topicId: string, difficulty
 }
 
 describe('Semester 2 topic generators', () => {
-  describe('addition20', () => {
+  describe('wordProblems', () => {
     for (const d of difficulties) {
       it(`generates valid ${d} questions`, () => {
-        const qs = generateAddition20Questions(d, 5);
-        assertValidQuestions(qs, 'addition-20', d, 5);
+        const qs = generateWordProblemsQuestions(d, 5);
+        assertValidQuestions(qs, 'word-problems', d, 5);
         for (const q of qs) {
-          expect(q.graphicType).toBe('counting-objects');
-        }
-      });
-    }
-  });
-
-  describe('subtraction20', () => {
-    for (const d of difficulties) {
-      it(`generates valid ${d} questions`, () => {
-        const qs = generateSubtraction20Questions(d, 5);
-        assertValidQuestions(qs, 'subtraction-20', d, 5);
-        for (const q of qs) {
-          expect(q.graphicType).toBe('counting-objects');
-        }
-      });
-    }
-  });
-
-  describe('tellingTime', () => {
-    for (const d of difficulties) {
-      it(`generates valid ${d} questions`, () => {
-        const qs = generateTellingTimeQuestions(d, 5);
-        assertValidQuestions(qs, 'telling-time', d, 5);
-        for (const q of qs) {
-          expect(q.graphicType).toBe('clock');
-        }
-      });
-    }
-  });
-
-  describe('coinsNotes', () => {
-    for (const d of difficulties) {
-      it(`generates valid ${d} questions`, () => {
-        const qs = generateCoinsNotesQuestions(d, 5);
-        assertValidQuestions(qs, 'coins-notes', d, 5);
-        for (const q of qs) {
-          expect(q.graphicType).toBe('money');
+          expect(q.graphicType).toBe('word-problem');
         }
       });
     }
@@ -86,30 +48,6 @@ describe('Semester 2 topic generators', () => {
     }
   });
 
-  describe('dataHandling', () => {
-    for (const d of difficulties) {
-      it(`generates valid ${d} questions`, () => {
-        const qs = generateDataHandlingQuestions(d, 5);
-        assertValidQuestions(qs, 'data-handling', d, 5);
-        for (const q of qs) {
-          expect(q.graphicType).toBe('pictogram');
-        }
-      });
-    }
-  });
-
-  describe('shapes', () => {
-    for (const d of difficulties) {
-      it(`generates valid ${d} questions`, () => {
-        const qs = generateShapesQuestions(d, 5);
-        assertValidQuestions(qs, 'shapes', d, 5);
-        for (const q of qs) {
-          expect(q.graphicType).toBe('shape');
-        }
-      });
-    }
-  });
-
   describe('compareLength', () => {
     for (const d of difficulties) {
       it(`generates valid ${d} questions`, () => {
@@ -117,6 +55,42 @@ describe('Semester 2 topic generators', () => {
         assertValidQuestions(qs, 'compare-length-height', d, 5);
         for (const q of qs) {
           expect(q.graphicType).toBe('comparison');
+        }
+      });
+    }
+  });
+
+  describe('tellingTime', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateTellingTimeQuestions(d, 5);
+        assertValidQuestions(qs, 'telling-time', d, 5);
+        for (const q of qs) {
+          expect(q.graphicType).toBe('clock');
+        }
+      });
+    }
+  });
+
+  describe('ordering', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateOrderingQuestions(d, 5);
+        assertValidQuestions(qs, 'ordering-sequences', d, 5);
+        for (const q of qs) {
+          expect(q.graphicType).toBe('sequence');
+        }
+      });
+    }
+  });
+
+  describe('dataHandling', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateDataHandlingQuestions(d, 5);
+        assertValidQuestions(qs, 'data-handling', d, 5);
+        for (const q of qs) {
+          expect(q.graphicType).toBe('pictogram');
         }
       });
     }

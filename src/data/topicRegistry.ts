@@ -11,6 +11,7 @@ import { generateTellingTimeQuestions } from '../engine/topics/tellingTime';
 import { generateCoinsNotesQuestions } from '../engine/topics/coinsNotes';
 import { generateComposingShapesQuestions } from '../engine/topics/composingShapes';
 import { generateDataHandlingQuestions } from '../engine/topics/dataHandling';
+import { generateWordProblemsQuestions } from '../engine/topics/wordProblems';
 import { CountingAnimation } from '../animations/CountingAnimation';
 import { Addition10Animation } from '../animations/Addition10Animation';
 import { Subtraction10Animation } from '../animations/Subtraction10Animation';
@@ -23,9 +24,10 @@ import { TellingTimeAnimation } from '../animations/TellingTimeAnimation';
 import { CoinsNotesAnimation } from '../animations/CoinsNotesAnimation';
 import { ComposingShapesAnimation } from '../animations/ComposingShapesAnimation';
 import { DataHandlingAnimation } from '../animations/DataHandlingAnimation';
+import { WordProblemsAnimation } from '../animations/WordProblemsAnimation';
 
 /**
- * Static registry mapping all 12 HK P1 math topic IDs to their metadata,
+ * Static registry mapping all 13 HK P1 math topic IDs to their metadata,
  * Remotion animation compositions, fallback image paths, and generator references.
  */
 export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
@@ -57,7 +59,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'shapes': {
     id: 'shapes',
     name: '認識形狀',
-    semester: 'sem2',
+    semester: 'sem1',
     animationComposition: ShapesAnimation,
     fallbackImage: '/fallbacks/shapes.svg',
     generateQuestions: generateShapesQuestions,
@@ -74,7 +76,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'ordering-sequences': {
     id: 'ordering-sequences',
     name: '排列和序列',
-    semester: 'sem1',
+    semester: 'sem2',
     animationComposition: OrderingAnimation,
     fallbackImage: '/fallbacks/ordering-sequences.svg',
     generateQuestions: generateOrderingQuestions,
@@ -108,7 +110,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'coins-notes': {
     id: 'coins-notes',
     name: '認識貨幣',
-    semester: 'sem2',
+    semester: 'sem1',
     animationComposition: CoinsNotesAnimation,
     fallbackImage: '/fallbacks/coins-notes.svg',
     generateQuestions: generateCoinsNotesQuestions,
@@ -128,6 +130,14 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
     animationComposition: DataHandlingAnimation,
     fallbackImage: '/fallbacks/data-handling.svg',
     generateQuestions: generateDataHandlingQuestions,
+  },
+  'word-problems': {
+    id: 'word-problems',
+    name: '加減應用題',
+    semester: 'sem2',
+    animationComposition: WordProblemsAnimation,
+    fallbackImage: '/fallbacks/word-problems.svg',
+    generateQuestions: generateWordProblemsQuestions,
   },
 };
 

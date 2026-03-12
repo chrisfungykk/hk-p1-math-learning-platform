@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E3F2FD"/>
+      <stop offset="100%" style="stop-color:#BBDEFB"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)" rx="16"/>
+  <text x="320" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#1565C0" font-family="sans-serif">📝 應用題 Word Problems</text>
+  <!-- Story scene -->
+  <rect x="40" y="65" width="560" height="100" rx="12" fill="#FFFFFF" stroke="#90CAF9" stroke-width="2"/>
+  <text x="60" y="95" font-size="18" fill="#1565C0" font-family="sans-serif">小明有 🍬🍬🍬🍬🍬 5 粒糖</text>
+  <text x="60" y="122" font-size="18" fill="#1565C0" font-family="sans-serif">媽媽再給他 🍬🍬🍬 3 粒糖</text>
+  <text x="60" y="149" font-size="18" fill="#1565C0" font-family="sans-serif">問：小明一共有幾粒糖？</text>
+  <!-- Visual representation -->
+  <text x="320" y="200" text-anchor="middle" font-size="15" fill="#1976D2" font-family="sans-serif">畫圖幫助理解</text>
+  <!-- Group 1 -->
+  <rect x="80" y="215" width="200" height="50" rx="10" fill="#E8F5E9" stroke="#66BB6A" stroke-width="1.5"/>
+  <text x="180" y="248" text-anchor="middle" font-size="30" font-family="sans-serif">🍬🍬🍬🍬🍬</text>
+  <text x="180" y="280" text-anchor="middle" font-size="14" fill="#2E7D32" font-family="sans-serif">小明的糖 (5粒)</text>
+  <!-- Plus sign -->
+  <text x="320" y="250" text-anchor="middle" font-size="36" font-weight="bold" fill="#1565C0" font-family="sans-serif">+</text>
+  <!-- Group 2 -->
+  <rect x="360" y="215" width="200" height="50" rx="10" fill="#FFF3E0" stroke="#FFA726" stroke-width="1.5"/>
+  <text x="460" y="248" text-anchor="middle" font-size="30" font-family="sans-serif">🍬🍬🍬</text>
+  <text x="460" y="280" text-anchor="middle" font-size="14" fill="#E65100" font-family="sans-serif">媽媽給的 (3粒)</text>
+  <!-- Answer -->
+  <rect x="180" y="300" width="280" height="48" rx="14" fill="#1565C0" opacity="0.1"/>
+  <text x="320" y="332" text-anchor="middle" font-size="28" font-weight="bold" fill="#0D47A1" font-family="sans-serif">5 + 3 = 8 粒糖</text>
+</svg>

@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { barChartSvg } from '../../utils/illustrations';
 
 interface PictogramItem { name: string; emoji: string; }
 
@@ -63,8 +64,10 @@ function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, min
 
 function generateRead(data: PictogramData): Question {
   const t = data.items[randomInt(0, data.items.length - 1)];
-  return makeQ('easy', `圖表中，${t.item.name}有幾個？\n${display(data)}`, t.count, 1, 10,
+  const q = makeQ('easy', `圖表中，${t.item.name}有幾個？\n${display(data)}`, t.count, 1, 10,
     `數一數，${t.item.name}有 ${t.count} 個。`);
+  q.illustration = barChartSvg(data.items.map(d => ({ label: d.item.emoji, value: d.count })));
+  return q;
 }
 
 function generateCountAll(data: PictogramData): Question {
@@ -82,7 +85,8 @@ function generateCompare(data: PictogramData): Question {
   const options = shuffleArray(data.items.map(d => d.item.name));
   return { id: generateId(), topicId: 'data-handling', difficulty: 'medium', prompt, options,
     correctAnswerIndex: options.indexOf(target.item.name),
-    explanation: `${target.item.name}${label}，有 ${target.count} 個。`, graphicType: 'pictogram' };
+    explanation: `${target.item.name}${label}，有 ${target.count} 個。`, graphicType: 'pictogram',
+    illustration: barChartSvg(data.items.map(d => ({ label: d.item.emoji, value: d.count }))) };
 }
 
 function generateHowManyMore(data: PictogramData): Question {

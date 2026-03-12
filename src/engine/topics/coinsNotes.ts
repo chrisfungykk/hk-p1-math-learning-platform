@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { coinSvg } from '../../utils/illustrations';
 
 /**
  * 認識貨幣 (Recognizing HK Coins and Notes) — HK P1 1M2 standard
@@ -48,9 +49,11 @@ function generateIdentify(): Question {
   const coin = DOLLAR_COINS[randomInt(0, DOLLAR_COINS.length - 1)];
   const prompt = `一個 ${coin.name} 硬幣值多少錢？`;
   const correct = `${coin.value}元`;
-  return makeMoneyQ('easy', prompt, correct,
+  const q = makeMoneyQ('easy', prompt, correct,
     DOLLAR_COINS.map(c => `${c.value}元`),
     `一個 ${coin.name} 硬幣值 ${coin.value} 元。`);
+  q.illustration = coinSvg(coin.value);
+  return q;
 }
 
 function generateCoinRecognition(): Question {

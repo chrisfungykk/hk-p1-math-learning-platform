@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { tenFrameSvg } from '../../utils/illustrations';
 
 /**
  * 基本加法 (Addition within 10) — HK P1 1N2 standard
@@ -37,7 +38,9 @@ function generatePictureCount(): Question {
   const b = randomInt(1, 10 - a);
   const ans = a + b;
   const prompt = `數一數，一共有幾個？\n${emoji.repeat(a)}  和  ${emoji.repeat(b)}`;
-  return makeQuestion('easy', prompt, ans, 0, 10, `${a} + ${b} = ${ans}`);
+  const q = makeQuestion('easy', prompt, ans, 0, 10, `${a} + ${b} = ${ans}`);
+  q.illustration = tenFrameSvg(a, 10);
+  return q;
 }
 
 function generateWordProblemEasy(): Question {
@@ -62,7 +65,9 @@ function generateMakeTen(): Question {
   const a = randomInt(1, 9);
   const b = 10 - a;
   const prompt = `湊十法：${a} + ☐ = 10，☐ = ?`;
-  return makeQuestion('medium', prompt, b, 0, 10, `${a} + ${b} = 10，所以 ☐ = ${b}`);
+  const q = makeQuestion('medium', prompt, b, 0, 10, `${a} + ${b} = 10，所以 ☐ = ${b}`);
+  q.illustration = tenFrameSvg(a);
+  return q;
 }
 
 function generateThreeNumbers(): Question {

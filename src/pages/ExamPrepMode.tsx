@@ -6,6 +6,7 @@ import { TOPIC_REGISTRY } from '../data/topicRegistry';
 import { generateExamQuestions, computeTopicBreakdown } from '../utils/examPrep';
 import { evaluateAnswer, computeScoreSummary, createScoreRecord } from '../utils/scoring';
 import { saveScoreRecord, loadLastDifficulty, saveLastDifficulty } from '../services/storage';
+import QuestionIllustration from '../components/QuestionIllustration';
 
 type Phase = 'setup' | 'exam' | 'summary';
 
@@ -243,6 +244,7 @@ export default function ExamPrepMode() {
                       </span>
                       <p className="text-sm md:text-base font-bold text-gray-800 whitespace-pre-line flex-1">{q.prompt}</p>
                     </div>
+                    {q.illustration && <div className="ml-9 mb-1"><QuestionIllustration svg={q.illustration} /></div>}
 
                     <div className="grid grid-cols-2 gap-2 ml-9">
                       {q.options.map((option, oIdx) => {

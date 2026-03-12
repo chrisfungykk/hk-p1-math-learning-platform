@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { shapeSvg } from '../../utils/illustrations';
 
 interface ShapeComposition {
   parts: string[];
@@ -67,7 +68,9 @@ function makeComposeQuestion(difficulty: DifficultyLevel, prompt: string, correc
 function generateCombineQuestion(): Question {
   const comp = BASIC_COMPOSITIONS[randomInt(0, BASIC_COMPOSITIONS.length - 1)];
   const prompt = `兩個${comp.parts[0]}可以拼成什麼形狀？`;
-  return makeComposeQuestion('easy', prompt, comp.result, ALL_SHAPES, `${comp.description}。`);
+  const q = makeComposeQuestion('easy', prompt, comp.result, ALL_SHAPES, `${comp.description}。`);
+  q.illustration = shapeSvg(comp.parts[0]);
+  return q;
 }
 
 function generateSimpleDecompose(): Question {
@@ -89,9 +92,11 @@ function generateIdentifyPartsQuestion(): Question {
   const info = SHAPE_PARTS[shapeName];
   const prompt = `一個${shapeName}可以分成幾個${info.part}？`;
   const correct = `${info.count}個`;
-  return makeComposeQuestion('medium', prompt, correct,
+  const q = makeComposeQuestion('medium', prompt, correct,
     ['1個', '2個', '3個', '4個', '6個'],
     `一個${shapeName}可以分成 ${info.count} 個${info.part}。`);
+  q.illustration = shapeSvg(shapeName);
+  return q;
 }
 
 function generateHowManyToMake(): Question {

@@ -6,8 +6,8 @@ import { generateQuestions } from '../../engine/questionGenerator';
 import type { DifficultyLevel } from '../../types';
 
 const ALL_TOPIC_IDS = [
-  'counting', 'addition-10', 'subtraction-10', 'shapes', 'compare-length-height', 'ordering-sequences',
-  'addition-20', 'subtraction-20', 'telling-time', 'coins-notes', 'composing-shapes', 'data-handling',
+  'counting', 'addition-10', 'subtraction-10', 'addition-20', 'subtraction-20', 'shapes', 'coins-notes',
+  'word-problems', 'composing-shapes', 'compare-length-height', 'telling-time', 'ordering-sequences', 'data-handling',
 ] as const;
 
 const ARITHMETIC_TOPIC_IDS = ['addition-10', 'subtraction-10', 'addition-20', 'subtraction-20'] as const;

@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { tenFrameSvg } from '../../utils/illustrations';
 
 /**
  * 基本減法 (Subtraction within 10) — HK P1 1N2 standard
@@ -36,7 +37,9 @@ function generatePictureSubtract(): Question {
   const b = randomInt(1, a - 1);
   const ans = a - b;
   const prompt = `有 ${emoji.repeat(a)}，拿走 ${b} 個，還剩幾個？`;
-  return makeQ('easy', prompt, ans, `${a} - ${b} = ${ans}`);
+  const q = makeQ('easy', prompt, ans, `${a} - ${b} = ${ans}`);
+  q.illustration = tenFrameSvg(a);
+  return q;
 }
 
 function generateWordEasy(): Question {
@@ -58,7 +61,9 @@ function generateMissing(): Question {
 function generateFromTen(): Question {
   const b = randomInt(1, 9);
   const ans = 10 - b;
-  return makeQ('medium', `10 - ${b} = ?`, ans, `10 - ${b} = ${ans}`);
+  const q = makeQ('medium', `10 - ${b} = ?`, ans, `10 - ${b} = ${ans}`);
+  q.illustration = tenFrameSvg(10);
+  return q;
 }
 
 function generateHowManyMore(): Question {

@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Question } from '../../types';
 import { generateId, randomInt, shuffleArray } from '../questionGenerator';
+import { tenFrameSvg } from '../../utils/illustrations';
 
 /**
  * 20以內減法 (Subtraction within 20) — HK P1 1N4 standard
@@ -52,8 +53,10 @@ function generateCrossTen(): Question {
   const ans = a - b;
   if (a > 10 && ans < 10) {
     const toTen = a - 10;
-    return makeQ('medium', `用破十法計算：${a} - ${b} = ?\n提示：先減到 10`, ans,
+    const q = makeQ('medium', `用破十法計算：${a} - ${b} = ?\n提示：先減到 10`, ans,
       `破十法：${a} - ${toTen} = 10，10 - ${b - toTen} = ${ans}`);
+    q.illustration = tenFrameSvg(a > 10 ? 10 : a);
+    return q;
   }
   return makeQ('medium', `${a} - ${b} = ?`, ans, `${a} - ${b} = ${ans}`);
 }

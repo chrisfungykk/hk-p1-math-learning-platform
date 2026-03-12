@@ -8,15 +8,16 @@ const SEM1_TOPICS = [
   'subtraction-10',
   'addition-20',
   'subtraction-20',
-  'ordering-sequences',
+  'shapes',
+  'coins-notes',
 ];
 
 const SEM2_TOPICS = [
-  'shapes',
+  'word-problems',
   'composing-shapes',
   'compare-length-height',
   'telling-time',
-  'coins-notes',
+  'ordering-sequences',
   'data-handling',
 ];
 
@@ -52,7 +53,7 @@ describe('Verify topic lists for 聖公會青衣主恩小學 P1 curriculum', () 
     }
   });
 
-  it('TOPIC_REGISTRY has exactly 12 topics', () => {
-    expect(Object.keys(TOPIC_REGISTRY)).toHaveLength(12);
+  it('TOPIC_REGISTRY has exactly 13 topics', () => {
+    expect(Object.keys(TOPIC_REGISTRY)).toHaveLength(13);
   });
 });

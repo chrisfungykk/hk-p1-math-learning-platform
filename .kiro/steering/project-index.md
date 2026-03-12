@@ -22,24 +22,25 @@ Uses HashRouter, base path `/hk-p1-math-learning-platform/`.
 - AuthProvider wraps the app in main.tsx
 
 ## Curriculum Structure
-12 topics split across 2 semesters in SEMESTERS constant:
+13 topics split across 2 semesters in SEMESTERS constant (based on Crescent Education HK P1 syllabus):
 DifficultyLevel: `'easy' | 'medium' | 'hard' | 'challenge'`
 
-### 上學期 (sem1) — 6 Topics
+### 上學期 (sem1) — 7 Topics
 1. counting (數數)
 2. addition-10 (基本加法)
 3. subtraction-10 (基本減法)
 4. addition-20 (20以內加法)
 5. subtraction-20 (20以內減法)
-6. ordering-sequences (排列和序列)
+6. shapes (認識形狀)
+7. coins-notes (認識貨幣)
 
 ### 下學期 (sem2) — 6 Topics
-7. shapes (認識形狀)
-8. composing-shapes (圖形拼砌)
-9. compare-length-height (比較長短和高矮)
-10. telling-time (認識時間)
-11. coins-notes (認識貨幣)
-12. data-handling (數據處理)
+8. word-problems (加減應用題)
+9. composing-shapes (圖形拼砌)
+10. compare-length-height (比較長短和高矮)
+11. telling-time (認識時間)
+12. ordering-sequences (排列和序列)
+13. data-handling (數據處理)
 
 ## Key Types — #[[file:src/types.ts]]
 - `Question` — id, topicId, difficulty, prompt, options[], correctAnswerIndex, explanation
@@ -70,14 +71,14 @@ DifficultyLevel: `'easy' | 'medium' | 'hard' | 'challenge'`
 
 ### Engine (`src/engine/`)
 - `questionGenerator.ts` — `generateQuestions()`, `randomInt()`, `shuffleArray()`, `generateId()`
-- `topics/*.ts` — 12 files, each exports `generate<Topic>Questions(difficulty, count)` using `Record<DifficultyLevel, (() => Question)[]>` pattern
+- `topics/*.ts` — 13 files, each exports `generate<Topic>Questions(difficulty, count)` using `Record<DifficultyLevel, (() => Question)[]>` pattern
 
 ### Data (`src/data/`)
 - `topicRegistry.ts` — `TOPIC_REGISTRY` record mapping topicId → TopicDefinition; `getTopicById()`
   - sem1 topics have `semester: 'sem1'`, sem2 topics have `semester: 'sem2'`
 
 ### Constants (`src/constants.ts`)
-- `SEMESTERS` — 2-element array: sem1 (6 topics), sem2 (6 topics)
+- `SEMESTERS` — 2-element array: sem1 (7 topics), sem2 (6 topics)
 - `DIFFICULTY_LABELS` — Chinese labels for each difficulty
 - `STORAGE_KEY` — localStorage base key (`hk-p1-math-platform`)
 
@@ -90,7 +91,7 @@ DifficultyLevel: `'easy' | 'medium' | 'hard' | 'challenge'`
 - `scoreHistory.ts` — `sortRecordsByDate`
 
 ### Animations (`src/animations/`)
-- 12 Remotion React components, one per topic
+- 13 Remotion React components, one per topic
 - Used in LearningModule via RemotionAnimationPlayer
 
 ### Components (`src/components/`)
@@ -99,10 +100,10 @@ DifficultyLevel: `'easy' | 'medium' | 'hard' | 'challenge'`
 ### Tests (`src/__tests__/`)
 - `properties/` — 6 property-based test files (fast-check)
 - `unit/` — 7 unit test files (home-screen, learning-module, testing-module, localStorage, tap-targets, topic-lists)
-- `src/engine/topics/sem1-generators.test.ts` — 6 sem1 topic generators × 3 difficulties
-- `src/engine/topics/sem2-generators.test.ts` — 8 sem2 topic generators × 3 difficulties
+- `src/engine/topics/sem1-generators.test.ts` — 7 sem1 topic generators × 3 difficulties
+- `src/engine/topics/sem2-generators.test.ts` — 6 sem2 topic generators × 3 difficulties
 - `src/engine/questionGenerator.test.ts`, `src/utils/examPrep.test.ts`
-- Total: 105 tests
+- Total: 102 tests
 
 ## Conventions
 - All UI text in 繁體中文 (Traditional Chinese)
