@@ -24,7 +24,7 @@ export function generateAddition10Questions(difficulty: DifficultyLevel, count: 
 }
 
 function generateSimple(): Question {
-  const a = randomInt(1, 9);
+  const a = randomInt(2, 9);
   const b = randomInt(1, 10 - a);
   const ans = a + b;
   return makeQuestion('easy', `${a} + ${b} = ?`, ans, 0, 10,
@@ -34,8 +34,8 @@ function generateSimple(): Question {
 function generatePictureCount(): Question {
   const items = ['🍎', '⭐', '🌸', '🐟', '✏️'];
   const emoji = items[randomInt(0, items.length - 1)];
-  const a = randomInt(1, 5);
-  const b = randomInt(1, 10 - a);
+  const a = randomInt(2, 6);
+  const b = randomInt(2, 10 - a);
   const ans = a + b;
   const prompt = `數一數，一共有幾個？\n${emoji.repeat(a)}  和  ${emoji.repeat(b)}`;
   const q = makeQuestion('easy', prompt, ans, 0, 10, `${a} + ${b} = ${ans}`);
@@ -45,16 +45,16 @@ function generatePictureCount(): Question {
 
 function generateWordProblemEasy(): Question {
   const scenarios = [
-    () => { const a = randomInt(1, 5); const b = randomInt(1, 10 - a); return { prompt: `小明有 ${a} 個蘋果，媽媽再給他 ${b} 個。小明現在一共有幾個蘋果？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
-    () => { const a = randomInt(1, 4); const b = randomInt(1, 10 - a); return { prompt: `樹上有 ${a} 隻小鳥，又飛來了 ${b} 隻。現在樹上一共有幾隻小鳥？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
-    () => { const a = randomInt(2, 5); const b = randomInt(1, 10 - a); return { prompt: `盒子裡有 ${a} 顆糖果，再放入 ${b} 顆。盒子裡現在一共有幾顆糖果？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
+    () => { const a = randomInt(2, 6); const b = randomInt(2, 10 - a); return { prompt: `小明有 ${a} 個蘋果，媽媽再給他 ${b} 個。小明現在一共有幾個蘋果？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
+    () => { const a = randomInt(2, 5); const b = randomInt(2, 10 - a); return { prompt: `樹上有 ${a} 隻小鳥，又飛來了 ${b} 隻。現在樹上一共有幾隻小鳥？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
+    () => { const a = randomInt(3, 6); const b = randomInt(2, 10 - a); return { prompt: `盒子裡有 ${a} 顆糖果，再放入 ${b} 顆。盒子裡現在一共有幾顆糖果？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
   ];
   const s = scenarios[randomInt(0, scenarios.length - 1)]();
   return makeQuestion('easy', s.prompt, s.ans, 0, 10, s.exp);
 }
 
 function generateMissingAddend(): Question {
-  const ans = randomInt(5, 10);
+  const ans = randomInt(6, 10);
   const a = randomInt(1, ans - 1);
   const b = ans - a;
   const prompt = `${a} + ☐ = ${ans}，☐ = ?`;
@@ -71,8 +71,8 @@ function generateMakeTen(): Question {
 }
 
 function generateThreeNumbers(): Question {
-  const a = randomInt(1, 4);
-  const b = randomInt(1, 4);
+  const a = randomInt(2, 4);
+  const b = randomInt(2, 4);
   const c = randomInt(1, Math.min(4, 10 - a - b));
   const ans = a + b + c;
   return makeQuestion('medium', `${a} + ${b} + ${c} = ?`, ans, 0, 10,
@@ -105,8 +105,8 @@ function generateComparisonProblem(): Question {
 }
 
 function generateMultiStep(): Question {
-  const a = randomInt(1, 3);
-  const b = randomInt(1, 3);
+  const a = randomInt(2, 4);
+  const b = randomInt(2, 3);
   const c = randomInt(1, Math.min(3, 10 - a - b));
   const ans = a + b + c;
   const prompt = `小明早上撿了 ${a} 片樹葉，中午撿了 ${b} 片，下午又撿了 ${c} 片。他一共撿了幾片樹葉？`;
@@ -124,8 +124,8 @@ function generateRelationship(): Question {
 
 function generateMagicTriangle(): Question {
   // Three numbers on triangle sides that sum to same total
-  const a = randomInt(1, 3);
-  const b = randomInt(1, 3);
+  const a = randomInt(2, 4);
+  const b = randomInt(2, 4);
   const c = randomInt(1, Math.min(3, 10 - a - b));
   const total = a + b + c;
   const prompt = `三角形的三個角分別是 ${a}、${b} 和 ☐。三個數加起來等於 ${total}。☐ = ?`;
@@ -133,8 +133,8 @@ function generateMagicTriangle(): Question {
 }
 
 function generateChainAddition(): Question {
-  const a = randomInt(1, 3);
-  const b = randomInt(1, 3);
+  const a = randomInt(2, 3);
+  const b = randomInt(2, 3);
   const c = randomInt(1, Math.min(2, 10 - a - b));
   const d = randomInt(1, Math.min(2, 10 - a - b - c));
   const ans = a + b + c + d;
@@ -143,7 +143,7 @@ function generateChainAddition(): Question {
 }
 
 function generateReverseWordProblem(): Question {
-  const total = randomInt(6, 10);
+  const total = randomInt(7, 10);
   const a = randomInt(2, total - 2);
   const b = total - a;
   const prompt = `小明和小華一共有 ${total} 顆糖。小明有 ${a} 顆。小華有幾顆？如果小華再給小明 1 顆，小明會有幾顆？`;
@@ -171,7 +171,7 @@ function generateDoubleUnknown(): Question {
 }
 
 function generateConsecutiveSum(): Question {
-  const start = randomInt(1, 4);
+  const start = randomInt(2, 4);
   const ans = start + (start + 1) + (start + 2);
   const prompt = `三個連續的數字是 ${start}、${start + 1}、${start + 2}。它們加起來等於多少？`;
   return makeQuestion('challenge', prompt, ans, 0, 10,
