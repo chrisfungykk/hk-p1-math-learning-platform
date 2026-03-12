@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from './layouts';
+import { useAuth } from './services/auth';
 import {
   HomeScreen,
   SemesterView,
@@ -8,12 +9,20 @@ import {
   ExamPrepMode,
   PastPaperMode,
   ScoreHistory,
+  LoginPage,
 } from './pages';
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
 
 export default function App() {
   return (
     <Routes>
-      <Route element={<AppLayout />}>
+      <Route path="/login" element={<LoginPage />} />
+      <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
         <Route path="/" element={<HomeScreen />} />
         <Route path="/semester/:semesterId" element={<SemesterView />} />
         <Route path="/learn/:topicId" element={<LearningModule />} />

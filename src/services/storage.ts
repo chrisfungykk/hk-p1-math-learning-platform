@@ -1,9 +1,23 @@
 import type { ScoreRecord, DifficultyLevel, AppStorageData } from '../types';
 import { STORAGE_KEY } from '../constants';
 
+const AUTH_KEY = 'hk-p1-math-current-user';
+
+/** Returns the per-user storage key, or the base key if no user is logged in. */
+function getUserStorageKey(): string {
+  try {
+    const raw = localStorage.getItem(AUTH_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as { username?: string };
+      if (parsed.username) return `${STORAGE_KEY}:${parsed.username}`;
+    }
+  } catch { /* fall through */ }
+  return STORAGE_KEY;
+}
+
 function loadStorageData(): AppStorageData {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(getUserStorageKey());
     if (!raw) {
       return { scoreRecords: [] };
     }
@@ -20,7 +34,7 @@ function loadStorageData(): AppStorageData {
 
 function saveStorageData(data: AppStorageData): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(getUserStorageKey(), JSON.stringify(data));
   } catch (error: unknown) {
     if (error instanceof DOMException && error.name === 'QuotaExceededError') {
       console.warn('儲存空間已滿，請清除舊記錄。');
