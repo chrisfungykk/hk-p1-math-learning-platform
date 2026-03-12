@@ -33,7 +33,7 @@ const CARD_COLORS = [
 ];
 
 export default function HomeScreen() {
-  const semester = SEMESTERS[0]; // Only sem1 now
+  const semester = SEMESTERS[0];
 
   return (
     <div className="flex flex-col items-center gap-6 py-4">
@@ -42,6 +42,15 @@ export default function HomeScreen() {
       </h2>
       <p className="text-gray-500 text-sm">聖公會青衣主恩小學</p>
 
+      {/* 考試準備 — top hero section */}
+      <Link
+        to={`/exam/${semester.id}`}
+        className="w-full max-w-3xl min-h-20 flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-2xl md:text-3xl font-extrabold px-6 py-5 shadow-xl hover:scale-[1.03] transition-transform ring-2 ring-purple-300"
+      >
+        📝 考試準備
+      </Link>
+
+      {/* Topic grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full max-w-3xl">
         {semester.topics.map((topicId, index) => {
           const topic = TOPIC_REGISTRY[topicId];
@@ -61,27 +70,23 @@ export default function HomeScreen() {
         })}
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-3xl mt-2">
-        <Link
-          to={`/exam/${semester.id}`}
-          className="min-h-12 min-w-12 flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 to-violet-500 text-white text-xl font-bold px-6 py-4 shadow-lg hover:scale-105 transition-transform"
-        >
-          📝 考試準備
-        </Link>
+      {/* Secondary actions */}
+      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-3xl">
         <Link
           to="/past-paper"
           className="min-h-12 min-w-12 flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xl font-bold px-6 py-4 shadow-lg hover:scale-105 transition-transform"
         >
           📄 模擬試卷
         </Link>
+        <Link
+          to="/scores"
+          className="min-h-12 min-w-12 flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xl font-bold px-6 py-4 shadow-lg hover:scale-105 transition-transform"
+        >
+          📊 成績記錄
+        </Link>
       </div>
-
-      <Link
-        to="/scores"
-        className="min-h-12 min-w-12 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 text-white text-lg font-bold px-8 py-3 shadow-lg hover:scale-105 transition-transform"
-      >
-        📊 成績記錄
-      </Link>
     </div>
   );
 }
+
+
