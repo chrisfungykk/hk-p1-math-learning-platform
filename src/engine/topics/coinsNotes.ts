@@ -72,7 +72,7 @@ function generateCoinRecognition(): Question {
 
 function generateSimpleValue(): Question {
   const coin = DOLLAR_COINS[randomInt(0, 2)]; // 1, 2, or 5 yuan
-  const count = randomInt(2, 5);
+  const count = randomInt(3, 5);
   const total = count * coin.value;
   const prompt = `${count} 個 ${coin.name} 硬幣一共是多少錢？`;
   const correct = `${total}元`;
@@ -95,7 +95,7 @@ function generateCountMixed(): Question {
 function generateSimplePurchase(): Question {
   const items = ['鉛筆', '橡皮擦', '尺子', '練習簿', '貼紙'];
   const item = items[randomInt(0, items.length - 1)];
-  const price = randomInt(2, 8);
+  const price = randomInt(3, 8);
   const paid = price <= 5 ? 5 : 10;
   const change = paid - price;
   const prompt = `一支${item}要 ${price} 元，小明付了一個 ${paid} 元硬幣。應找回多少錢？`;
@@ -122,7 +122,7 @@ function generateWhichMore(): Question {
 }
 
 function generateMakeChange(): Question {
-  const price = randomInt(6, 15);
+  const price = randomInt(7, 15);
   const paid = price <= 10 ? 10 : 20;
   const change = paid - price;
   const prompt = `買東西花了 ${price} 元，付了 ${paid} 元。應找回多少錢？`;
@@ -134,10 +134,10 @@ function generateMakeChange(): Question {
 
 function generateMultiItem(): Question {
   const items = [
-    { name: '鉛筆', price: randomInt(2, 4) },
-    { name: '橡皮擦', price: randomInt(1, 3) },
-    { name: '尺子', price: randomInt(3, 5) },
-    { name: '練習簿', price: randomInt(4, 6) },
+    { name: '鉛筆', price: randomInt(3, 5) },
+    { name: '橡皮擦', price: randomInt(2, 4) },
+    { name: '尺子', price: randomInt(4, 6) },
+    { name: '練習簿', price: randomInt(5, 7) },
   ];
   const picked = shuffleArray(items).slice(0, 2);
   const total = picked[0].price + picked[1].price;
@@ -149,8 +149,8 @@ function generateMultiItem(): Question {
 }
 
 function generateEnoughMoney(): Question {
-  const money = randomInt(5, 10);
-  const price = randomInt(3, 12);
+  const money = randomInt(6, 12);
+  const price = randomInt(4, 14);
   const enough = money >= price;
   const prompt = `小明有 ${money} 元，一本書要 ${price} 元。小明的錢夠不夠買這本書？`;
   const correct = enough ? '夠' : '不夠';
@@ -183,7 +183,7 @@ function generateExactAmount(): Question {
 // --- Challenge (HKIMO-style) ---
 
 function generateMinCoins(): Question {
-  const target = randomInt(6, 15);
+  const target = randomInt(8, 18);
   // Greedy: 10, 5, 2, 1
   let remaining = target;
   let coins = 0;
@@ -200,8 +200,8 @@ function generateMinCoins(): Question {
 }
 
 function generateMultiItemChange(): Question {
-  const price1 = randomInt(2, 5);
-  const price2 = randomInt(2, 5);
+  const price1 = randomInt(3, 6);
+  const price2 = randomInt(3, 6);
   const total = price1 + price2;
   const paid = total <= 10 ? 10 : 20;
   const change = paid - total;
@@ -229,9 +229,9 @@ function generateCoinPuzzle(): Question {
 }
 
 function generateTrickyPurchase(): Question {
-  const money = randomInt(8, 15);
-  const price1 = randomInt(3, 6);
-  const price2 = randomInt(3, 6);
+  const money = randomInt(10, 18);
+  const price1 = randomInt(4, 7);
+  const price2 = randomInt(4, 7);
   const total = price1 + price2;
   const enough = money >= total;
   const prompt = `小明有 ${money} 元。蘋果 ${price1} 元，香蕉 ${price2} 元。他買了一個蘋果和一條香蕉後，還剩多少錢？`;
@@ -253,10 +253,10 @@ function generateTrickyPurchase(): Question {
 }
 
 function generateBudgetProblem(): Question {
-  const budget = randomInt(10, 20);
-  const price1 = randomInt(3, 6);
-  const price2 = randomInt(3, 6);
-  const price3 = randomInt(2, 4);
+  const budget = randomInt(12, 20);
+  const price1 = randomInt(4, 7);
+  const price2 = randomInt(4, 7);
+  const price3 = randomInt(3, 5);
   const total = price1 + price2 + price3;
   const enough = budget >= total;
   const prompt = `小明有 ${budget} 元。鉛筆 ${price1} 元，橡皮擦 ${price2} 元，尺子 ${price3} 元。他買了這三樣東西，${enough ? '還剩多少錢？' : '夠不夠錢？'}`;
@@ -278,7 +278,7 @@ function generateBudgetProblem(): Question {
 }
 
 function generateSplitPayment(): Question {
-  const total = randomInt(6, 14);
+  const total = randomInt(8, 16);
   const mingPaid = randomInt(2, total - 2);
   const huaPaid = total - mingPaid;
   const prompt = `一本書 ${total} 元。小明付了 ${mingPaid} 元，小華付了剩下的。小華付了多少錢？`;
