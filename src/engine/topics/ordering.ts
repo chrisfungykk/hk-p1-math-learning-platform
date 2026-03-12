@@ -32,21 +32,21 @@ export function generateOrderingQuestions(difficulty: DifficultyLevel, count: nu
 function getStepAndStart(difficulty: DifficultyLevel): { step: number; start: number; isDecreasing: boolean } {
   switch (difficulty) {
     case 'easy':
-      return { step: 1, start: randomInt(1, 10), isDecreasing: false };
+      return { step: 1, start: randomInt(3, 12), isDecreasing: false };
     case 'medium': {
       const isDecreasing = randomInt(0, 2) === 0;
-      return { step: 2, start: isDecreasing ? randomInt(14, 20) : randomInt(1, 8), isDecreasing };
+      return { step: 2, start: isDecreasing ? randomInt(16, 24) : randomInt(2, 10), isDecreasing };
     }
     case 'hard': {
       const isDecreasing = randomInt(0, 1) === 1;
-      const step = randomInt(3, 5);
-      const start = isDecreasing ? randomInt(20, 30) : randomInt(1, 5);
+      const step = randomInt(4, 6);
+      const start = isDecreasing ? randomInt(25, 40) : randomInt(2, 8);
       return { step, start, isDecreasing };
     }
     case 'challenge': {
       const isDecreasing = randomInt(0, 1) === 1;
-      const step = randomInt(5, 10);
-      const start = isDecreasing ? randomInt(50, 100) : randomInt(1, 10);
+      const step = randomInt(7, 12);
+      const start = isDecreasing ? randomInt(60, 100) : randomInt(3, 15);
       return { step, start, isDecreasing };
     }
   }
@@ -84,7 +84,7 @@ function generateMissingNumber(difficulty: DifficultyLevel): Question {
 
 function generateArrangeNumbers(): Question {
   const nums = new Set<number>();
-  while (nums.size < 4) nums.add(randomInt(1, 15));
+  while (nums.size < 4) nums.add(randomInt(2, 20));
   const arr = Array.from(nums);
   const sorted = [...arr].sort((a, b) => a - b);
   const correct = sorted.join(', ');
@@ -104,8 +104,8 @@ function generateArrangeNumbers(): Question {
 }
 
 function generateCompareOrder(): Question {
-  const a = randomInt(5, 15);
-  const b = randomInt(5, 15);
+  const a = randomInt(8, 20);
+  const b = randomInt(8, 20);
   while (b === a) return generateCompareOrder();
   const prompt = `${a} 和 ${b}，哪個比較大？`;
   const correct = Math.max(a, b).toString();

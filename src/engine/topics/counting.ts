@@ -28,8 +28,8 @@ export function generateCountingQuestions(difficulty: DifficultyLevel, count: nu
 }
 
 function generateCountObjects(difficulty: DifficultyLevel): Question {
-  const maxNum = difficulty === 'easy' ? 15 : difficulty === 'medium' ? 30 : 50;
-  const correctAnswer = randomInt(3, Math.min(maxNum, 20));
+  const maxNum = difficulty === 'easy' ? 20 : difficulty === 'medium' ? 40 : 60;
+  const correctAnswer = randomInt(5, Math.min(maxNum, 20));
   const obj = OBJECTS[randomInt(0, OBJECTS.length - 1)];
   const emoji = obj.split(' ')[0];
   const name = obj.split(' ')[1];
@@ -41,7 +41,7 @@ function generateCountObjects(difficulty: DifficultyLevel): Question {
 }
 
 function generateWhichNumber(_difficulty?: DifficultyLevel): Question {
-  const n = randomInt(2, 18);
+  const n = randomInt(3, 19);
   const prompt = `${n} 的下一個數是什麼？`;
   return makeQ('easy', 'counting', prompt, n + 1, 1, 20, `${n} 的下一個數是 ${n + 1}。`);
 }
@@ -74,7 +74,7 @@ function generateOrdinal(): Question {
 }
 
 function generateTensUnits(): Question {
-  const tens = randomInt(1, 4);
+  const tens = randomInt(2, 6);
   const units = randomInt(0, 9);
   const num = tens * 10 + units;
   const askTens = randomInt(0, 1) === 0;
@@ -87,7 +87,7 @@ function generateTensUnits(): Question {
 }
 
 function generateSkipCount2(): Question {
-  const start = randomInt(0, 1) * 2;
+  const start = randomInt(1, 3) * 2;
   const seq = Array.from({ length: 4 }, (_, i) => start + i * 2);
   const ans = start + 4 * 2;
   return makeQ('medium', 'counting', `按規律數數：${seq.join(', ')}, ?。下一個數是什麼？`, ans, 0, 30,
@@ -95,8 +95,8 @@ function generateSkipCount2(): Question {
 }
 
 function generateCompareCount(): Question {
-  const a = randomInt(10, 30);
-  const b = randomInt(10, 30);
+  const a = randomInt(15, 40);
+  const b = randomInt(15, 40);
   const prompt = `${a} 和 ${b}，哪個比較大？`;
   const correct = Math.max(a, b);
   const options = shuffleArray([a, b, a + b, Math.abs(a - b)].map(String));
@@ -194,7 +194,7 @@ function generateOddEvenLogic(): Question {
 }
 
 function generateNumberBond(): Question {
-  const target = randomInt(15, 30);
+  const target = randomInt(20, 40);
   const a = randomInt(5, target - 5);
   const b = target - a;
   const prompt = `兩個數加起來等於 ${target}。其中一個數是 ${a}，另一個數是什麼？`;
@@ -202,8 +202,8 @@ function generateNumberBond(): Question {
 }
 
 function generateSumOfRange(): Question {
-  const start = randomInt(1, 5);
-  const end = start + randomInt(3, 5);
+  const start = randomInt(2, 6);
+  const end = start + randomInt(4, 6);
   let sum = 0;
   for (let i = start; i <= end; i++) sum += i;
   const prompt = `把 ${start} 到 ${end} 的所有數字加起來，答案是多少？\n${Array.from({ length: end - start + 1 }, (_, i) => start + i).join(' + ')} = ?`;
@@ -212,7 +212,7 @@ function generateSumOfRange(): Question {
 }
 
 function generateDigitSum(): Question {
-  const num = randomInt(20, 99);
+  const num = randomInt(30, 99);
   const tens = Math.floor(num / 10);
   const units = num % 10;
   const digitSum = tens + units;
