@@ -45,7 +45,7 @@ export default function HomeScreen() {
       {/* 考試準備 — top hero section */}
       <Link
         to={`/exam/${semester.id}`}
-        className="w-full max-w-3xl min-h-20 flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-2xl md:text-3xl font-extrabold px-6 py-5 shadow-xl hover:scale-[1.03] transition-transform ring-2 ring-purple-300"
+        className="w-full max-w-3xl min-h-20 min-w-12 flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-2xl md:text-3xl font-extrabold px-6 py-5 shadow-xl hover:scale-[1.03] transition-transform ring-2 ring-purple-300"
       >
         📝 考試準備
       </Link>

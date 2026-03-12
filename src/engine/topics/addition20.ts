@@ -14,7 +14,7 @@ export function generateAddition20Questions(difficulty: DifficultyLevel, count: 
     easy: [generateSimple, generateWordEasy, generatePictureAdd],
     medium: [generateMissingAddend, generateCrossTen, generateColumnForm, generateWordMedium],
     hard: [generateCarrying, generateThreeNumbers, generateComparison, generateWordHard, generateRelationship],
-    challenge: [generateDoubleEquation, generateChainFour, generateTrickyWordProblem, generateBalanceProblem],
+    challenge: [generateDoubleEquation, generateChainFour, generateTrickyWordProblem, generateBalanceProblem, generateSplitAndAdd, generateCompareSum],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -165,6 +165,38 @@ function generateBalanceProblem(): Question {
   const s = x + y;
   const prompt2 = `${x} + ☐ = ☐ + ${x}，☐ 可以是任何數。如果 ☐ = ${y}，那麼 ${x} + ${y} = ?`;
   return makeQ('challenge', prompt2, s, `${x} + ${y} = ${s}`);
+}
+
+function generateSplitAndAdd(): Question {
+  const num = randomInt(11, 18);
+  const tens = Math.floor(num / 10);
+  const units = num % 10;
+  const b = randomInt(1, Math.min(9, 20 - num));
+  const ans = num + b;
+  const prompt = `用拆數法計算 ${num} + ${b} = ?\n提示：${num} = ${tens * 10} + ${units}`;
+  return makeQ('challenge', prompt, ans,
+    `${num} + ${b} = ${tens * 10} + ${units} + ${b} = ${tens * 10} + ${units + b} = ${ans}`);
+}
+
+function generateCompareSum(): Question {
+  const a1 = randomInt(3, 9);
+  const b1 = randomInt(3, Math.min(9, 18 - a1));
+  const a2 = randomInt(3, 9);
+  const b2 = randomInt(3, Math.min(9, 18 - a2));
+  const sum1 = a1 + b1;
+  const sum2 = a2 + b2;
+  const diff = Math.abs(sum1 - sum2);
+  const prompt = `${a1} + ${b1} 和 ${a2} + ${b2}，哪個答案比較大？大多少？`;
+  const correct = `${diff}`;
+  const bigger = sum1 >= sum2 ? `${a1}+${b1}` : `${a2}+${b2}`;
+  const pool = [`${diff}`, `${diff + 1}`, `${diff + 2}`, `${Math.max(0, diff - 1)}`];
+  const options = shuffleArray(pool);
+  return {
+    id: generateId(), topicId: 'addition-20', difficulty: 'challenge', prompt, options,
+    correctAnswerIndex: options.indexOf(correct),
+    explanation: `${a1}+${b1}=${sum1}，${a2}+${b2}=${sum2}。${bigger}較大，相差 ${diff}。`,
+    graphicType: 'counting-objects',
+  };
 }
 
 function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, explanation: string): Question {

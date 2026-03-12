@@ -25,7 +25,7 @@ export function generateCompareLengthQuestions(difficulty: DifficultyLevel, coun
     easy: [generateSimpleCompare, generateWordProblemEasy, generateCmCompare],
     medium: [generateOrderThree, generateHowMuchMore, generateWordProblemMedium],
     hard: [generateOrderFour, generateInferenceProblem, generateMultiStepCompare, generateCmCalculation],
-    challenge: [generateTransitiveChain, generateIndirectMeasure, generateTrickyCompare, generateReverseMeasure],
+    challenge: [generateTransitiveChain, generateIndirectMeasure, generateTrickyCompare, generateReverseMeasure, generateCombinedLength, generateWhoIsTallest],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -239,4 +239,27 @@ function generateReverseMeasure(): Question {
   const pool = [`長 ${diff} 厘米`, `短 ${diff} 厘米`, '一樣長', `長 ${diff + 1} 厘米`];
   return makeCompareQuestion('challenge', prompt, correct, pool,
     `另一條 = ${total} - ${a} = ${b} 厘米。${b > a ? `${b} > ${a}，長 ${diff} 厘米` : b < a ? `${b} < ${a}，短 ${diff} 厘米` : '兩條一樣長'}。`);
+}
+
+function generateCombinedLength(): Question {
+  const a = randomInt(5, 12);
+  const b = randomInt(5, 12);
+  const c = randomInt(3, 8);
+  const total = a + b + c;
+  const prompt = `三條繩子分別長 ${a} 厘米、${b} 厘米和 ${c} 厘米。接起來一共長多少厘米？`;
+  return makeCompareQuestion('challenge', prompt, `${total}`,
+    [`${total}`, `${total + 1}`, `${total - 1}`, `${a + b}`],
+    `${a} + ${b} + ${c} = ${total} 厘米。`);
+}
+
+function generateWhoIsTallest(): Question {
+  const names = shuffleArray(['小明', '小華', '小美', '小強']);
+  const heights = [randomInt(100, 105), randomInt(106, 112), randomInt(113, 118), randomInt(119, 125)];
+  const shuffledH = shuffleArray([0, 1, 2, 3]);
+  const people = names.map((n, i) => ({ name: n, height: heights[shuffledH[i]] }));
+  const sorted = [...people].sort((a, b) => b.height - a.height);
+  const prompt = `${people.map(p => `${p.name}高 ${p.height} 厘米`).join('，')}。\n從最高到最矮排列，第二高的是誰？`;
+  const correct = sorted[1].name;
+  return makeCompareQuestion('challenge', prompt, correct, people.map(p => p.name),
+    `排列：${sorted.map(p => `${p.name}(${p.height})`).join(' > ')}。第二高是${correct}。`);
 }

@@ -26,7 +26,7 @@ export function generateTellingTimeQuestions(difficulty: DifficultyLevel, count:
     easy: [generateExactHour, generateDailyRoutine, generateDayOfWeek],
     medium: [generateHalfHour, generateHowLong, generateDaysOrder, generateMonthQuestion],
     hard: [generateQuarterHour, generateElapsedTime, generateScheduleProblem, generateCalendarProblem],
-    challenge: [generateElapsedAcrossNoon, generateTrickySchedule, generateReverseTime, generateDayCountPuzzle],
+    challenge: [generateElapsedAcrossNoon, generateTrickySchedule, generateReverseTime, generateDayCountPuzzle, generateWeeklyTotal, generateTimeDifference],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -286,6 +286,47 @@ function generateDayCountPuzzle(): Question {
     prompt: `今天是${DAYS_OF_WEEK[startDay]}，${daysLater} 天後是星期幾？`,
     options, correctAnswerIndex: options.indexOf(correct),
     explanation: `${DAYS_OF_WEEK[startDay]}過 ${daysLater} 天：${daysLater} ÷ 7 = ${Math.floor(daysLater / 7)} 餘 ${daysLater % 7}，所以是${correct}。`,
+    graphicType: 'clock',
+  };
+}
+
+function generateWeeklyTotal(): Question {
+  const hoursPerDay = randomInt(1, 3);
+  const days = randomInt(3, 5);
+  const total = hoursPerDay * days;
+  const correct = `${total}小時`;
+  const d = new Set<string>([correct]);
+  d.add(`${total + 1}小時`); d.add(`${total - 1}小時`); d.add(`${hoursPerDay}小時`);
+  while (d.size < 4) d.add(`${randomInt(1, 20)}小時`);
+  const options = shuffleArray(Array.from(d).slice(0, 4));
+  return {
+    id: generateId(), topicId: 'telling-time', difficulty: 'challenge',
+    prompt: `小明每天練琴 ${hoursPerDay} 小時，他練了 ${days} 天。一共練了多少小時？`,
+    options, correctAnswerIndex: options.indexOf(correct),
+    explanation: `${hoursPerDay} × ${days} = ${total} 小時。`,
+    graphicType: 'clock',
+  };
+}
+
+function generateTimeDifference(): Question {
+  const startH = randomInt(8, 11);
+  const startM = [0, 30][randomInt(0, 1)];
+  const endH = startH + randomInt(1, 3);
+  const endM = [0, 30][randomInt(0, 1)];
+  let diffMins = (endH * 60 + endM) - (startH * 60 + startM);
+  if (diffMins <= 0) diffMins += 60;
+  const hours = Math.floor(diffMins / 60);
+  const mins = diffMins % 60;
+  const correct = mins > 0 ? `${hours}小時${mins}分鐘` : `${hours}小時`;
+  const d = new Set<string>([correct]);
+  d.add(`${hours + 1}小時`); d.add(`${hours}小時30分鐘`); d.add(`${Math.max(1, hours - 1)}小時`);
+  while (d.size < 4) d.add(`${randomInt(1, 4)}小時${randomInt(0, 1) === 0 ? '' : '30分鐘'}`);
+  const options = shuffleArray(Array.from(d).slice(0, 4));
+  return {
+    id: generateId(), topicId: 'telling-time', difficulty: 'challenge',
+    prompt: `小明 ${fmt(startH, startM)} 出門，${fmt(endH, endM)} 回家。他出去了多久？`,
+    options, correctAnswerIndex: options.indexOf(correct),
+    explanation: `從 ${fmt(startH, startM)} 到 ${fmt(endH, endM)} 是 ${correct}。`,
     graphicType: 'clock',
   };
 }

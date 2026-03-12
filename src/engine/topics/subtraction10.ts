@@ -13,7 +13,7 @@ export function generateSubtraction10Questions(difficulty: DifficultyLevel, coun
     easy: [generateSimple, generateWordEasy, generatePictureSubtract],
     medium: [generateMissing, generateHowManyMore, generateWordMedium, generateFromTen],
     hard: [generateColumnForm, generateMultiStep, generateRelationship, generateComparison],
-    challenge: [generateChainSubtract, generateTrickyComparison, generateReverseProblem, generateBalanceEquation],
+    challenge: [generateChainSubtract, generateTrickyComparison, generateReverseProblem, generateBalanceEquation, generateSubtractUnknown, generateWordProblemChallenge],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -145,6 +145,26 @@ function generateBalanceEquation(): Question {
   const ans = sum - c;
   const prompt = `${a} + ${b} = ${c} + ☐，☐ = ?`;
   return makeQ('challenge', prompt, ans, `${a} + ${b} = ${sum}，所以 ${c} + ☐ = ${sum}，☐ = ${ans}`);
+}
+
+function generateSubtractUnknown(): Question {
+  const a = randomInt(6, 10);
+  const b = randomInt(1, 3);
+  const c = randomInt(1, Math.min(3, a - b));
+  const ans = a - b - c;
+  const prompt = `☐ = ${a} - ${b} - ${c}，☐ = ?`;
+  return makeQ('challenge', prompt, ans, `${a} - ${b} = ${a - b}，${a - b} - ${c} = ${ans}`);
+}
+
+function generateWordProblemChallenge(): Question {
+  const total = randomInt(7, 10);
+  const gave1 = randomInt(1, 3);
+  const gave2 = randomInt(1, Math.min(3, total - gave1 - 1));
+  const left = total - gave1 - gave2;
+  const prompt = `小明有 ${total} 顆糖。他給了小華 ${gave1} 顆，又給了小美 ${gave2} 顆。他還剩幾顆？如果小美把糖還給小明，小明會有幾顆？`;
+  const ans = left + gave2;
+  return makeQ('challenge', prompt, ans,
+    `小明剩 ${left} 顆。小美還回 ${gave2} 顆後，小明有 ${left} + ${gave2} = ${ans} 顆`);
 }
 
 function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, explanation: string): Question {

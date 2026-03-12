@@ -14,7 +14,7 @@ export function generateCoinsNotesQuestions(difficulty: DifficultyLevel, count: 
     easy: [generateIdentify, generateSimpleValue, generateCoinRecognition],
     medium: [generateCountMixed, generateSimplePurchase, generateWhichMore],
     hard: [generateMakeChange, generateMultiItem, generateEnoughMoney, generateExactAmount],
-    challenge: [generateMinCoins, generateMultiItemChange, generateCoinPuzzle, generateTrickyPurchase],
+    challenge: [generateMinCoins, generateMultiItemChange, generateCoinPuzzle, generateTrickyPurchase, generateBudgetProblem, generateSplitPayment],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -247,4 +247,40 @@ function generateTrickyPurchase(): Question {
   return makeMoneyQ('challenge', prompt, correct,
     [`${remaining}元`, `${remaining + 1}元`, `${Math.max(0, remaining - 1)}元`, `${total}元`],
     `${price1} + ${price2} = ${total} 元。${money} - ${total} = ${remaining} 元。`);
+}
+
+function generateBudgetProblem(): Question {
+  const budget = randomInt(10, 20);
+  const price1 = randomInt(3, 6);
+  const price2 = randomInt(3, 6);
+  const price3 = randomInt(2, 4);
+  const total = price1 + price2 + price3;
+  const enough = budget >= total;
+  const prompt = `小明有 ${budget} 元。鉛筆 ${price1} 元，橡皮擦 ${price2} 元，尺子 ${price3} 元。他買了這三樣東西，${enough ? '還剩多少錢？' : '夠不夠錢？'}`;
+  if (!enough) {
+    const correct = `還差 ${total - budget} 元`;
+    const options = shuffleArray([correct, '夠', `剩 ${budget - total} 元`, `${total}元`]);
+    return {
+      id: generateId(), topicId: 'coins-notes', difficulty: 'challenge', prompt, options,
+      correctAnswerIndex: options.indexOf(correct),
+      explanation: `${price1} + ${price2} + ${price3} = ${total} 元 > ${budget} 元，還差 ${total - budget} 元。`,
+      graphicType: 'money',
+    };
+  }
+  const remaining = budget - total;
+  const correct = `${remaining}元`;
+  return makeMoneyQ('challenge', prompt, correct,
+    [`${remaining}元`, `${remaining + 1}元`, `${total}元`, `${Math.max(0, remaining - 1)}元`],
+    `${price1} + ${price2} + ${price3} = ${total} 元。${budget} - ${total} = ${remaining} 元。`);
+}
+
+function generateSplitPayment(): Question {
+  const total = randomInt(6, 14);
+  const mingPaid = randomInt(2, total - 2);
+  const huaPaid = total - mingPaid;
+  const prompt = `一本書 ${total} 元。小明付了 ${mingPaid} 元，小華付了剩下的。小華付了多少錢？`;
+  const correct = `${huaPaid}元`;
+  return makeMoneyQ('challenge', prompt, correct,
+    [`${huaPaid}元`, `${huaPaid + 1}元`, `${Math.max(0, huaPaid - 1)}元`, `${total}元`],
+    `${total} - ${mingPaid} = ${huaPaid} 元。`);
 }

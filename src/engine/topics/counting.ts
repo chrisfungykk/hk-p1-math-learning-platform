@@ -17,7 +17,7 @@ export function generateCountingQuestions(difficulty: DifficultyLevel, count: nu
     easy: [() => generateCountObjects('easy'), generateWhichNumber, generateNextPrev],
     medium: [generateOrdinal, generateTensUnits, generateSkipCount2, generateCompareCount],
     hard: [generatePlaceValue100, generateSkipCount510, generatePatternRecognition, generateBeforeAfter100],
-    challenge: [generateGrowingPattern, generatePlaceValuePuzzle, generateOddEvenLogic, generateNumberBond],
+    challenge: [generateGrowingPattern, generatePlaceValuePuzzle, generateOddEvenLogic, generateNumberBond, generateSumOfRange, generateDigitSum],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -196,6 +196,26 @@ function generateNumberBond(): Question {
   const b = target - a;
   const prompt = `兩個數加起來等於 ${target}。其中一個數是 ${a}，另一個數是什麼？`;
   return makeQ('challenge', 'counting', prompt, b, 0, 100, `${a} + ☐ = ${target}，☐ = ${target} - ${a} = ${b}`);
+}
+
+function generateSumOfRange(): Question {
+  const start = randomInt(1, 5);
+  const end = start + randomInt(3, 5);
+  let sum = 0;
+  for (let i = start; i <= end; i++) sum += i;
+  const prompt = `把 ${start} 到 ${end} 的所有數字加起來，答案是多少？\n${Array.from({ length: end - start + 1 }, (_, i) => start + i).join(' + ')} = ?`;
+  return makeQ('challenge', 'counting', prompt, sum, 0, 100,
+    `${Array.from({ length: end - start + 1 }, (_, i) => start + i).join(' + ')} = ${sum}`);
+}
+
+function generateDigitSum(): Question {
+  const num = randomInt(20, 99);
+  const tens = Math.floor(num / 10);
+  const units = num % 10;
+  const digitSum = tens + units;
+  const prompt = `${num} 的十位數字和個位數字加起來等於多少？`;
+  return makeQ('challenge', 'counting', prompt, digitSum, 0, 20,
+    `${num} 的十位是 ${tens}，個位是 ${units}。${tens} + ${units} = ${digitSum}。`);
 }
 
 function makeQ(difficulty: DifficultyLevel, topicId: string, prompt: string, correct: number, min: number, max: number, explanation: string): Question {

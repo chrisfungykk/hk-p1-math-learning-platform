@@ -13,7 +13,7 @@ export function generateAddition10Questions(difficulty: DifficultyLevel, count: 
     easy: [generateSimple, generateWordProblemEasy, generatePictureCount],
     medium: [generateMissingAddend, generateThreeNumbers, generateWordProblemMedium, generateMakeTen],
     hard: [generateColumnForm, generateComparisonProblem, generateMultiStep, generateRelationship],
-    challenge: [generateMagicTriangle, generateChainAddition, generateReverseWordProblem, generateTrickyMissing],
+    challenge: [generateMagicTriangle, generateChainAddition, generateReverseWordProblem, generateTrickyMissing, generateDoubleUnknown, generateConsecutiveSum],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -155,6 +155,22 @@ function generateTrickyMissing(): Question {
   const prompt = `如果 ☐ + ${b} = ${sum}，而且 ${sum} + ${c} = ${sum + c}，那麼 ☐ + ${b} + ${c} = ?`;
   const ans = sum + c;
   return makeQuestion('challenge', prompt, ans, 0, 10, `☐ = ${a}，所以 ${a} + ${b} + ${c} = ${ans}`);
+}
+
+function generateDoubleUnknown(): Question {
+  const total = randomInt(4, 10);
+  const a = randomInt(1, total - 1);
+  const b = total - a;
+  const prompt = `☐ + △ = ${total}，☐ = ${a}。△ = ?`;
+  return makeQuestion('challenge', prompt, b, 0, 10, `${a} + △ = ${total}，△ = ${total} - ${a} = ${b}`);
+}
+
+function generateConsecutiveSum(): Question {
+  const start = randomInt(1, 4);
+  const ans = start + (start + 1) + (start + 2);
+  const prompt = `三個連續的數字是 ${start}、${start + 1}、${start + 2}。它們加起來等於多少？`;
+  return makeQuestion('challenge', prompt, ans, 0, 10,
+    `${start} + ${start + 1} + ${start + 2} = ${ans}`);
 }
 
 function makeQuestion(difficulty: DifficultyLevel, prompt: string, correct: number, min: number, max: number, explanation: string): Question {

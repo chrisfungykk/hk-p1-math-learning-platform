@@ -33,7 +33,7 @@ export function generateDataHandlingQuestions(difficulty: DifficultyLevel, count
         break;
       case 'challenge': {
         const cData = genData('hard');
-        questions.push([() => generateMissingData(cData), () => generateMultiStepAnalysis(cData), () => generateReverseData(cData), () => generateCompareAndReason(cData)][randomInt(0, 3)]());
+        questions.push([() => generateMissingData(cData), () => generateMultiStepAnalysis(cData), () => generateReverseData(cData), () => generateCompareAndReason(cData), () => generateDoubleComparison(cData), () => generateAverageEstimate(cData)][randomInt(0, 5)]());
         break;
       }
     }
@@ -168,4 +168,27 @@ function generateCompareAndReason(data: PictogramData): Question {
   const prompt = `最多的比第二多的多幾個？\n${display(data)}`;
   return makeQ('challenge', prompt, diff, 0, 15,
     `最多的是${most.item.name}（${most.count}個），第二多的是${second.item.name}（${second.count}個）。${most.count} - ${second.count} = ${diff}。`);
+}
+
+function generateDoubleComparison(data: PictogramData): Question {
+  if (data.items.length < 3) return generateTotal(data);
+  const sorted = [...data.items].sort((a, b) => b.count - a.count);
+  const most = sorted[0];
+  const least = sorted[sorted.length - 1];
+  const diff = most.count - least.count;
+  const total = data.items.reduce((s, d) => s + d.count, 0);
+  const prompt = `最多的和最少的相差幾個？全部加起來一共幾個？\n${display(data)}\n（回答全部加起來的數目）`;
+  return makeQ('challenge', prompt, total, 0, 40,
+    `最多${most.item.name}（${most.count}），最少${least.item.name}（${least.count}），相差 ${diff}。全部共 ${total} 個。`);
+}
+
+function generateAverageEstimate(data: PictogramData): Question {
+  if (data.items.length < 2) return generateTotal(data);
+  const total = data.items.reduce((s, d) => s + d.count, 0);
+  const addMore = randomInt(2, 5);
+  const newTotal = total + addMore;
+  const target = data.items[randomInt(0, data.items.length - 1)];
+  const prompt = `如果再加 ${addMore} 個${target.item.name}，圖表中所有東西一共有幾個？\n${display(data)}`;
+  return makeQ('challenge', prompt, newTotal, 0, 50,
+    `原來共 ${total} 個，加 ${addMore} 個後共 ${newTotal} 個。`);
 }

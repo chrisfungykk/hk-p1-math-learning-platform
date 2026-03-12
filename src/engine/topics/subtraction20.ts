@@ -14,7 +14,7 @@ export function generateSubtraction20Questions(difficulty: DifficultyLevel, coun
     easy: [generateSimple, generateWordEasy],
     medium: [generateMissing, generateCrossTen, generateColumnForm, generateHowManyMore],
     hard: [generateMultiStep, generateWordHard, generateComparison, generateRelationship],
-    challenge: [generateReverseProblem20, generateChainMixed, generateBalanceEquation20, generateTrickyAge],
+    challenge: [generateReverseProblem20, generateChainMixed, generateBalanceEquation20, generateTrickyAge, generateDoubleSubtract, generateComparisonChain],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -142,6 +142,29 @@ function generateTrickyAge(): Question {
   const total = ming + hua;
   const prompt = `小明今年 ${ming} 歲，小華比小明大 ${diff} 歲。兩人年齡加起來一共幾歲？`;
   return makeQ('challenge', prompt, total, `小華 = ${ming} + ${diff} = ${hua} 歲，兩人共 ${ming} + ${hua} = ${total} 歲`);
+}
+
+function generateDoubleSubtract(): Question {
+  const a = randomInt(14, 18);
+  const b = randomInt(2, 5);
+  const c = randomInt(2, Math.min(5, a - b - 1));
+  const ans = a - b - c;
+  const prompt = `小明有 ${a} 張貼紙。星期一用了 ${b} 張，星期二用了 ${c} 張。還剩幾張？比原來少了幾張？`;
+  const lost = b + c;
+  return makeQ('challenge', prompt, lost,
+    `用了 ${b} + ${c} = ${lost} 張。還剩 ${ans} 張，比原來少了 ${lost} 張。`);
+}
+
+function generateComparisonChain(): Question {
+  const a = randomInt(10, 15);
+  const diff1 = randomInt(2, 4);
+  const diff2 = randomInt(2, 4);
+  const b = a - diff1;
+  const c = b - diff2;
+  const totalDiff = a - c;
+  const prompt = `小明有 ${a} 顆糖，小華比小明少 ${diff1} 顆，小美比小華少 ${diff2} 顆。小美比小明少幾顆？`;
+  return makeQ('challenge', prompt, totalDiff,
+    `小華 = ${a} - ${diff1} = ${b}，小美 = ${b} - ${diff2} = ${c}。小美比小明少 ${a} - ${c} = ${totalDiff} 顆。`);
 }
 
 function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, explanation: string): Question {
