@@ -7,49 +7,58 @@ interface ShapeInfo {
   sides: number;
   corners: number;
   description: string;
+  is3D?: boolean;
 }
 
-const ALL_SHAPES: ShapeInfo[] = [
+const BASIC_2D: ShapeInfo[] = [
   { name: '圓形', emoji: '⚪', sides: 0, corners: 0, description: '沒有角，沒有直的邊，是圓圓的' },
-  { name: '正方形', emoji: '🟧', sides: 4, corners: 4, description: '有4條一樣長的邊和4個直角' },
   { name: '三角形', emoji: '🔺', sides: 3, corners: 3, description: '有3條邊和3個角' },
+  { name: '正方形', emoji: '🟧', sides: 4, corners: 4, description: '有4條一樣長的邊和4個直角' },
   { name: '長方形', emoji: '🟦', sides: 4, corners: 4, description: '有4條邊和4個直角，對邊一樣長' },
 ];
 
-const EXTRA_SHAPES: ShapeInfo[] = [
+const ADVANCED_2D: ShapeInfo[] = [
   { name: '菱形', emoji: '🔷', sides: 4, corners: 4, description: '有4條一樣長的邊，但角不是直角' },
   { name: '五邊形', emoji: '⬠', sides: 5, corners: 5, description: '有5條邊和5個角' },
+  { name: '六邊形', emoji: '⬡', sides: 6, corners: 6, description: '有6條邊和6個角' },
+];
+
+// HK P1 1S1: 3D shapes
+const SHAPES_3D: ShapeInfo[] = [
+  { name: '正方體', emoji: '🧊', sides: 6, corners: 8, description: '有6個正方形的面、8個頂點和12條邊', is3D: true },
+  { name: '長方體', emoji: '📦', sides: 6, corners: 8, description: '有6個長方形的面、8個頂點和12條邊', is3D: true },
+  { name: '圓柱體', emoji: '🥫', sides: 0, corners: 0, description: '有2個圓形的面和1個曲面，可以滾動', is3D: true },
+  { name: '球體', emoji: '⚽', sides: 0, corners: 0, description: '整個都是圓的，可以向任何方向滾動', is3D: true },
+  { name: '圓錐體', emoji: '🔺', sides: 0, corners: 1, description: '有1個圓形的底和1個尖頂', is3D: true },
 ];
 
 /**
- * 認識形狀 (Recognizing Shapes)
- * Easy: identify shapes, count sides/corners
- * Medium: property-based questions, "which shape has...", true/false style
- * Hard: sorting by properties, multi-shape comparison, word problems
+ * 認識形狀 (Recognizing Shapes) — HK P1 1S1 + 1S2 standard
+ * 2D: triangles, quadrilaterals (正方形/長方形/菱形), pentagons, hexagons, circles
+ * 3D: cubes, cuboids, cylinders, spheres, cones
+ * Easy: identify basic 2D shapes, count sides/corners
+ * Medium: properties, 3D shape recognition, compare shapes
+ * Hard: 2D+3D mixed, sorting, multi-property, word problems
  */
 export function generateShapesQuestions(difficulty: DifficultyLevel, count: number): Question[] {
   const questions: Question[] = [];
+  const generators: Record<DifficultyLevel, (() => Question)[]> = {
+    easy: [generateIdentifyQuestion, generateCountSidesEasy, generateWhichShapeEasy],
+    medium: [generatePropertyQuestion, generate3DRecognition, generateCompareShapes, generateTrueFalseStyle],
+    hard: [generateSortByProperty, generate3DProperties, generateWordProblem, generateMultiPropertyQuestion],
+  };
+  const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
-    switch (difficulty) {
-      case 'easy':
-        questions.push([generateIdentifyQuestion, generateCountSidesEasy, generateWhichShapeEasy][randomInt(0, 2)]());
-        break;
-      case 'medium':
-        questions.push([generatePropertyQuestion, generateTrueFalseStyle, generateCompareShapes][randomInt(0, 2)]());
-        break;
-      case 'hard':
-        questions.push([generateSortByProperty, generateWordProblem, generateMultiPropertyQuestion][randomInt(0, 2)]());
-        break;
-    }
+    questions.push(gens[randomInt(0, gens.length - 1)]());
   }
   return questions;
 }
 
 function getAvailableShapes(difficulty: DifficultyLevel): ShapeInfo[] {
   switch (difficulty) {
-    case 'easy': return ALL_SHAPES.slice(0, 3);
-    case 'medium': return ALL_SHAPES;
-    case 'hard': return [...ALL_SHAPES, ...EXTRA_SHAPES];
+    case 'easy': return BASIC_2D;
+    case 'medium': return [...BASIC_2D, ...ADVANCED_2D];
+    case 'hard': return [...BASIC_2D, ...ADVANCED_2D];
   }
 }
 
@@ -57,8 +66,7 @@ function makeShapeQuestion(difficulty: DifficultyLevel, prompt: string, correct:
   const distractors = new Set<string>();
   distractors.add(correct);
   for (const d of distractorPool) { if (distractors.size < 4) distractors.add(d); }
-  // If pool doesn't have 4 unique values, pad with generic fillers
-  const fillers = ['圓形', '正方形', '三角形', '長方形', '菱形', '五邊形'];
+  const fillers = ['圓形', '正方形', '三角形', '長方形', '菱形', '五邊形', '六邊形', '正方體', '圓柱體', '球體'];
   for (const f of fillers) { if (distractors.size >= 4) break; distractors.add(f); }
   const options = shuffleArray(Array.from(distractors).slice(0, 4));
   return {
@@ -67,49 +75,45 @@ function makeShapeQuestion(difficulty: DifficultyLevel, prompt: string, correct:
   };
 }
 
-// --- Easy generators ---
-
+// --- Easy ---
 function generateIdentifyQuestion(): Question {
-  const shapes = getAvailableShapes('easy');
+  const shapes = BASIC_2D;
   const target = shapes[randomInt(0, shapes.length - 1)];
-  const prompt = `以下哪一個是${target.name}？`;
-  return makeShapeQuestion('easy', prompt, target.name,
-    shapes.map(s => s.name),
-    `${target.name}${target.description}。`);
+  return makeShapeQuestion('easy', `以下哪一個是${target.name}？`, target.name,
+    shapes.map(s => s.name), `${target.name}${target.description}。`);
 }
 
 function generateCountSidesEasy(): Question {
-  const shapes = getAvailableShapes('easy');
+  const shapes = BASIC_2D;
   const target = shapes[randomInt(0, shapes.length - 1)];
-  const prompt = `${target.name}有幾條邊？`;
-  const correct = target.sides === 0 ? '0' : `${target.sides}`;
-  return makeShapeQuestion('easy', prompt, correct,
-    ['0', '3', '4', '5', '6'],
-    `${target.name}有 ${correct} 條邊。${target.description}。`);
+  const correct = `${target.sides}`;
+  return makeShapeQuestion('easy', `${target.name}有幾條邊？`, correct,
+    ['0', '3', '4', '5', '6'], `${target.name}有 ${correct} 條邊。${target.description}。`);
 }
 
 function generateWhichShapeEasy(): Question {
-  const target = ALL_SHAPES[randomInt(1, 2)]; // 正方形 or 三角形 (have sides)
-  const prompt = `哪一個形狀有 ${target.sides} 條邊？`;
-  return makeShapeQuestion('easy', prompt, target.name,
-    ALL_SHAPES.slice(0, 3).map(s => s.name),
-    `${target.name}有 ${target.sides} 條邊。`);
+  const target = BASIC_2D[randomInt(1, 2)]; // 三角形 or 正方形
+  return makeShapeQuestion('easy', `哪一個形狀有 ${target.sides} 條邊？`, target.name,
+    BASIC_2D.map(s => s.name), `${target.name}有 ${target.sides} 條邊。`);
 }
 
-// --- Medium generators ---
-
+// --- Medium ---
 function generatePropertyQuestion(): Question {
   const shapes = getAvailableShapes('medium');
   const target = shapes[randomInt(0, shapes.length - 1)];
   const askCorners = randomInt(0, 1) === 0;
-  const prompt = askCorners
-    ? `${target.name}有幾個角？`
-    : `${target.name}有幾條邊？`;
   const val = askCorners ? target.corners : target.sides;
   const correct = `${val}`;
-  return makeShapeQuestion('medium', prompt, correct,
+  return makeShapeQuestion('medium',
+    `${target.name}有幾${askCorners ? '個角' : '條邊'}？`, correct,
     ['0', '3', '4', '5', '6'],
     `${target.name}有 ${val} ${askCorners ? '個角' : '條邊'}。${target.description}。`);
+}
+
+function generate3DRecognition(): Question {
+  const target = SHAPES_3D[randomInt(0, SHAPES_3D.length - 1)];
+  return makeShapeQuestion('medium', `以下哪一個是${target.name}？ ${target.emoji}`, target.name,
+    SHAPES_3D.map(s => s.name), `${target.name}${target.description}。`);
 }
 
 function generateTrueFalseStyle(): Question {
@@ -117,80 +121,85 @@ function generateTrueFalseStyle(): Question {
     { prompt: '以下哪個形狀沒有角？', correct: '圓形', explanation: '圓形沒有角，其他形狀都有角。' },
     { prompt: '以下哪個形狀的邊都一樣長？', correct: '正方形', explanation: '正方形有4條一樣長的邊。' },
     { prompt: '以下哪個形狀有3個角？', correct: '三角形', explanation: '三角形有3個角。' },
-    { prompt: '以下哪個形狀有4個角，而且對邊一樣長？', correct: '長方形', explanation: '長方形有4個角，對邊一樣長。' },
+    { prompt: '以下哪個形狀有6條邊？', correct: '六邊形', explanation: '六邊形有6條邊和6個角。' },
+    { prompt: '以下哪個立體可以滾動？', correct: '圓柱體', explanation: '圓柱體有曲面，可以滾動。' },
   ];
   const s = scenarios[randomInt(0, scenarios.length - 1)];
   return makeShapeQuestion('medium', s.prompt, s.correct,
-    ALL_SHAPES.map(sh => sh.name), s.explanation);
+    [...BASIC_2D, ...ADVANCED_2D, ...SHAPES_3D].map(sh => sh.name), s.explanation);
 }
 
 function generateCompareShapes(): Question {
-  const a = ALL_SHAPES[randomInt(1, 3)]; // shapes with sides
-  const b = ALL_SHAPES.filter(s => s.name !== a.name && s.sides > 0)[randomInt(0, 1)];
+  const a = [...BASIC_2D, ...ADVANCED_2D].filter(s => s.sides > 0)[randomInt(0, 4)];
+  const pool = [...BASIC_2D, ...ADVANCED_2D].filter(s => s.sides > 0 && s.name !== a.name);
+  const b = pool[randomInt(0, pool.length - 1)];
   const total = a.sides + b.sides;
-  const prompt = `一個${a.name}和一個${b.name}，它們的邊加起來一共有幾條？`;
-  const correct = `${total}`;
-  return makeShapeQuestion('medium', prompt, correct,
+  return makeShapeQuestion('medium',
+    `一個${a.name}和一個${b.name}，它們的邊加起來一共有幾條？`, `${total}`,
     [`${total}`, `${total + 1}`, `${total - 1}`, `${total + 2}`],
     `${a.name}有 ${a.sides} 條邊，${b.name}有 ${b.sides} 條邊，${a.sides} + ${b.sides} = ${total}。`);
 }
 
-// --- Hard generators ---
-
+// --- Hard ---
 function generateSortByProperty(): Question {
-  const shapes = getAvailableShapes('hard');
-  const withSides = shapes.filter(s => s.sides > 0);
-  const selected = shuffleArray(withSides).slice(0, 3);
+  const shapes = [...BASIC_2D, ...ADVANCED_2D].filter(s => s.sides > 0);
+  const selected = shuffleArray(shapes).slice(0, 3);
   const sorted = [...selected].sort((a, b) => a.sides - b.sides);
   const correctOrder = sorted.map(s => s.name).join(' → ');
-  const prompt = `把 ${selected.map(s => s.name).join('、')} 按邊的數目從少到多排列。`;
   const distractors = new Set<string>();
   distractors.add(correctOrder);
-  while (distractors.size < 4) {
-    distractors.add(shuffleArray(selected).map(s => s.name).join(' → '));
-  }
+  while (distractors.size < 4) distractors.add(shuffleArray(selected).map(s => s.name).join(' → '));
   const options = shuffleArray(Array.from(distractors));
   return {
-    id: generateId(), topicId: 'shapes', difficulty: 'hard', prompt, options,
-    correctAnswerIndex: options.indexOf(correctOrder),
+    id: generateId(), topicId: 'shapes', difficulty: 'hard',
+    prompt: `把 ${selected.map(s => s.name).join('、')} 按邊的數目從少到多排列。`,
+    options, correctAnswerIndex: options.indexOf(correctOrder),
     explanation: `正確順序是 ${correctOrder}（邊數：${sorted.map(s => s.sides).join('、')}）。`,
     graphicType: 'shape',
   };
 }
 
+function generate3DProperties(): Question {
+  const scenarios = [
+    { prompt: '正方體有幾個面？', correct: '6個', pool: ['4個', '5個', '6個', '8個'], exp: '正方體有6個正方形的面。' },
+    { prompt: '圓柱體有幾個平面？', correct: '2個', pool: ['1個', '2個', '3個', '0個'], exp: '圓柱體有2個圓形的平面（上面和下面）。' },
+    { prompt: '以下哪個立體形狀不能滾動？', correct: '正方體', pool: ['正方體', '圓柱體', '球體', '圓錐體'], exp: '正方體的面都是平的，不能滾動。' },
+    { prompt: '球體有幾個平面？', correct: '0個', pool: ['0個', '1個', '2個', '3個'], exp: '球體沒有平面，整個都是曲面。' },
+    { prompt: '以下哪個立體有尖頂？', correct: '圓錐體', pool: ['正方體', '圓柱體', '圓錐體', '球體'], exp: '圓錐體有1個尖頂。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  const options = shuffleArray(s.pool);
+  return {
+    id: generateId(), topicId: 'shapes', difficulty: 'hard', prompt: s.prompt,
+    options, correctAnswerIndex: options.indexOf(s.correct),
+    explanation: s.exp, graphicType: 'shape',
+  };
+}
+
 function generateWordProblem(): Question {
-  const shapes = getAvailableShapes('hard');
-  const target = shapes.filter(s => s.sides > 0)[randomInt(0, 3)];
+  const shapes = [...BASIC_2D, ...ADVANCED_2D].filter(s => s.sides > 0);
+  const target = shapes[randomInt(0, shapes.length - 1)];
   const numShapes = randomInt(2, 3);
   const totalSides = target.sides * numShapes;
-  const prompt = `小明用了 ${numShapes} 個${target.name}拼圖案。這些${target.name}一共有幾條邊？`;
   const correct = `${totalSides}`;
-  return makeShapeQuestion('hard', prompt, correct,
+  return makeShapeQuestion('hard',
+    `小明用了 ${numShapes} 個${target.name}拼圖案。這些${target.name}一共有幾條邊？`, correct,
     [`${totalSides}`, `${totalSides + 1}`, `${totalSides - 1}`, `${target.sides}`],
     `每個${target.name}有 ${target.sides} 條邊，${numShapes} 個就有 ${target.sides} × ${numShapes} = ${totalSides} 條邊。`);
 }
 
 function generateMultiPropertyQuestion(): Question {
   const scenarios = [
-    {
-      prompt: '以下哪個形狀的邊數和角數不一樣？',
-      correct: '圓形',
-      explanation: '圓形有 0 條邊和 0 個角，但其他形狀的邊數和角數都相同。圓形是唯一沒有邊也沒有角的形狀。',
-    },
-    {
-      prompt: '正方形和長方形有什麼相同的地方？',
-      correct: '都有4個角',
-      pool: ['都有4個角', '邊都一樣長', '都是圓的', '都有3條邊'],
-      explanation: '正方形和長方形都有4個角和4條邊。',
-    },
-    {
-      prompt: '以下哪個形狀的邊最多？',
-      correct: '五邊形',
-      pool: ['五邊形', '正方形', '三角形', '長方形'],
-      explanation: '五邊形有5條邊，比其他形狀都多。',
-    },
+    { prompt: '正方形和長方形有什麼相同的地方？', correct: '都有4個角', pool: ['都有4個角', '邊都一樣長', '都是圓的', '都有3條邊'], exp: '正方形和長方形都有4個角和4條邊。' },
+    { prompt: '以下哪個形狀的邊最多？', correct: '六邊形', pool: ['六邊形', '五邊形', '正方形', '三角形'], exp: '六邊形有6條邊，比其他形狀都多。' },
+    { prompt: '正方體和長方體有什麼相同的地方？', correct: '都有6個面', pool: ['都有6個面', '都有4個面', '都能滾動', '都有圓形的面'], exp: '正方體和長方體都有6個面。' },
+    { prompt: '以下哪個不是平面圖形？', correct: '正方體', pool: ['正方體', '正方形', '三角形', '圓形'], exp: '正方體是立體圖形，不是平面圖形。' },
   ];
   const s = scenarios[randomInt(0, scenarios.length - 1)];
-  const pool = s.pool ?? [...ALL_SHAPES, ...EXTRA_SHAPES].map(sh => sh.name);
-  return makeShapeQuestion('hard', s.prompt, s.correct, pool, s.explanation);
+  const options = shuffleArray(s.pool);
+  return {
+    id: generateId(), topicId: 'shapes', difficulty: 'hard', prompt: s.prompt,
+    options, correctAnswerIndex: options.indexOf(s.correct),
+    explanation: s.exp, graphicType: 'shape',
+  };
 }

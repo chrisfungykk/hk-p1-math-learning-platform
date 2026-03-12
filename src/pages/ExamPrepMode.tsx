@@ -7,7 +7,7 @@ import { generateExamQuestions, computeTopicBreakdown } from '../utils/examPrep'
 import { evaluateAnswer, computeScoreSummary, createScoreRecord } from '../utils/scoring';
 import { saveScoreRecord, loadLastDifficulty, saveLastDifficulty } from '../services/storage';
 
-type Phase = 'setup' | 'testing' | 'feedback' | 'summary';
+type Phase = 'setup' | 'exam' | 'summary';
 
 const DIFFICULTY_COLORS: Record<DifficultyLevel, string> = {
   easy: 'from-green-400 to-emerald-400',
@@ -21,12 +21,7 @@ const DIFFICULTY_EMOJIS: Record<DifficultyLevel, string> = {
   hard: '🔥',
 };
 
-const OPTION_COLORS = [
-  'from-blue-400 to-blue-500',
-  'from-purple-400 to-purple-500',
-  'from-teal-400 to-teal-500',
-  'from-orange-400 to-orange-500',
-];
+const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
 function getScoreEmoji(percentage: number): string {
   if (percentage === 100) return '🏆';
@@ -43,10 +38,8 @@ export default function ExamPrepMode() {
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(loadLastDifficulty);
   const [phase, setPhase] = useState<Phase>('setup');
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const answers = useRef<{ question: Question; submittedIndex: number }[]>([]);
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [showResults, setShowResults] = useState(false);
   const [summary, setSummary] = useState<{ correct: number; incorrect: number; total: number } | null>(null);
   const [topicBreakdown, setTopicBreakdown] = useState<TopicScoreBreakdown[]>([]);
   const scoreRecorded = useRef(false);
@@ -60,116 +53,90 @@ export default function ExamPrepMode() {
     if (!semesterId || (semesterId !== 'sem1' && semesterId !== 'sem2')) return;
     const generated = generateExamQuestions(semesterId, difficulty);
     setQuestions(generated);
-    setCurrentIndex(0);
-    setSelectedAnswer(null);
-    setIsCorrect(null);
-    answers.current = [];
+    setAnswers({});
+    setShowResults(false);
     setSummary(null);
     setTopicBreakdown([]);
     scoreRecorded.current = false;
-    setPhase('testing');
+    setPhase('exam');
   }, [semesterId, difficulty]);
 
-  const handleAnswer = useCallback((optionIndex: number) => {
-    if (selectedAnswer !== null) return;
-    const question = questions[currentIndex];
-    const correct = evaluateAnswer(question, optionIndex);
-    setSelectedAnswer(optionIndex);
-    setIsCorrect(correct);
-    answers.current.push({ question, submittedIndex: optionIndex });
-    setPhase('feedback');
-  }, [questions, currentIndex, selectedAnswer]);
+  const handleSelectAnswer = useCallback((questionIdx: number, optionIdx: number) => {
+    if (showResults) return;
+    setAnswers(prev => ({ ...prev, [questionIdx]: optionIdx }));
+  }, [showResults]);
 
-  const handleNext = useCallback(() => {
-    const nextIndex = currentIndex + 1;
-    if (nextIndex >= questions.length) {
-      const result = computeScoreSummary(answers.current);
-      setSummary(result);
+  const handleSubmit = useCallback(() => {
+    const answerList = questions.map((question, idx) => ({
+      question,
+      submittedIndex: answers[idx] ?? -1,
+    }));
+    const result = computeScoreSummary(answerList);
+    setSummary(result);
 
-      const breakdown = computeTopicBreakdown(answers.current);
-      setTopicBreakdown(breakdown);
+    const breakdown = computeTopicBreakdown(answerList);
+    setTopicBreakdown(breakdown);
 
-      // Record score with isExamPrep: true, topicId: null
-      if (semester && !scoreRecorded.current) {
-        scoreRecorded.current = true;
-        const record = createScoreRecord({
-          topicId: null,
-          semester: semester.id,
-          difficulty,
-          score: result.correct,
-          totalQuestions: result.total,
-          isExamPrep: true,
-          topicBreakdown: breakdown,
-        });
-        saveScoreRecord(record);
-      }
-
-      setPhase('summary');
-    } else {
-      setCurrentIndex(nextIndex);
-      setSelectedAnswer(null);
-      setIsCorrect(null);
-      setPhase('testing');
+    if (semester && !scoreRecorded.current) {
+      scoreRecorded.current = true;
+      const record = createScoreRecord({
+        topicId: null,
+        semester: semester.id,
+        difficulty,
+        score: result.correct,
+        totalQuestions: result.total,
+        isExamPrep: true,
+        topicBreakdown: breakdown,
+      });
+      saveScoreRecord(record);
     }
-  }, [currentIndex, questions.length, semester, difficulty]);
+
+    setShowResults(true);
+    setPhase('summary');
+  }, [questions, answers, semester, difficulty]);
 
   const handleRetry = useCallback(() => {
     setPhase('setup');
     setQuestions([]);
-    setCurrentIndex(0);
-    setSelectedAnswer(null);
-    setIsCorrect(null);
-    answers.current = [];
+    setAnswers({});
+    setShowResults(false);
     setSummary(null);
     setTopicBreakdown([]);
     scoreRecorded.current = false;
   }, []);
 
-  // Invalid semester → redirect home
   if (!semester || !semesterId) {
     return <Navigate to="/" replace />;
   }
 
-  // ── Setup Phase: Difficulty selector ──
+  const answeredCount = Object.keys(answers).length;
+
+  // ── Setup Phase ──
   if (phase === 'setup') {
     return (
       <div className="flex flex-col items-center gap-6 py-4">
         <div className="flex items-center gap-4 w-full max-w-3xl">
-          <Link
-            to={`/semester/${semesterId}`}
+          <Link to={`/semester/${semesterId}`}
             className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gray-200 hover:bg-gray-300 text-2xl transition-colors"
-            aria-label={`返回${semester.name}`}
-          >
-            ⬅️
-          </Link>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-red-700">
-            📝 考試準備 — {semester.name}
-          </h2>
+            aria-label={`返回${semester.name}`}>⬅️</Link>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-red-700">📝 考試準備 — {semester.name}</h2>
         </div>
-
         <div className="flex flex-col items-center gap-4 w-full max-w-md">
           <p className="text-xl font-bold text-gray-700">選擇難度</p>
           <div className="flex gap-3 w-full">
             {(['easy', 'medium', 'hard'] as DifficultyLevel[]).map((level) => (
-              <button
-                key={level}
-                onClick={() => handleDifficultyChange(level)}
+              <button key={level} onClick={() => handleDifficultyChange(level)}
                 className={`flex-1 min-h-16 min-w-12 rounded-2xl text-lg font-bold shadow-md transition-all ${
                   difficulty === level
                     ? `bg-gradient-to-br ${DIFFICULTY_COLORS[level]} text-white scale-105 ring-4 ring-white`
                     : 'bg-white text-gray-600 hover:bg-gray-100'
-                }`}
-                aria-pressed={difficulty === level}
-              >
+                }`} aria-pressed={difficulty === level}>
                 {DIFFICULTY_EMOJIS[level]} {DIFFICULTY_LABELS[level]}
               </button>
             ))}
           </div>
-
-          <button
-            onClick={handleStartExam}
-            className="min-h-12 min-w-12 w-full rounded-2xl bg-gradient-to-r from-red-400 to-pink-400 text-white text-xl font-bold py-4 shadow-lg hover:scale-105 transition-transform mt-4"
-          >
+          <button onClick={handleStartExam}
+            className="min-h-12 min-w-12 w-full rounded-2xl bg-gradient-to-r from-red-400 to-pink-400 text-white text-xl font-bold py-4 shadow-lg hover:scale-105 transition-transform mt-4">
             📝 開始考試準備
           </button>
         </div>
@@ -177,172 +144,166 @@ export default function ExamPrepMode() {
     );
   }
 
-  // ── Summary Phase with per-topic breakdown ──
-  if (phase === 'summary' && summary) {
-    const percentage = summary.total > 0 ? Math.round((summary.correct / summary.total) * 100) : 0;
-    return (
-      <div className="flex flex-col items-center gap-6 py-4">
-        <div className="flex items-center gap-4 w-full max-w-3xl">
-          <Link
-            to={`/semester/${semesterId}`}
-            className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gray-200 hover:bg-gray-300 text-2xl transition-colors"
-            aria-label={`返回${semester.name}`}
-          >
-            ⬅️
-          </Link>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-red-700">
-            📊 考試準備結果
-          </h2>
+  // ── Exam Paper (1-page style with sections) ──
+  const percentage = summary ? (summary.total > 0 ? Math.round((summary.correct / summary.total) * 100) : 0) : 0;
+
+  // Group questions by topic for section display
+  const topicGroups: { topicId: string; topicName: string; questions: { q: Question; globalIdx: number }[] }[] = [];
+  const topicMap = new Map<string, { q: Question; globalIdx: number }[]>();
+  questions.forEach((q, idx) => {
+    const arr = topicMap.get(q.topicId) ?? [];
+    arr.push({ q, globalIdx: idx });
+    topicMap.set(q.topicId, arr);
+  });
+  for (const [topicId, qs] of topicMap) {
+    const topicDef = TOPIC_REGISTRY[topicId];
+    topicGroups.push({ topicId, topicName: topicDef?.name ?? topicId, questions: qs });
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-4 py-4 px-2">
+      {/* Header */}
+      <div className="flex items-center gap-4 w-full max-w-3xl">
+        <Link to={`/semester/${semesterId}`}
+          className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gray-200 hover:bg-gray-300 text-2xl transition-colors"
+          aria-label={`返回${semester.name}`}>⬅️</Link>
+        <h2 className="text-2xl md:text-3xl font-extrabold text-red-700">📝 考試準備 — {semester.name}</h2>
+      </div>
+
+      {/* Exam paper */}
+      <div className="w-full max-w-3xl bg-white rounded-3xl shadow-lg p-4 md:p-6 border-2 border-red-200">
+        {/* Paper header */}
+        <div className="text-center border-b-2 border-gray-300 pb-3 mb-4">
+          <h3 className="text-xl md:text-2xl font-extrabold text-gray-800">
+            小一數學 {semester.name} 模擬試卷
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">
+            難度：{DIFFICULTY_EMOJIS[difficulty]} {DIFFICULTY_LABELS[difficulty]} ｜ 共 {questions.length} 題
+          </p>
+          <p className="text-xs text-gray-400 mt-1">請選擇每題的正確答案，然後按「交卷」</p>
         </div>
 
-        {/* Overall score */}
-        <div className="flex flex-col items-center gap-4 bg-white rounded-3xl shadow-xl p-8 w-full max-w-md">
-          <span className="text-6xl">{getScoreEmoji(percentage)}</span>
-          <p className="text-4xl font-extrabold text-purple-700">{percentage}%</p>
-          <div className="flex gap-6 text-lg">
-            <span className="text-green-600 font-bold">✅ 正確: {summary.correct}</span>
-            <span className="text-red-500 font-bold">❌ 錯誤: {summary.incorrect}</span>
-          </div>
-          <p className="text-gray-500">共 {summary.total} 題</p>
-        </div>
-
-        {/* Per-topic breakdown */}
-        {topicBreakdown.length > 0 && (
-          <div className="w-full max-w-md">
-            <h3 className="text-xl font-bold text-gray-700 mb-3 text-center">📋 各主題成績</h3>
-            <div className="flex flex-col gap-2">
-              {topicBreakdown.map((tb) => {
-                const topicDef = TOPIC_REGISTRY[tb.topicId];
-                const topicName = topicDef?.name ?? tb.topicId;
-                const topicPct = tb.total > 0 ? Math.round((tb.correct / tb.total) * 100) : 0;
-                return (
-                  <div
-                    key={tb.topicId}
-                    className="flex items-center justify-between bg-white rounded-2xl shadow-md px-4 py-3"
-                  >
-                    <span className="text-lg font-bold text-gray-800">{topicName}</span>
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm text-gray-500">
+        {/* Score banner */}
+        {showResults && summary && (
+          <div className="flex flex-col items-center gap-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 mb-4 border border-purple-200">
+            <div className="flex items-center gap-4">
+              <span className="text-4xl">{getScoreEmoji(percentage)}</span>
+              <div className="text-center">
+                <p className="text-3xl font-extrabold text-purple-700">{percentage}%</p>
+                <p className="text-sm text-gray-600">✅ {summary.correct} 正確 ｜ ❌ {summary.incorrect} 錯誤 ｜ 共 {summary.total} 題</p>
+              </div>
+            </div>
+            {/* Per-topic breakdown */}
+            {topicBreakdown.length > 0 && (
+              <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+                {topicBreakdown.map((tb) => {
+                  const topicDef = TOPIC_REGISTRY[tb.topicId];
+                  const topicName = topicDef?.name ?? tb.topicId;
+                  const topicPct = tb.total > 0 ? Math.round((tb.correct / tb.total) * 100) : 0;
+                  return (
+                    <div key={tb.topicId} className="flex items-center justify-between bg-white rounded-xl shadow-sm px-3 py-2 text-sm">
+                      <span className="font-bold text-gray-700 truncate">{topicName}</span>
+                      <span className={`font-bold ml-2 ${topicPct >= 80 ? 'text-green-600' : topicPct >= 50 ? 'text-yellow-600' : 'text-red-500'}`}>
                         {tb.correct}/{tb.total}
                       </span>
-                      <span
-                        className={`text-lg font-bold ${
-                          topicPct >= 80
-                            ? 'text-green-600'
-                            : topicPct >= 50
-                              ? 'text-yellow-600'
-                              : 'text-red-500'
-                        }`}
-                      >
-                        {topicPct}%
-                      </span>
                     </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Questions grouped by topic (sections) */}
+        {topicGroups.map((group, groupIdx) => (
+          <div key={group.topicId} className="mb-6">
+            <div className="flex items-center gap-2 mb-3 border-b border-gray-200 pb-2">
+              <span className="text-sm font-bold text-white bg-red-400 rounded-full px-3 py-1">
+                第{['甲', '乙', '丙', '丁', '戊', '己'][groupIdx] ?? (groupIdx + 1)}部
+              </span>
+              <span className="text-base font-bold text-gray-700">{group.topicName}</span>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              {group.questions.map(({ q, globalIdx }) => {
+                const selected = answers[globalIdx];
+                const isCorrect = selected !== undefined ? evaluateAnswer(q, selected) : undefined;
+
+                return (
+                  <div key={q.id} className={`rounded-2xl p-3 border-2 transition-colors ${
+                    showResults
+                      ? isCorrect ? 'border-green-300 bg-green-50' : selected !== undefined ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50'
+                      : selected !== undefined ? 'border-blue-300 bg-blue-50' : 'border-gray-200 bg-white'
+                  }`}>
+                    <div className="flex gap-2 mb-2">
+                      <span className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-red-100 text-red-700 font-bold text-xs">
+                        {globalIdx + 1}
+                      </span>
+                      <p className="text-sm md:text-base font-bold text-gray-800 whitespace-pre-line flex-1">{q.prompt}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 ml-9">
+                      {q.options.map((option, oIdx) => {
+                        let btnClass = 'min-h-9 rounded-xl text-sm font-semibold py-1.5 px-3 transition-all text-left flex items-center gap-2 ';
+                        if (showResults) {
+                          if (oIdx === q.correctAnswerIndex) {
+                            btnClass += 'bg-green-400 text-white ring-2 ring-green-300';
+                          } else if (oIdx === selected && !isCorrect) {
+                            btnClass += 'bg-red-400 text-white ring-2 ring-red-300';
+                          } else {
+                            btnClass += 'bg-gray-100 text-gray-400';
+                          }
+                        } else if (oIdx === selected) {
+                          btnClass += 'bg-blue-500 text-white ring-2 ring-blue-300';
+                        } else {
+                          btnClass += 'bg-gray-100 text-gray-700 hover:bg-gray-200';
+                        }
+                        return (
+                          <button key={oIdx} onClick={() => handleSelectAnswer(globalIdx, oIdx)}
+                            disabled={showResults} className={btnClass}>
+                            <span className="w-5 h-5 flex items-center justify-center rounded-full bg-white/30 text-xs font-bold flex-shrink-0">
+                              {OPTION_LABELS[oIdx]}
+                            </span>
+                            <span>{option}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {showResults && selected !== undefined && !isCorrect && (
+                      <p className="text-xs text-gray-600 mt-2 ml-9 bg-yellow-50 rounded-lg p-2">💡 {q.explanation}</p>
+                    )}
+                    {showResults && selected === undefined && (
+                      <p className="text-xs text-red-500 mt-2 ml-9">⚠️ 未作答</p>
+                    )}
                   </div>
                 );
               })}
             </div>
           </div>
-        )}
+        ))}
 
-        <div className="flex gap-4">
-          <Link
-            to="/"
-            className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-400 to-cyan-400 text-white text-lg font-bold px-6 py-3 shadow-lg hover:scale-105 transition-transform"
-          >
-            🏠 返回主頁
-          </Link>
-          <button
-            onClick={handleRetry}
-            className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gradient-to-r from-red-400 to-pink-400 text-white text-lg font-bold px-6 py-3 shadow-lg hover:scale-105 transition-transform"
-          >
-            🔄 再試一次
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Testing / Feedback Phase: Question display ──
-  const currentQuestion = questions[currentIndex];
-  if (!currentQuestion) {
-    return <Navigate to="/" replace />;
-  }
-
-  return (
-    <div className="flex flex-col items-center gap-6 py-4">
-      <div className="flex items-center gap-4 w-full max-w-3xl">
-        <Link
-          to={`/semester/${semesterId}`}
-          className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gray-200 hover:bg-gray-300 text-2xl transition-colors"
-          aria-label={`返回${semester.name}`}
-        >
-          ⬅️
-        </Link>
-        <h2 className="text-2xl md:text-3xl font-extrabold text-red-700">
-          📝 考試準備 — {semester.name}
-        </h2>
-      </div>
-
-      {/* Progress indicator */}
-      <p className="text-lg font-bold text-gray-600">
-        第 {currentIndex + 1} 題 / 共 {questions.length} 題
-      </p>
-
-      {/* Question prompt */}
-      <div className="bg-white rounded-3xl shadow-lg p-6 w-full max-w-lg">
-        <p className="text-2xl font-bold text-center text-gray-800">{currentQuestion.prompt}</p>
-      </div>
-
-      {/* Options */}
-      <div className="grid grid-cols-2 gap-3 w-full max-w-lg">
-        {currentQuestion.options.map((option, idx) => {
-          let btnClass = 'min-h-12 min-w-12 rounded-2xl text-lg font-bold py-4 px-4 shadow-md transition-all text-center ';
-          if (phase === 'feedback') {
-            if (idx === currentQuestion.correctAnswerIndex) {
-              btnClass += 'bg-green-400 text-white ring-4 ring-green-200';
-            } else if (idx === selectedAnswer && !isCorrect) {
-              btnClass += 'bg-red-400 text-white ring-4 ring-red-200';
-            } else {
-              btnClass += 'bg-gray-200 text-gray-500';
-            }
-          } else {
-            btnClass += `bg-gradient-to-br ${OPTION_COLORS[idx % OPTION_COLORS.length]} text-white hover:scale-105`;
-          }
-          return (
-            <button
-              key={idx}
-              onClick={() => handleAnswer(idx)}
-              disabled={phase === 'feedback'}
-              className={btnClass}
-            >
-              {option}
+        {/* Submit / Action buttons */}
+        <div className="flex justify-center gap-4 mt-4 pt-4 border-t-2 border-gray-200">
+          {!showResults ? (
+            <button onClick={handleSubmit}
+              className="min-h-12 min-w-12 rounded-2xl bg-gradient-to-r from-red-400 to-pink-400 text-white text-lg font-bold px-8 py-3 shadow-lg hover:scale-105 transition-transform">
+              📝 交卷 ({answeredCount}/{questions.length})
             </button>
-          );
-        })}
-      </div>
-
-      {/* Feedback message */}
-      {phase === 'feedback' && (
-        <div className="flex flex-col items-center gap-3 w-full max-w-lg">
-          {isCorrect ? (
-            <p className="text-2xl font-bold text-green-600">✅ 正確！</p>
           ) : (
-            <div className="flex flex-col items-center gap-2 bg-red-50 rounded-2xl p-4 w-full">
-              <p className="text-2xl font-bold text-red-500">❌ 錯誤</p>
-              <p className="text-lg text-gray-700">
-                正確答案: <span className="font-bold text-green-600">{currentQuestion.options[currentQuestion.correctAnswerIndex]}</span>
-              </p>
-              <p className="text-base text-gray-600">{currentQuestion.explanation}</p>
-            </div>
+            <>
+              <Link to="/"
+                className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-400 to-cyan-400 text-white text-lg font-bold px-6 py-3 shadow-lg hover:scale-105 transition-transform">
+                🏠 返回主頁
+              </Link>
+              <button onClick={handleRetry}
+                className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gradient-to-r from-red-400 to-pink-400 text-white text-lg font-bold px-6 py-3 shadow-lg hover:scale-105 transition-transform">
+                🔄 再試一次
+              </button>
+            </>
           )}
-          <button
-            onClick={handleNext}
-            className="min-h-12 min-w-12 rounded-2xl bg-gradient-to-r from-purple-400 to-indigo-400 text-white text-lg font-bold px-8 py-3 shadow-lg hover:scale-105 transition-transform"
-          >
-            {currentIndex + 1 < questions.length ? '下一題 ➡️' : '查看結果 📊'}
-          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }
