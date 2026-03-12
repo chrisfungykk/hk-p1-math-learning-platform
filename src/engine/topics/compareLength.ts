@@ -25,6 +25,7 @@ export function generateCompareLengthQuestions(difficulty: DifficultyLevel, coun
     easy: [generateSimpleCompare, generateWordProblemEasy, generateCmCompare],
     medium: [generateOrderThree, generateHowMuchMore, generateWordProblemMedium],
     hard: [generateOrderFour, generateInferenceProblem, generateMultiStepCompare, generateCmCalculation],
+    challenge: [generateTransitiveChain, generateIndirectMeasure, generateTrickyCompare, generateReverseMeasure],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -189,4 +190,53 @@ function generateCmCalculation(): Question {
   return makeCompareQuestion('hard', prompt, `${total}`,
     [`${total}`, `${total + 1}`, `${total - 1}`, `${Math.abs(a - b)}`],
     `${a} + ${b} = ${total} 厘米。`);
+}
+
+// --- Challenge (HKIMO-style) ---
+
+function generateTransitiveChain(): Question {
+  const names = shuffleArray(['小明', '小華', '小美', '小強']);
+  const a = names[0]; const b = names[1]; const c = names[2]; const d = names[3];
+  // a < b < c < d
+  const prompt = `${b}比${a}高，${c}比${b}高，${d}比${c}高。誰最矮？`;
+  return makeCompareQuestion('challenge', prompt, a, names, `${a}最矮，因為其他人都比${a}高。`);
+}
+
+function generateIndirectMeasure(): Question {
+  const aLen = randomInt(8, 12);
+  const diff1 = randomInt(2, 4);
+  const diff2 = randomInt(2, 4);
+  const bLen = aLen + diff1;
+  const cLen = bLen - diff2;
+  const prompt = `繩子甲長 ${aLen} 厘米。繩子乙比繩子甲長 ${diff1} 厘米。繩子丙比繩子乙短 ${diff2} 厘米。繩子丙長多少厘米？`;
+  const correct = `${cLen}`;
+  return makeCompareQuestion('challenge', prompt, correct,
+    [`${cLen}`, `${cLen + 1}`, `${cLen - 1}`, `${bLen}`],
+    `繩子乙 = ${aLen} + ${diff1} = ${bLen} 厘米。繩子丙 = ${bLen} - ${diff2} = ${cLen} 厘米。`);
+}
+
+function generateTrickyCompare(): Question {
+  const names = shuffleArray(['小明', '小華', '小美']);
+  const a = names[0]; const b = names[1]; const c = names[2];
+  const hA = randomInt(100, 110);
+  const hB = hA + randomInt(3, 8);
+  const hC = hB + randomInt(3, 8);
+  const diff = hC - hA;
+  const prompt = `${a}高 ${hA} 厘米，${b}高 ${hB} 厘米，${c}高 ${hC} 厘米。最高和最矮相差多少厘米？`;
+  const correct = `${diff}`;
+  return makeCompareQuestion('challenge', prompt, correct,
+    [`${diff}`, `${diff + 1}`, `${diff - 1}`, `${hC - hB}`],
+    `最高是${c}（${hC} 厘米），最矮是${a}（${hA} 厘米）。${hC} - ${hA} = ${diff} 厘米。`);
+}
+
+function generateReverseMeasure(): Question {
+  const total = randomInt(15, 25);
+  const a = randomInt(5, total - 5);
+  const b = total - a;
+  const prompt = `兩條繩子接起來一共長 ${total} 厘米。其中一條長 ${a} 厘米。另一條比這條長還是短？長或短多少厘米？`;
+  const diff = Math.abs(a - b);
+  const correct = b > a ? `長 ${diff} 厘米` : b < a ? `短 ${diff} 厘米` : '一樣長';
+  const pool = [`長 ${diff} 厘米`, `短 ${diff} 厘米`, '一樣長', `長 ${diff + 1} 厘米`];
+  return makeCompareQuestion('challenge', prompt, correct, pool,
+    `另一條 = ${total} - ${a} = ${b} 厘米。${b > a ? `${b} > ${a}，長 ${diff} 厘米` : b < a ? `${b} < ${a}，短 ${diff} 厘米` : '兩條一樣長'}。`);
 }

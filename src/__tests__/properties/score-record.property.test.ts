@@ -42,7 +42,7 @@ const topicBreakdownArb = fc.record({
 const scoreRecordArb: fc.Arbitrary<ScoreRecord> = fc.record({
   id: fc.uuid(),
   semester: fc.constantFrom('sem1' as const, 'sem2' as const),
-  difficulty: fc.constantFrom('easy' as const, 'medium' as const, 'hard' as const),
+  difficulty: fc.constantFrom('easy' as const, 'medium' as const, 'hard' as const, 'challenge' as const),
   totalQuestions: fc.integer({ min: 1, max: 30 }),
   date: fc.integer({ min: new Date('2020-01-01').getTime(), max: new Date('2030-12-31').getTime() }).map(ts => new Date(ts).toISOString()),
   isExamPrep: fc.boolean(),

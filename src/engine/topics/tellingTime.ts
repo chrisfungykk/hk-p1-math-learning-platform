@@ -26,6 +26,7 @@ export function generateTellingTimeQuestions(difficulty: DifficultyLevel, count:
     easy: [generateExactHour, generateDailyRoutine, generateDayOfWeek],
     medium: [generateHalfHour, generateHowLong, generateDaysOrder, generateMonthQuestion],
     hard: [generateQuarterHour, generateElapsedTime, generateScheduleProblem, generateCalendarProblem],
+    challenge: [generateElapsedAcrossNoon, generateTrickySchedule, generateReverseTime, generateDayCountPuzzle],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -204,4 +205,87 @@ function generateCalendarProblem(): Question {
   return { id: generateId(), topicId: 'telling-time', difficulty: 'hard',
     prompt: s.prompt, options, correctAnswerIndex: options.indexOf(s.correct),
     explanation: s.exp, graphicType: 'clock' };
+}
+
+// --- Challenge (HKIMO-style) ---
+
+function generateElapsedAcrossNoon(): Question {
+  const startH = randomInt(10, 11);
+  const duration = randomInt(2, 4);
+  const endH = startH + duration;
+  const endLabel = endH > 12 ? `下午 ${endH - 12}` : `${endH}`;
+  const correct = `${endLabel} 點`;
+  const d = new Set<string>([correct]);
+  d.add(`下午 ${endH - 12 + 1} 點`);
+  d.add(`${endH} 點`);
+  d.add(`下午 ${endH - 12 - 1 > 0 ? endH - 12 - 1 : 1} 點`);
+  while (d.size < 4) d.add(`下午 ${randomInt(1, 5)} 點`);
+  const options = shuffleArray(Array.from(d).slice(0, 4));
+  return {
+    id: generateId(), topicId: 'telling-time', difficulty: 'challenge',
+    prompt: `上午 ${startH} 點開始上課，上了 ${duration} 小時。幾點下課？`,
+    options, correctAnswerIndex: options.indexOf(correct),
+    explanation: `上午 ${startH} 點 + ${duration} 小時 = ${endH > 12 ? '下午' : ''} ${endH > 12 ? endH - 12 : endH} 點。`,
+    graphicType: 'clock',
+  };
+}
+
+function generateTrickySchedule(): Question {
+  const lessonMins = 30;
+  const numLessons = randomInt(3, 5);
+  const breakMins = 10;
+  const totalMins = numLessons * lessonMins + (numLessons - 1) * breakMins;
+  const totalHours = Math.floor(totalMins / 60);
+  const remainMins = totalMins % 60;
+  const correct = remainMins > 0 ? `${totalHours}小時${remainMins}分鐘` : `${totalHours}小時`;
+  const d = new Set<string>([correct]);
+  d.add(`${totalHours + 1}小時`);
+  d.add(`${totalHours}小時${remainMins + 10}分鐘`);
+  d.add(`${numLessons}小時`);
+  while (d.size < 4) d.add(`${randomInt(1, 4)}小時${randomInt(0, 5) * 10}分鐘`);
+  const options = shuffleArray(Array.from(d).slice(0, 4));
+  return {
+    id: generateId(), topicId: 'telling-time', difficulty: 'challenge',
+    prompt: `小明上了 ${numLessons} 堂課，每堂 ${lessonMins} 分鐘，每兩堂之間休息 ${breakMins} 分鐘。從第一堂開始到最後一堂結束，一共用了多少時間？`,
+    options, correctAnswerIndex: options.indexOf(correct),
+    explanation: `上課時間 = ${numLessons} × ${lessonMins} = ${numLessons * lessonMins} 分鐘。休息時間 = ${numLessons - 1} × ${breakMins} = ${(numLessons - 1) * breakMins} 分鐘。總共 ${totalMins} 分鐘 = ${correct}。`,
+    graphicType: 'clock',
+  };
+}
+
+function generateReverseTime(): Question {
+  const endH = randomInt(3, 8);
+  const duration = randomInt(1, 3);
+  const startH = endH - duration;
+  const correct = fmt(startH, 0);
+  const d = new Set<string>([correct]);
+  d.add(fmt(startH + 1, 0));
+  d.add(fmt(startH - 1 < 1 ? 12 : startH - 1, 0));
+  d.add(fmt(endH, 0));
+  while (d.size < 4) d.add(fmt(randomInt(1, 12), 0));
+  const options = shuffleArray(Array.from(d).slice(0, 4));
+  return {
+    id: generateId(), topicId: 'telling-time', difficulty: 'challenge',
+    prompt: `小明在 ${fmt(endH, 0)} 做完功課。他做了 ${duration} 小時。他幾點開始做功課？`,
+    options, correctAnswerIndex: options.indexOf(correct),
+    explanation: `${endH} - ${duration} = ${startH}，所以他 ${correct} 開始做功課。`,
+    graphicType: 'clock',
+  };
+}
+
+function generateDayCountPuzzle(): Question {
+  const startDay = randomInt(0, 6);
+  const daysLater = randomInt(5, 10);
+  const endDay = (startDay + daysLater) % 7;
+  const correct = DAYS_OF_WEEK[endDay];
+  const pool = new Set<string>([correct]);
+  for (const d of DAYS_OF_WEEK) { if (pool.size >= 4) break; pool.add(d); }
+  const options = shuffleArray(Array.from(pool));
+  return {
+    id: generateId(), topicId: 'telling-time', difficulty: 'challenge',
+    prompt: `今天是${DAYS_OF_WEEK[startDay]}，${daysLater} 天後是星期幾？`,
+    options, correctAnswerIndex: options.indexOf(correct),
+    explanation: `${DAYS_OF_WEEK[startDay]}過 ${daysLater} 天：${daysLater} ÷ 7 = ${Math.floor(daysLater / 7)} 餘 ${daysLater % 7}，所以是${correct}。`,
+    graphicType: 'clock',
+  };
 }

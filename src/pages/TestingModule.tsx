@@ -13,12 +13,14 @@ const DIFFICULTY_COLORS: Record<DifficultyLevel, string> = {
   easy: 'from-green-400 to-emerald-400',
   medium: 'from-yellow-400 to-amber-400',
   hard: 'from-red-400 to-rose-400',
+  challenge: 'from-purple-500 to-indigo-500',
 };
 
 const DIFFICULTY_EMOJIS: Record<DifficultyLevel, string> = {
   easy: '🌟',
   medium: '⚡',
   hard: '🔥',
+  challenge: '🏆',
 };
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
@@ -117,7 +119,7 @@ export default function TestingModule() {
         <div className="flex flex-col items-center gap-4 w-full max-w-md">
           <p className="text-xl font-bold text-gray-700">選擇難度</p>
           <div className="flex gap-3 w-full">
-            {(['easy', 'medium', 'hard'] as DifficultyLevel[]).map((level) => (
+            {(['easy', 'medium', 'hard', 'challenge'] as DifficultyLevel[]).map((level) => (
               <button key={level} onClick={() => handleDifficultyChange(level)}
                 className={`flex-1 min-h-16 min-w-12 rounded-2xl text-lg font-bold shadow-md transition-all ${
                   difficulty === level

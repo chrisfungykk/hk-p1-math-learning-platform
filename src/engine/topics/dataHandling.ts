@@ -31,6 +31,11 @@ export function generateDataHandlingQuestions(difficulty: DifficultyLevel, count
       case 'hard':
         questions.push([() => generateTotal(data), () => generateDifference(data), () => generateMultiStep(data)][randomInt(0, 2)]());
         break;
+      case 'challenge': {
+        const cData = genData('hard');
+        questions.push([() => generateMissingData(cData), () => generateMultiStepAnalysis(cData), () => generateReverseData(cData), () => generateCompareAndReason(cData)][randomInt(0, 3)]());
+        break;
+      }
     }
   }
   return questions;
@@ -114,4 +119,53 @@ function generateMultiStep(data: PictogramData): Question {
   const prompt = `${a.item.name}和${b.item.name}一共有幾個？\n${display(data)}`;
   return makeQ('hard', prompt, sum, 1, 25,
     `${a.count} + ${b.count} = ${sum}。${a.item.name}和${b.item.name}一共有 ${sum} 個。`);
+}
+
+// --- Challenge (HKIMO-style) ---
+
+function generateMissingData(data: PictogramData): Question {
+  if (data.items.length < 2) return generateTotal(data);
+  const total = data.items.reduce((s, d) => s + d.count, 0);
+  const hidden = data.items[randomInt(0, data.items.length - 1)];
+  const knownTotal = total - hidden.count;
+  const displayItems = data.items.map(d =>
+    d.item.name === hidden.item.name
+      ? `${d.item.emoji} ${d.item.name}：？`
+      : `${d.item.emoji} ${d.item.name}：${d.item.emoji.repeat(d.count)}`
+  ).join('\n');
+  const prompt = `圖表中所有東西加起來一共有 ${total} 個。${hidden.item.name}有幾個？\n${displayItems}`;
+  return makeQ('challenge', prompt, hidden.count, 0, 20,
+    `其他東西共 ${knownTotal} 個。${total} - ${knownTotal} = ${hidden.count}。`);
+}
+
+function generateMultiStepAnalysis(data: PictogramData): Question {
+  if (data.items.length < 3) return generateTotal(data);
+  const sorted = [...data.items].sort((a, b) => b.count - a.count);
+  const most = sorted[0];
+  const least = sorted[sorted.length - 1];
+  const sum = most.count + least.count;
+  const prompt = `最多的和最少的加起來一共有幾個？\n${display(data)}`;
+  return makeQ('challenge', prompt, sum, 0, 25,
+    `最多的是${most.item.name}（${most.count}個），最少的是${least.item.name}（${least.count}個）。${most.count} + ${least.count} = ${sum}。`);
+}
+
+function generateReverseData(data: PictogramData): Question {
+  if (data.items.length < 2) return generateTotal(data);
+  const a = data.items[0];
+  const b = data.items[1];
+  const total = a.count + b.count;
+  const prompt = `${a.item.name}和${b.item.name}一共有 ${total} 個。${a.item.name}有 ${a.count} 個。${b.item.name}有幾個？`;
+  return makeQ('challenge', prompt, b.count, 0, 20,
+    `${total} - ${a.count} = ${b.count}。${b.item.name}有 ${b.count} 個。`);
+}
+
+function generateCompareAndReason(data: PictogramData): Question {
+  if (data.items.length < 3) return generateTotal(data);
+  const sorted = [...data.items].sort((a, b) => b.count - a.count);
+  const most = sorted[0];
+  const second = sorted[1];
+  const diff = most.count - second.count;
+  const prompt = `最多的比第二多的多幾個？\n${display(data)}`;
+  return makeQ('challenge', prompt, diff, 0, 15,
+    `最多的是${most.item.name}（${most.count}個），第二多的是${second.item.name}（${second.count}個）。${most.count} - ${second.count} = ${diff}。`);
 }

@@ -14,6 +14,7 @@ export function generateSubtraction20Questions(difficulty: DifficultyLevel, coun
     easy: [generateSimple, generateWordEasy],
     medium: [generateMissing, generateCrossTen, generateColumnForm, generateHowManyMore],
     hard: [generateMultiStep, generateWordHard, generateComparison, generateRelationship],
+    challenge: [generateReverseProblem20, generateChainMixed, generateBalanceEquation20, generateTrickyAge],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -104,6 +105,43 @@ function generateRelationship(): Question {
   const sum = a + b;
   return makeQ('hard', `如果 ${a} + ${b} = ${sum}，那麼 ${sum} - ${a} = ?`, b,
     `加法和減法是相反的運算。${sum} - ${a} = ${b}`);
+}
+
+function generateReverseProblem20(): Question {
+  const left = randomInt(3, 10);
+  const gave = randomInt(3, 8);
+  const original = left + gave;
+  const prompt = `小明給了朋友 ${gave} 張貼紙後，自己還剩 ${left} 張。小明原來有幾張貼紙？`;
+  return makeQ('challenge', prompt, original, `剩 ${left} 張 + 給了 ${gave} 張 = 原來 ${original} 張`);
+}
+
+function generateChainMixed(): Question {
+  const a = randomInt(10, 18);
+  const b = randomInt(2, 4);
+  const c = randomInt(1, 3);
+  const d = randomInt(1, Math.min(3, a - b + c));
+  const ans = a - b + c - d;
+  const prompt = `${a} - ${b} + ${c} - ${d} = ?`;
+  return makeQ('challenge', prompt, ans, `先算 ${a} - ${b} = ${a - b}，加 ${c} = ${a - b + c}，再減 ${d} = ${ans}`);
+}
+
+function generateBalanceEquation20(): Question {
+  const a = randomInt(10, 18);
+  const b = randomInt(2, a - 2);
+  const result = a - b;
+  const c = randomInt(1, result - 1);
+  const ans = result - c;
+  const prompt = `${a} - ${b} = ${c} + ☐，☐ = ?`;
+  return makeQ('challenge', prompt, ans, `${a} - ${b} = ${result}，所以 ${c} + ☐ = ${result}，☐ = ${ans}`);
+}
+
+function generateTrickyAge(): Question {
+  const ming = randomInt(6, 8);
+  const diff = randomInt(2, 4);
+  const hua = ming + diff;
+  const total = ming + hua;
+  const prompt = `小明今年 ${ming} 歲，小華比小明大 ${diff} 歲。兩人年齡加起來一共幾歲？`;
+  return makeQ('challenge', prompt, total, `小華 = ${ming} + ${diff} = ${hua} 歲，兩人共 ${ming} + ${hua} = ${total} 歲`);
 }
 
 function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, explanation: string): Question {

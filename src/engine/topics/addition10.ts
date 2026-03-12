@@ -13,6 +13,7 @@ export function generateAddition10Questions(difficulty: DifficultyLevel, count: 
     easy: [generateSimple, generateWordProblemEasy, generatePictureCount],
     medium: [generateMissingAddend, generateThreeNumbers, generateWordProblemMedium, generateMakeTen],
     hard: [generateColumnForm, generateComparisonProblem, generateMultiStep, generateRelationship],
+    challenge: [generateMagicTriangle, generateChainAddition, generateReverseWordProblem, generateTrickyMissing],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -114,6 +115,46 @@ function generateRelationship(): Question {
   const prompt = `如果 ${ans} - ${a} = ${b}，那麼 ${a} + ${b} = ?`;
   return makeQuestion('hard', prompt, ans, 0, 10,
     `加法和減法是相反的運算。${a} + ${b} = ${ans}`);
+}
+
+function generateMagicTriangle(): Question {
+  // Three numbers on triangle sides that sum to same total
+  const a = randomInt(1, 3);
+  const b = randomInt(1, 3);
+  const c = randomInt(1, Math.min(3, 10 - a - b));
+  const total = a + b + c;
+  const prompt = `三角形的三個角分別是 ${a}、${b} 和 ☐。三個數加起來等於 ${total}。☐ = ?`;
+  return makeQuestion('challenge', prompt, c, 0, 10, `${a} + ${b} + ☐ = ${total}，所以 ☐ = ${total} - ${a} - ${b} = ${c}`);
+}
+
+function generateChainAddition(): Question {
+  const a = randomInt(1, 3);
+  const b = randomInt(1, 3);
+  const c = randomInt(1, Math.min(2, 10 - a - b));
+  const d = randomInt(1, Math.min(2, 10 - a - b - c));
+  const ans = a + b + c + d;
+  const prompt = `${a} + ${b} + ${c} + ${d} = ?`;
+  return makeQuestion('challenge', prompt, ans, 0, 10, `${a} + ${b} + ${c} + ${d} = ${ans}`);
+}
+
+function generateReverseWordProblem(): Question {
+  const total = randomInt(6, 10);
+  const a = randomInt(2, total - 2);
+  const b = total - a;
+  const prompt = `小明和小華一共有 ${total} 顆糖。小明有 ${a} 顆。小華有幾顆？如果小華再給小明 1 顆，小明會有幾顆？`;
+  const ans = a + 1;
+  return makeQuestion('challenge', prompt, ans, 0, 10,
+    `小華有 ${b} 顆。小華給小明 1 顆後，小明有 ${a} + 1 = ${ans} 顆`);
+}
+
+function generateTrickyMissing(): Question {
+  const a = randomInt(1, 4);
+  const b = randomInt(1, 4);
+  const c = randomInt(1, Math.min(4, 10 - a - b));
+  const sum = a + b;
+  const prompt = `如果 ☐ + ${b} = ${sum}，而且 ${sum} + ${c} = ${sum + c}，那麼 ☐ + ${b} + ${c} = ?`;
+  const ans = sum + c;
+  return makeQuestion('challenge', prompt, ans, 0, 10, `☐ = ${a}，所以 ${a} + ${b} + ${c} = ${ans}`);
 }
 
 function makeQuestion(difficulty: DifficultyLevel, prompt: string, correct: number, min: number, max: number, explanation: string): Question {

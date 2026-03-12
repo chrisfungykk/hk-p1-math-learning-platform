@@ -41,6 +41,9 @@ export function generateComposingShapesQuestions(difficulty: DifficultyLevel, co
       case 'hard':
         questions.push([generateCuttingProblem, generateMultiStepCompose, generateSpatialReasoning][randomInt(0, 2)]());
         break;
+      case 'challenge':
+        questions.push([generateTangramPuzzle, generateDecompositionCount, generateShapeCombinationLogic, generateMultiCutPuzzle][randomInt(0, 3)]());
+        break;
     }
   }
   return questions;
@@ -184,4 +187,74 @@ function generateSpatialReasoning(): Question {
   const s = scenarios[randomInt(0, scenarios.length - 1)];
   const pool = s.pool ?? ALL_SHAPES;
   return makeComposeQuestion('hard', s.prompt, s.correct, pool, s.explanation);
+}
+
+// --- Challenge (HKIMO-style) ---
+
+function generateTangramPuzzle(): Question {
+  const scenarios = [
+    { prompt: '七巧板（tangram）一共有幾塊？', correct: '7塊', pool: ['5塊', '6塊', '7塊', '8塊'], explanation: '七巧板一共有7塊：5個三角形、1個正方形、1個平行四邊形。' },
+    { prompt: '七巧板中有幾個三角形？', correct: '5個', pool: ['3個', '4個', '5個', '6個'], explanation: '七巧板中有5個三角形（2大、1中、2小）。' },
+    { prompt: '用2個大三角形可以拼成什麼形狀？', correct: '正方形', pool: ['正方形', '圓形', '六邊形', '五邊形'], explanation: '2個大三角形可以拼成一個正方形。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  return makeComposeQuestion('challenge', s.prompt, s.correct, s.pool, s.explanation);
+}
+
+function generateDecompositionCount(): Question {
+  const scenarios = [
+    { prompt: '一個正方形最少剪幾刀可以分成4個三角形？', correct: '2刀', pool: ['1刀', '2刀', '3刀', '4刀'], explanation: '沿兩條對角線各剪一刀，共2刀，可以分成4個三角形。' },
+    { prompt: '一個長方形剪2刀（都是直線），最多可以分成幾個部分？', correct: '4個', pool: ['3個', '4個', '5個', '6個'], explanation: '2刀如果交叉剪，最多可以分成4個部分。' },
+    { prompt: '把一個三角形剪一刀，可以得到一個三角形和一個什麼形狀？', correct: '四邊形', pool: ['三角形', '四邊形', '圓形', '五邊形'], explanation: '三角形剪一刀可以得到一個三角形和一個四邊形。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  return makeComposeQuestion('challenge', s.prompt, s.correct, s.pool, s.explanation);
+}
+
+function generateShapeCombinationLogic(): Question {
+  const n = randomInt(3, 5);
+  const trianglesPerSquare = 2;
+  const trianglesPerHex = 6;
+  const scenarios = [
+    () => {
+      const total = n * trianglesPerSquare;
+      return {
+        prompt: `小明有 ${total} 個三角形。他最多可以拼成幾個正方形？`,
+        correct: `${n}個`,
+        pool: [`${n - 1}個`, `${n}個`, `${n + 1}個`, `${total}個`],
+        explanation: `每個正方形需要 2 個三角形。${total} ÷ 2 = ${n} 個正方形。`,
+      };
+    },
+    () => {
+      const tri = randomInt(8, 12);
+      const squares = Math.floor(tri / trianglesPerSquare);
+      return {
+        prompt: `小華有 ${tri} 個三角形。她拼了盡量多的正方形後，還剩幾個三角形？`,
+        correct: `${tri % trianglesPerSquare}個`,
+        pool: ['0個', '1個', '2個', '3個'],
+        explanation: `${tri} ÷ 2 = ${squares} 餘 ${tri % trianglesPerSquare}。還剩 ${tri % trianglesPerSquare} 個三角形。`,
+      };
+    },
+    () => {
+      return {
+        prompt: `拼一個六邊形需要 6 個三角形。拼 2 個六邊形需要幾個三角形？`,
+        correct: `${2 * trianglesPerHex}個`,
+        pool: [`${trianglesPerHex}個`, `${2 * trianglesPerHex}個`, `${2 * trianglesPerHex + 2}個`, `${3 * trianglesPerHex}個`],
+        explanation: `2 × 6 = ${2 * trianglesPerHex} 個三角形。`,
+      };
+    },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)]();
+  return makeComposeQuestion('challenge', s.prompt, s.correct, s.pool, s.explanation);
+}
+
+function generateMultiCutPuzzle(): Question {
+  const scenarios = [
+    { prompt: '一張紙對摺一次再剪一刀，打開後最多有幾個部分？', correct: '3個', pool: ['2個', '3個', '4個', '5個'], explanation: '對摺一次再剪一刀，打開後最多可以得到3個部分。' },
+    { prompt: '一個正方形剪去一個角，剩下的形狀有幾條邊？', correct: '5條', pool: ['3條', '4條', '5條', '6條'], explanation: '正方形剪去一個角後，變成五邊形，有5條邊。' },
+    { prompt: '一個長方形剪去一個角，剩下的形狀有幾個角？', correct: '5個', pool: ['3個', '4個', '5個', '6個'], explanation: '長方形剪去一個角後，變成五邊形，有5個角。' },
+    { prompt: '把一個圓形對摺兩次，再剪掉尖角，打開後是什麼形狀？', correct: '正方形', pool: ['三角形', '正方形', '圓形', '菱形'], explanation: '圓形對摺兩次剪掉尖角，打開後是正方形（中間有正方形的洞）。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  return makeComposeQuestion('challenge', s.prompt, s.correct, s.pool, s.explanation);
 }

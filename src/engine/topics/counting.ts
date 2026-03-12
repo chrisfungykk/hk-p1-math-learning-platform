@@ -17,6 +17,7 @@ export function generateCountingQuestions(difficulty: DifficultyLevel, count: nu
     easy: [() => generateCountObjects('easy'), generateWhichNumber, generateNextPrev],
     medium: [generateOrdinal, generateTensUnits, generateSkipCount2, generateCompareCount],
     hard: [generatePlaceValue100, generateSkipCount510, generatePatternRecognition, generateBeforeAfter100],
+    challenge: [generateGrowingPattern, generatePlaceValuePuzzle, generateOddEvenLogic, generateNumberBond],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -153,6 +154,48 @@ function generateBeforeAfter100(): Question {
   const label = isBefore ? '前面' : '後面';
   return makeQ('hard', 'counting', `${n} 的${label}一個數是什麼？`, ans, 1, 100,
     `${n} 的${label}一個數是 ${ans}。`);
+}
+
+function generateGrowingPattern(): Question {
+  const patterns = [
+    { seq: [1, 2, 4, 7, 11], ans: 16, rule: '差值每次加1（+1,+2,+3,+4,+5）' },
+    { seq: [1, 3, 6, 10], ans: 15, rule: '差值每次加1（+2,+3,+4,+5）' },
+    { seq: [2, 4, 8, 14], ans: 22, rule: '差值每次加2（+2,+4,+6,+8）' },
+    { seq: [100, 90, 81, 73], ans: 66, rule: '差值每次減1（-10,-9,-8,-7）' },
+    { seq: [1, 1, 2, 3, 5], ans: 8, rule: '前兩個數相加得下一個數' },
+  ];
+  const p = patterns[randomInt(0, patterns.length - 1)];
+  return makeQ('challenge', 'counting', `找出規律，下一個數字是什麼？\n${p.seq.join(', ')}, ?`, p.ans, 0, 100,
+    `規律：${p.rule}，所以下一個數字是 ${p.ans}。`);
+}
+
+function generatePlaceValuePuzzle(): Question {
+  const tens = randomInt(2, 8);
+  const units = randomInt(1, 9);
+  const num = tens * 10 + units;
+  const reversed = units * 10 + tens;
+  const prompt = `一個兩位數，十位是 ${tens}，個位是 ${units}。把十位和個位的數字對調後，新的數是什麼？`;
+  return makeQ('challenge', 'counting', prompt, reversed, 10, 99,
+    `原數是 ${num}，對調後十位是 ${units}，個位是 ${tens}，新數是 ${reversed}。`);
+}
+
+function generateOddEvenLogic(): Question {
+  const scenarios = [
+    { prompt: '從 1 到 10，一共有幾個單數（奇數）？', correct: 5, exp: '1, 3, 5, 7, 9 共 5 個單數。' },
+    { prompt: '從 1 到 10，一共有幾個雙數（偶數）？', correct: 5, exp: '2, 4, 6, 8, 10 共 5 個雙數。' },
+    { prompt: '從 1 到 20，一共有幾個 5 的倍數？', correct: 4, exp: '5, 10, 15, 20 共 4 個。' },
+    { prompt: '10 到 20 之間（不包括 10 和 20），有幾個整數？', correct: 9, exp: '11, 12, 13, 14, 15, 16, 17, 18, 19 共 9 個。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  return makeQ('challenge', 'counting', s.prompt, s.correct, 0, 20, s.exp);
+}
+
+function generateNumberBond(): Question {
+  const target = randomInt(15, 30);
+  const a = randomInt(5, target - 5);
+  const b = target - a;
+  const prompt = `兩個數加起來等於 ${target}。其中一個數是 ${a}，另一個數是什麼？`;
+  return makeQ('challenge', 'counting', prompt, b, 0, 100, `${a} + ☐ = ${target}，☐ = ${target} - ${a} = ${b}`);
 }
 
 function makeQ(difficulty: DifficultyLevel, topicId: string, prompt: string, correct: number, min: number, max: number, explanation: string): Question {

@@ -17,6 +17,7 @@ export const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = {
   easy: '容易',
   medium: '中等',
   hard: '困難',
+  challenge: '挑戰',
 };
 
 export const STORAGE_KEY = 'hk-p1-math-platform';

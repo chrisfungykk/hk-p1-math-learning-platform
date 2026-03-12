@@ -14,6 +14,7 @@ export function generateAddition20Questions(difficulty: DifficultyLevel, count: 
     easy: [generateSimple, generateWordEasy, generatePictureAdd],
     medium: [generateMissingAddend, generateCrossTen, generateColumnForm, generateWordMedium],
     hard: [generateCarrying, generateThreeNumbers, generateComparison, generateWordHard, generateRelationship],
+    challenge: [generateDoubleEquation, generateChainFour, generateTrickyWordProblem, generateBalanceProblem],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -120,6 +121,50 @@ function generateRelationship(): Question {
   const sum = a + b;
   return makeQ('hard', `如果 ${sum} - ${b} = ${a}，那麼 ${a} + ${b} = ?`, sum,
     `加法和減法是相反的運算。${a} + ${b} = ${sum}`);
+}
+
+function generateDoubleEquation(): Question {
+  const a = randomInt(3, 8);
+  const b = randomInt(3, Math.min(8, 18 - a));
+  const sum = a + b;
+  const c = randomInt(1, sum - 1);
+  const ans = sum - c;
+  const prompt = `如果 ${a} + ${b} = ${c} + ☐，那麼 ☐ = ?`;
+  return makeQ('challenge', prompt, ans, `${a} + ${b} = ${sum}，所以 ${c} + ☐ = ${sum}，☐ = ${ans}`);
+}
+
+function generateChainFour(): Question {
+  const a = randomInt(2, 5);
+  const b = randomInt(2, 4);
+  const c = randomInt(1, 3);
+  const d = randomInt(1, Math.min(3, 18 - a - b - c));
+  const ans = a + b + c + d;
+  return makeQ('challenge', `${a} + ${b} + ${c} + ${d} = ?`, ans, `${a} + ${b} + ${c} + ${d} = ${ans}`);
+}
+
+function generateTrickyWordProblem(): Question {
+  const gave = randomInt(3, 7);
+  const left = randomInt(3, Math.min(8, 18 - gave));
+  const original = gave + left;
+  const prompt = `小明給了弟弟 ${gave} 顆糖後，自己還剩 ${left} 顆。小明原來有幾顆糖？`;
+  return makeQ('challenge', prompt, original, `給了 ${gave} 顆，剩 ${left} 顆，原來有 ${gave} + ${left} = ${original} 顆`);
+}
+
+function generateBalanceProblem(): Question {
+  const a = randomInt(5, 9);
+  const b = randomInt(5, Math.min(9, 18 - a));
+  const sum = a + b;
+  const prompt = `☐ + ☐ = ${sum}，兩個 ☐ 是同一個數。☐ = ?`;
+  if (sum % 2 === 0) {
+    const ans = sum / 2;
+    return makeQ('challenge', prompt, ans, `☐ + ☐ = ${sum}，所以 ☐ = ${sum} ÷ 2 = ${ans}`);
+  }
+  // If odd, use a different question
+  const x = randomInt(3, 8);
+  const y = randomInt(3, Math.min(8, 18 - x));
+  const s = x + y;
+  const prompt2 = `${x} + ☐ = ☐ + ${x}，☐ 可以是任何數。如果 ☐ = ${y}，那麼 ${x} + ${y} = ?`;
+  return makeQ('challenge', prompt2, s, `${x} + ${y} = ${s}`);
 }
 
 function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, explanation: string): Question {

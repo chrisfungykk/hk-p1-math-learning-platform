@@ -20,6 +20,9 @@ export function generateOrderingQuestions(difficulty: DifficultyLevel, count: nu
       case 'hard':
         questions.push([() => generateNextNumber('hard'), () => generateMissingNumber('hard'), generatePatternRecognition][randomInt(0, 2)]());
         break;
+      case 'challenge':
+        questions.push([generateGrowingPattern, generateAlternatingSequence, generateDoubleRule, generateReverseSequence][randomInt(0, 3)]());
+        break;
     }
   }
   return questions;
@@ -134,4 +137,60 @@ function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, ste
     id: generateId(), topicId: 'ordering-sequences', difficulty, prompt, options,
     correctAnswerIndex: options.indexOf(correct.toString()), explanation, graphicType: 'sequence',
   };
+}
+
+// --- Challenge (HKIMO-style) ---
+
+function generateGrowingPattern(): Question {
+  // Differences grow: +1, +2, +3, +4...
+  const patterns = [
+    { seq: [1, 2, 4, 7, 11], ans: 16, rule: '差值每次加1（+1, +2, +3, +4, +5）' },
+    { seq: [2, 3, 5, 8, 12], ans: 17, rule: '差值每次加1（+1, +2, +3, +4, +5）' },
+    { seq: [1, 3, 6, 10], ans: 15, rule: '差值每次加1（+2, +3, +4, +5）' },
+    { seq: [3, 4, 6, 9, 13], ans: 18, rule: '差值每次加1（+1, +2, +3, +4, +5）' },
+  ];
+  const p = patterns[randomInt(0, patterns.length - 1)];
+  const prompt = `找出規律，下一個數字是什麼？\n${p.seq.join(', ')}, ?`;
+  return makeQ('challenge', prompt, p.ans, 1, `規律：${p.rule}，所以下一個數字是 ${p.ans}。`);
+}
+
+function generateAlternatingSequence(): Question {
+  // Two interleaved sequences
+  const a1 = randomInt(1, 3);
+  const b1 = randomInt(10, 12);
+  const stepA = randomInt(1, 2);
+  const stepB = randomInt(1, 2);
+  const seq = [a1, b1, a1 + stepA, b1 + stepB, a1 + 2 * stepA, b1 + 2 * stepB];
+  const ans = a1 + 3 * stepA;
+  const prompt = `找出規律，下一個數字是什麼？\n${seq.join(', ')}, ?`;
+  return makeQ('challenge', prompt, ans, 1,
+    `這是兩組交替的數列：${a1}, ${a1 + stepA}, ${a1 + 2 * stepA}...（每次+${stepA}）和 ${b1}, ${b1 + stepB}, ${b1 + 2 * stepB}...（每次+${stepB}）。下一個是 ${ans}。`);
+}
+
+function generateDoubleRule(): Question {
+  // Doubling pattern
+  const patterns = [
+    { seq: [1, 2, 4, 8], ans: 16, rule: '每次乘以2' },
+    { seq: [2, 4, 8, 16], ans: 32, rule: '每次乘以2' },
+    { seq: [3, 6, 12, 24], ans: 48, rule: '每次乘以2' },
+    { seq: [1, 3, 9, 27], ans: 81, rule: '每次乘以3' },
+  ];
+  const p = patterns[randomInt(0, patterns.length - 1)];
+  const prompt = `找出規律，下一個數字是什麼？\n${p.seq.join(', ')}, ?`;
+  return makeQ('challenge', prompt, p.ans, 1, `規律：${p.rule}，所以下一個數字是 ${p.ans}。`);
+}
+
+function generateReverseSequence(): Question {
+  // Given last number and rule, find first
+  const step = randomInt(2, 4);
+  const length = randomInt(4, 5);
+  const last = randomInt(15, 25);
+  const first = last - (length - 1) * step;
+  const seq: string[] = ['?'];
+  for (let i = 1; i < length; i++) {
+    seq.push(`${first + i * step}`);
+  }
+  const prompt = `這個數列每次增加 ${step}：\n${seq.join(', ')}\n第一個數字是什麼？`;
+  return makeQ('challenge', prompt, first, 1,
+    `最後一個數是 ${last}，每次加 ${step}，往回推 ${length - 1} 步：${last} - ${(length - 1) * step} = ${first}。`);
 }

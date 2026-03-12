@@ -14,6 +14,7 @@ export function generateCoinsNotesQuestions(difficulty: DifficultyLevel, count: 
     easy: [generateIdentify, generateSimpleValue, generateCoinRecognition],
     medium: [generateCountMixed, generateSimplePurchase, generateWhichMore],
     hard: [generateMakeChange, generateMultiItem, generateEnoughMoney, generateExactAmount],
+    challenge: [generateMinCoins, generateMultiItemChange, generateCoinPuzzle, generateTrickyPurchase],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -174,4 +175,76 @@ function generateExactAmount(): Question {
     correctAnswerIndex: options.indexOf(s.correct),
     explanation: `${s.coins} 剛好是 ${target} 元，所以${s.correct}。`, graphicType: 'money',
   };
+}
+
+// --- Challenge (HKIMO-style) ---
+
+function generateMinCoins(): Question {
+  const target = randomInt(6, 15);
+  // Greedy: 10, 5, 2, 1
+  let remaining = target;
+  let coins = 0;
+  for (const val of [10, 5, 2, 1]) {
+    coins += Math.floor(remaining / val);
+    remaining = remaining % val;
+  }
+  const correct = `${coins}個`;
+  const pool = [`${coins}個`, `${coins + 1}個`, `${coins - 1 > 0 ? coins - 1 : coins + 2}個`, `${coins + 2}個`];
+  return makeMoneyQ('challenge',
+    `用最少的硬幣付 ${target} 元（只用 1元、2元、5元、10元硬幣），最少要幾個硬幣？`,
+    correct, pool,
+    `用最少硬幣付 ${target} 元需要 ${coins} 個硬幣。`);
+}
+
+function generateMultiItemChange(): Question {
+  const price1 = randomInt(2, 5);
+  const price2 = randomInt(2, 5);
+  const total = price1 + price2;
+  const paid = total <= 10 ? 10 : 20;
+  const change = paid - total;
+  const prompt = `鉛筆 ${price1} 元，橡皮擦 ${price2} 元。小明買了這兩樣東西，付了 ${paid} 元。應找回多少錢？`;
+  const correct = `${change}元`;
+  return makeMoneyQ('challenge', prompt, correct,
+    [`${change}元`, `${change + 1}元`, `${Math.max(0, change - 1)}元`, `${total}元`],
+    `${price1} + ${price2} = ${total} 元。${paid} - ${total} = ${change} 元。`);
+}
+
+function generateCoinPuzzle(): Question {
+  // How many ways to make a small amount
+  const scenarios = [
+    { prompt: '用 1元和 2元硬幣湊出 4 元，有幾種不同的方法？', correct: '3種', pool: ['2種', '3種', '4種', '5種'], explanation: '方法：4個1元；2個1元+1個2元；2個2元。共3種。' },
+    { prompt: '用 1元和 2元硬幣湊出 3 元，有幾種不同的方法？', correct: '2種', pool: ['1種', '2種', '3種', '4種'], explanation: '方法：3個1元；1個1元+1個2元。共2種。' },
+    { prompt: '用 1元和 2元硬幣湊出 5 元，有幾種不同的方法？', correct: '3種', pool: ['2種', '3種', '4種', '5種'], explanation: '方法：5個1元；3個1元+1個2元；1個1元+2個2元。共3種。' },
+    { prompt: '小明有3個硬幣，一共是 7 元。他有哪些硬幣？', correct: '5元+1元+1元', pool: ['5元+1元+1元', '2元+2元+2元', '5元+2元+1元', '10元+1元+1元'], explanation: '5 + 1 + 1 = 7 元，用3個硬幣。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  const options = shuffleArray(s.pool);
+  return {
+    id: generateId(), topicId: 'coins-notes', difficulty: 'challenge', prompt: s.prompt, options,
+    correctAnswerIndex: options.indexOf(s.correct), explanation: s.explanation, graphicType: 'money',
+  };
+}
+
+function generateTrickyPurchase(): Question {
+  const money = randomInt(8, 15);
+  const price1 = randomInt(3, 6);
+  const price2 = randomInt(3, 6);
+  const total = price1 + price2;
+  const enough = money >= total;
+  const prompt = `小明有 ${money} 元。蘋果 ${price1} 元，香蕉 ${price2} 元。他買了一個蘋果和一條香蕉後，還剩多少錢？`;
+  if (!enough) {
+    const correct = '不夠錢買';
+    const options = shuffleArray(['不夠錢買', `${money - total}元`, `${total}元`, `${money}元`]);
+    return {
+      id: generateId(), topicId: 'coins-notes', difficulty: 'challenge', prompt, options,
+      correctAnswerIndex: options.indexOf(correct),
+      explanation: `${price1} + ${price2} = ${total} 元 > ${money} 元，不夠錢買。`,
+      graphicType: 'money',
+    };
+  }
+  const remaining = money - total;
+  const correct = `${remaining}元`;
+  return makeMoneyQ('challenge', prompt, correct,
+    [`${remaining}元`, `${remaining + 1}元`, `${Math.max(0, remaining - 1)}元`, `${total}元`],
+    `${price1} + ${price2} = ${total} 元。${money} - ${total} = ${remaining} 元。`);
 }

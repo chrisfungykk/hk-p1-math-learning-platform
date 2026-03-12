@@ -18,7 +18,7 @@ describe('Property 1: Question generator produces valid questions', () => {
     fc.assert(
       fc.property(
         fc.constantFrom(...ALL_TOPIC_IDS),
-        fc.constantFrom<DifficultyLevel>('easy', 'medium', 'hard'),
+        fc.constantFrom<DifficultyLevel>('easy', 'medium', 'hard', 'challenge'),
         fc.integer({ min: 1, max: 10 }),
         (topicId, difficulty, count) => {
           const questions = generateQuestions({ topicId, difficulty, count });
@@ -58,7 +58,7 @@ describe('Property 8: Difficulty level scales numeric range', () => {
         (topicId) => {
           const questionsPerLevel = 20;
 
-          for (const difficulty of ['easy', 'medium', 'hard'] as DifficultyLevel[]) {
+          for (const difficulty of ['easy', 'medium', 'hard', 'challenge'] as DifficultyLevel[]) {
             const questions = generateQuestions({ topicId, difficulty, count: questionsPerLevel });
             expect(questions.length).toBe(questionsPerLevel);
             for (const q of questions) {

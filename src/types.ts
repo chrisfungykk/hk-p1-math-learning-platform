@@ -1,6 +1,6 @@
 import type React from 'react';
 
-export type DifficultyLevel = 'easy' | 'medium' | 'hard';
+export type DifficultyLevel = 'easy' | 'medium' | 'hard' | 'challenge';
 
 export interface Question {
   id: string;

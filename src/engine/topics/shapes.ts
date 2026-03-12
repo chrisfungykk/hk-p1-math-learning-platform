@@ -46,6 +46,7 @@ export function generateShapesQuestions(difficulty: DifficultyLevel, count: numb
     easy: [generateIdentifyQuestion, generateCountSidesEasy, generateWhichShapeEasy],
     medium: [generatePropertyQuestion, generate3DRecognition, generateCompareShapes, generateTrueFalseStyle],
     hard: [generateSortByProperty, generate3DProperties, generateWordProblem, generateMultiPropertyQuestion],
+    challenge: [generateSymmetryPuzzle, generateNetFolding, generate3DFaceCounting, generateShapeLogicPuzzle],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -59,6 +60,7 @@ function getAvailableShapes(difficulty: DifficultyLevel): ShapeInfo[] {
     case 'easy': return BASIC_2D;
     case 'medium': return [...BASIC_2D, ...ADVANCED_2D];
     case 'hard': return [...BASIC_2D, ...ADVANCED_2D];
+    case 'challenge': return [...BASIC_2D, ...ADVANCED_2D];
   }
 }
 
@@ -202,4 +204,64 @@ function generateMultiPropertyQuestion(): Question {
     options, correctAnswerIndex: options.indexOf(s.correct),
     explanation: s.exp, graphicType: 'shape',
   };
+}
+
+// --- Challenge (HKIMO-style) ---
+
+function generateSymmetryPuzzle(): Question {
+  const scenarios = [
+    { prompt: '以下哪個形狀是對稱的？（左右兩邊一樣）', correct: '正方形', explanation: '正方形是對稱的，左右兩邊完全一樣。' },
+    { prompt: '以下哪個形狀有最多對稱線？', correct: '圓形', explanation: '圓形有無數條對稱線，任何直徑都是對稱線。' },
+    { prompt: '長方形有幾條對稱線？', correct: '2條', explanation: '長方形有2條對稱線（橫的和直的各一條）。' },
+    { prompt: '正方形有幾條對稱線？', correct: '4條', explanation: '正方形有4條對稱線（橫、直、兩條對角線）。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  const pool = s.correct.includes('條')
+    ? ['1條', '2條', '3條', '4條']
+    : [...BASIC_2D, ...ADVANCED_2D].map(sh => sh.name);
+  return makeShapeQuestion('challenge', s.prompt, s.correct, pool, s.explanation);
+}
+
+function generateNetFolding(): Question {
+  const scenarios = [
+    { prompt: '把一個正方體展開，可以得到幾個正方形？', correct: '6個', pool: ['4個', '5個', '6個', '8個'], explanation: '正方體有6個面，展開後得到6個正方形。' },
+    { prompt: '以下哪個展開圖可以摺成正方體？', correct: '十字形', pool: ['十字形', '一字形', '圓形', '三角形'], explanation: '十字形的展開圖可以摺成正方體。' },
+    { prompt: '圓柱體展開後，側面是什麼形狀？', correct: '長方形', pool: ['正方形', '長方形', '圓形', '三角形'], explanation: '圓柱體的側面展開後是一個長方形。' },
+    { prompt: '長方體展開後，最多有幾個不同大小的長方形？', correct: '3種', pool: ['1種', '2種', '3種', '6種'], explanation: '長方體有3對面，每對大小相同，所以最多有3種不同大小的長方形。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  const options = shuffleArray(s.pool);
+  return {
+    id: generateId(), topicId: 'shapes', difficulty: 'challenge', prompt: s.prompt,
+    options, correctAnswerIndex: options.indexOf(s.correct),
+    explanation: s.explanation, graphicType: 'shape',
+  };
+}
+
+function generate3DFaceCounting(): Question {
+  const scenarios = [
+    { prompt: '把2個正方體疊在一起，從外面能看到幾個面？', correct: '10個', pool: ['8個', '10個', '12個', '6個'], explanation: '2個正方體共12個面，疊在一起有2個面被遮住，所以能看到 12 - 2 = 10 個面。' },
+    { prompt: '一個正方體有幾條邊？', correct: '12條', pool: ['6條', '8條', '10條', '12條'], explanation: '正方體有12條邊。' },
+    { prompt: '一個正方體有幾個頂點？', correct: '8個', pool: ['4個', '6個', '8個', '12個'], explanation: '正方體有8個頂點。' },
+    { prompt: '圓錐體有幾個頂點？', correct: '1個', pool: ['0個', '1個', '2個', '3個'], explanation: '圓錐體只有1個尖頂。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  const options = shuffleArray(s.pool);
+  return {
+    id: generateId(), topicId: 'shapes', difficulty: 'challenge', prompt: s.prompt,
+    options, correctAnswerIndex: options.indexOf(s.correct),
+    explanation: s.explanation, graphicType: 'shape',
+  };
+}
+
+function generateShapeLogicPuzzle(): Question {
+  const scenarios = [
+    { prompt: '小明說：「我想的形狀有4條邊，但不是長方形，邊都一樣長，角不是直角。」他想的是什麼形狀？', correct: '菱形', explanation: '菱形有4條一樣長的邊，但角不是直角，符合所有條件。' },
+    { prompt: '一個形狀有3條邊和3個角，它是什麼形狀？', correct: '三角形', explanation: '有3條邊和3個角的形狀是三角形。' },
+    { prompt: '小華說：「我想的立體可以滾動，有2個平面。」她想的是什麼？', correct: '圓柱體', explanation: '圓柱體可以滾動，有2個圓形的平面。' },
+    { prompt: '一個形狀沒有邊也沒有角，但不是立體。它是什麼？', correct: '圓形', explanation: '圓形是平面圖形，沒有邊也沒有角。' },
+  ];
+  const s = scenarios[randomInt(0, scenarios.length - 1)];
+  return makeShapeQuestion('challenge', s.prompt, s.correct,
+    [...BASIC_2D, ...ADVANCED_2D, ...SHAPES_3D].map(sh => sh.name), s.explanation);
 }

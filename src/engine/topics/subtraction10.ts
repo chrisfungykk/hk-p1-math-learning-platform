@@ -13,6 +13,7 @@ export function generateSubtraction10Questions(difficulty: DifficultyLevel, coun
     easy: [generateSimple, generateWordEasy, generatePictureSubtract],
     medium: [generateMissing, generateHowManyMore, generateWordMedium, generateFromTen],
     hard: [generateColumnForm, generateMultiStep, generateRelationship, generateComparison],
+    challenge: [generateChainSubtract, generateTrickyComparison, generateReverseProblem, generateBalanceEquation],
   };
   const gens = generators[difficulty];
   for (let i = 0; i < count; i++) {
@@ -107,6 +108,43 @@ function generateComparison(): Question {
   const b = a - fewer;
   return makeQ('hard', `哥哥有 ${a} 顆糖，弟弟比哥哥少 ${fewer} 顆。弟弟有幾顆糖？`, b,
     `${a} - ${fewer} = ${b}，弟弟有 ${b} 顆糖`);
+}
+
+function generateChainSubtract(): Question {
+  const a = randomInt(8, 10);
+  const b = randomInt(1, 3);
+  const c = randomInt(1, Math.min(2, a - b - 1));
+  const d = randomInt(1, Math.min(2, a - b - c));
+  const ans = a - b - c - d;
+  return makeQ('challenge', `${a} - ${b} - ${c} - ${d} = ?`, ans, `${a} - ${b} - ${c} - ${d} = ${ans}`);
+}
+
+function generateTrickyComparison(): Question {
+  const ming = randomInt(3, 7);
+  const hua = randomInt(3, 7);
+  const diff = Math.abs(ming - hua);
+  const who = ming > hua ? '小明' : ming < hua ? '小華' : '一樣多';
+  const prompt = `小明有 ${ming} 顆糖，小華有 ${hua} 顆糖。誰的糖比較多？多幾顆？`;
+  return makeQ('challenge', prompt, diff,
+    ming === hua ? '一樣多，相差 0 顆' : `${who}多 ${diff} 顆`);
+}
+
+function generateReverseProblem(): Question {
+  const ans = randomInt(3, 8);
+  const taken = randomInt(1, 3);
+  const original = ans + taken;
+  const prompt = `小明吃了 ${taken} 個蘋果後，還剩 ${ans} 個。他原來有幾個蘋果？`;
+  return makeQ('challenge', prompt, original, `還剩 ${ans} 個，吃了 ${taken} 個，原來有 ${ans} + ${taken} = ${original} 個`);
+}
+
+function generateBalanceEquation(): Question {
+  const a = randomInt(2, 5);
+  const b = randomInt(2, 5);
+  const sum = a + b;
+  const c = randomInt(1, sum - 1);
+  const ans = sum - c;
+  const prompt = `${a} + ${b} = ${c} + ☐，☐ = ?`;
+  return makeQ('challenge', prompt, ans, `${a} + ${b} = ${sum}，所以 ${c} + ☐ = ${sum}，☐ = ${ans}`);
 }
 
 function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, explanation: string): Question {

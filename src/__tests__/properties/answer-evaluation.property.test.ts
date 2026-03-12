@@ -17,7 +17,7 @@ function arbitraryQuestion(): fc.Arbitrary<Question> {
       fc.record({
         id: fc.uuid(),
         topicId: fc.constantFrom('counting', 'addition-10', 'subtraction-10', 'shapes'),
-        difficulty: fc.constantFrom<DifficultyLevel>('easy', 'medium', 'hard'),
+        difficulty: fc.constantFrom<DifficultyLevel>('easy', 'medium', 'hard', 'challenge'),
         prompt: fc.string({ minLength: 1 }),
         options: fc.array(fc.string({ minLength: 1 }), {
           minLength: optionsLength,
@@ -98,7 +98,7 @@ describe('Property 4: Score record completeness', () => {
             fc.constant(null as string | null)
           ),
           semester: fc.constantFrom<'sem1' | 'sem2'>('sem1', 'sem2'),
-          difficulty: fc.constantFrom<DifficultyLevel>('easy', 'medium', 'hard'),
+          difficulty: fc.constantFrom<DifficultyLevel>('easy', 'medium', 'hard', 'challenge'),
           totalQuestions: fc.integer({ min: 1, max: 30 }),
           isExamPrep: fc.boolean(),
         }).chain((base) =>
@@ -122,7 +122,7 @@ describe('Property 4: Score record completeness', () => {
           expect(['sem1', 'sem2']).toContain(record.semester);
 
           // difficulty must be valid
-          expect(['easy', 'medium', 'hard']).toContain(record.difficulty);
+          expect(['easy', 'medium', 'hard', 'challenge']).toContain(record.difficulty);
 
           // score must be between 0 and totalQuestions inclusive
           expect(record.score).toBeGreaterThanOrEqual(0);
