@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { generateQuestions } from '../questionGenerator';
 import type { DifficultyLevel } from '../../types';
 
-const SEM1_TOPICS = ['counting', 'addition-10', 'subtraction-10', 'shapes', 'compare-length-height', 'ordering-sequences'];
+const SEM1_TOPICS = ['counting', 'addition-10', 'subtraction-10', 'addition-20', 'subtraction-20', 'ordering-sequences'];
 const DIFFICULTIES: DifficultyLevel[] = ['easy', 'medium', 'hard'];
 
 describe('Semester 1 topic generators sanity check', () => {

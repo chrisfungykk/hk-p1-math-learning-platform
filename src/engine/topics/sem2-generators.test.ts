@@ -5,6 +5,8 @@ import { generateTellingTimeQuestions } from './tellingTime';
 import { generateCoinsNotesQuestions } from './coinsNotes';
 import { generateComposingShapesQuestions } from './composingShapes';
 import { generateDataHandlingQuestions } from './dataHandling';
+import { generateShapesQuestions } from './shapes';
+import { generateCompareLengthQuestions } from './compareLength';
 import type { DifficultyLevel, Question } from '../../types';
 
 const difficulties: DifficultyLevel[] = ['easy', 'medium', 'hard'];
@@ -91,6 +93,30 @@ describe('Semester 2 topic generators', () => {
         assertValidQuestions(qs, 'data-handling', d, 5);
         for (const q of qs) {
           expect(q.graphicType).toBe('pictogram');
+        }
+      });
+    }
+  });
+
+  describe('shapes', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateShapesQuestions(d, 5);
+        assertValidQuestions(qs, 'shapes', d, 5);
+        for (const q of qs) {
+          expect(q.graphicType).toBe('shape');
+        }
+      });
+    }
+  });
+
+  describe('compareLength', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateCompareLengthQuestions(d, 5);
+        assertValidQuestions(qs, 'compare-length-height', d, 5);
+        for (const q of qs) {
+          expect(q.graphicType).toBe('comparison');
         }
       });
     }

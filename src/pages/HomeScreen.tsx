@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SEMESTERS } from '../constants';
 import { TOPIC_REGISTRY } from '../data/topicRegistry';
@@ -32,8 +33,18 @@ const CARD_COLORS = [
   'from-teal-400 to-cyan-400',
 ];
 
+const SEMESTER_STYLES: Record<string, { bg: string; text: string; border: string }> = {
+  sem1: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  sem2: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
+};
+
 export default function HomeScreen() {
-  const semester = SEMESTERS[0];
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({
+    sem1: true,
+    sem2: false,
+  });
+
+  const toggle = (id: string) => setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
 
   return (
     <div className="flex flex-col items-center gap-6 py-4">
@@ -42,10 +53,10 @@ export default function HomeScreen() {
       </h2>
       <p className="text-gray-500 text-sm">聖公會青衣主恩小學</p>
 
-      {/* Hero section — 考試準備 + 模擬試卷 side by side */}
+      {/* Hero section — 考試準備 + 模擬試卷 */}
       <div className="flex flex-col sm:flex-row gap-4 w-full max-w-3xl">
         <Link
-          to={`/exam/${semester.id}`}
+          to={`/exam/${SEMESTERS[0].id}`}
           className="flex-1 min-h-20 min-w-12 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xl md:text-2xl font-extrabold px-4 py-5 shadow-xl hover:scale-[1.03] transition-transform ring-2 ring-purple-300"
         >
           📝 考試準備
@@ -58,25 +69,44 @@ export default function HomeScreen() {
         </Link>
       </div>
 
-      {/* Topic grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full max-w-3xl">
-        {semester.topics.map((topicId, index) => {
-          const topic = TOPIC_REGISTRY[topicId];
-          if (!topic) return null;
-          const emoji = TOPIC_EMOJIS[topicId] ?? '📖';
-          const color = CARD_COLORS[index % CARD_COLORS.length];
-          return (
-            <Link
-              key={topicId}
-              to={`/learn/${topicId}`}
-              className={`min-h-28 min-w-12 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg hover:scale-105 transition-transform p-3`}
+      {/* Semester sections */}
+      {SEMESTERS.map((semester, semIdx) => {
+        const isOpen = expanded[semester.id] ?? false;
+        const style = SEMESTER_STYLES[semester.id] ?? SEMESTER_STYLES.sem1;
+        return (
+          <div key={semester.id} className={`w-full max-w-3xl rounded-2xl border-2 ${style.border} ${style.bg} overflow-hidden`}>
+            <button
+              onClick={() => toggle(semester.id)}
+              className={`w-full flex items-center justify-between px-5 py-4 ${style.text} font-extrabold text-xl md:text-2xl transition-colors hover:opacity-80`}
+              aria-expanded={isOpen}
             >
-              <span className="text-3xl mb-1">{emoji}</span>
-              <span className="text-base md:text-lg font-bold text-center leading-tight">{topic.name}</span>
-            </Link>
-          );
-        })}
-      </div>
+              <span>{semester.name}</span>
+              <span className="text-2xl transition-transform" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
+            </button>
+            {isOpen && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 px-4 pb-4">
+                {semester.topics.map((topicId, index) => {
+                  const topic = TOPIC_REGISTRY[topicId];
+                  if (!topic) return null;
+                  const emoji = TOPIC_EMOJIS[topicId] ?? '📖';
+                  const colorIdx = semIdx * 6 + index;
+                  const color = CARD_COLORS[colorIdx % CARD_COLORS.length];
+                  return (
+                    <Link
+                      key={topicId}
+                      to={`/learn/${topicId}`}
+                      className={`min-h-28 min-w-12 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg hover:scale-105 transition-transform p-3`}
+                    >
+                      <span className="text-3xl mb-1">{emoji}</span>
+                      <span className="text-base md:text-lg font-bold text-center leading-tight">{topic.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
 
       {/* Secondary action */}
       <div className="w-full max-w-3xl">
@@ -90,5 +120,3 @@ export default function HomeScreen() {
     </div>
   );
 }
-
-

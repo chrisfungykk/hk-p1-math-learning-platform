@@ -57,7 +57,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'shapes': {
     id: 'shapes',
     name: '認識形狀',
-    semester: 'sem1',
+    semester: 'sem2',
     animationComposition: ShapesAnimation,
     fallbackImage: '/fallbacks/shapes.svg',
     generateQuestions: generateShapesQuestions,
@@ -66,7 +66,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'compare-length-height': {
     id: 'compare-length-height',
     name: '比較長短和高矮',
-    semester: 'sem1',
+    semester: 'sem2',
     animationComposition: CompareLengthAnimation,
     fallbackImage: '/fallbacks/compare-length-height.svg',
     generateQuestions: generateCompareLengthQuestions,
@@ -100,7 +100,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'telling-time': {
     id: 'telling-time',
     name: '認識時間',
-    semester: 'sem1',
+    semester: 'sem2',
     animationComposition: TellingTimeAnimation,
     fallbackImage: '/fallbacks/telling-time.svg',
     generateQuestions: generateTellingTimeQuestions,
@@ -108,7 +108,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'coins-notes': {
     id: 'coins-notes',
     name: '認識貨幣',
-    semester: 'sem1',
+    semester: 'sem2',
     animationComposition: CoinsNotesAnimation,
     fallbackImage: '/fallbacks/coins-notes.svg',
     generateQuestions: generateCoinsNotesQuestions,
@@ -116,7 +116,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'composing-shapes': {
     id: 'composing-shapes',
     name: '圖形拼砌',
-    semester: 'sem1',
+    semester: 'sem2',
     animationComposition: ComposingShapesAnimation,
     fallbackImage: '/fallbacks/composing-shapes.svg',
     generateQuestions: generateComposingShapesQuestions,
@@ -124,7 +124,7 @@ export const TOPIC_REGISTRY: Record<string, TopicDefinition> = {
   'data-handling': {
     id: 'data-handling',
     name: '數據處理',
-    semester: 'sem1',
+    semester: 'sem2',
     animationComposition: DataHandlingAnimation,
     fallbackImage: '/fallbacks/data-handling.svg',
     generateQuestions: generateDataHandlingQuestions,
