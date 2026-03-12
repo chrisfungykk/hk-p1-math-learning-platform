@@ -118,9 +118,9 @@ export default function ExamPrepMode() {
     return (
       <div className="flex flex-col items-center gap-6 py-4">
         <div className="flex items-center gap-4 w-full max-w-3xl">
-          <Link to={`/semester/${semesterId}`}
+          <Link to="/"
             className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gray-200 hover:bg-gray-300 text-2xl transition-colors"
-            aria-label={`返回${semester.name}`}>⬅️</Link>
+            aria-label="返回主頁">⬅️</Link>
           <h2 className="text-3xl md:text-4xl font-extrabold text-red-700">📝 考試準備 — {semester.name}</h2>
         </div>
         <div className="flex flex-col items-center gap-4 w-full max-w-md">
@@ -166,9 +166,9 @@ export default function ExamPrepMode() {
     <div className="flex flex-col items-center gap-4 py-4 px-2">
       {/* Header */}
       <div className="flex items-center gap-4 w-full max-w-3xl">
-        <Link to={`/semester/${semesterId}`}
+        <Link to="/"
           className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gray-200 hover:bg-gray-300 text-2xl transition-colors"
-          aria-label={`返回${semester.name}`}>⬅️</Link>
+          aria-label="返回主頁">⬅️</Link>
         <h2 className="text-2xl md:text-3xl font-extrabold text-red-700">📝 考試準備 — {semester.name}</h2>
       </div>
 

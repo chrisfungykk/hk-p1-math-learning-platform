@@ -111,9 +111,9 @@ export default function TestingModule() {
     return (
       <div className="flex flex-col items-center gap-6 py-4">
         <div className="flex items-center gap-4 w-full max-w-3xl">
-          <Link to={`/semester/${topic.semester}`}
+          <Link to="/"
             className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gray-200 hover:bg-gray-300 text-2xl transition-colors"
-            aria-label={`返回${semester?.name ?? '主題列表'}`}>⬅️</Link>
+            aria-label="返回主頁">⬅️</Link>
           <h2 className="text-3xl md:text-4xl font-extrabold text-orange-700">✏️ {topic.name}</h2>
         </div>
         <div className="flex flex-col items-center gap-4 w-full max-w-md">
@@ -146,9 +146,9 @@ export default function TestingModule() {
     <div className="flex flex-col items-center gap-4 py-4 px-2">
       {/* Header */}
       <div className="flex items-center gap-4 w-full max-w-3xl">
-        <Link to={`/semester/${topic.semester}`}
+        <Link to="/"
           className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gray-200 hover:bg-gray-300 text-2xl transition-colors"
-          aria-label={`返回${semester?.name ?? '主題列表'}`}>⬅️</Link>
+          aria-label="返回主頁">⬅️</Link>
         <h2 className="text-2xl md:text-3xl font-extrabold text-orange-700">✏️ {topic.name}</h2>
       </div>
 
@@ -244,9 +244,9 @@ export default function TestingModule() {
             </button>
           ) : (
             <>
-              <Link to={`/semester/${topic.semester}`}
+              <Link to="/"
                 className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-400 to-cyan-400 text-white text-lg font-bold px-6 py-3 shadow-lg hover:scale-105 transition-transform">
-                📚 返回主題
+                🏠 返回主頁
               </Link>
               <button onClick={handleRetry}
                 className="min-h-12 min-w-12 flex items-center justify-center rounded-2xl bg-gradient-to-r from-orange-400 to-pink-400 text-white text-lg font-bold px-6 py-3 shadow-lg hover:scale-105 transition-transform">
