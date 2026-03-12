@@ -25,23 +25,23 @@ export function generateSubtraction20Questions(difficulty: DifficultyLevel, coun
 }
 
 function generateSimple(): Question {
-  const a = randomInt(6, 18);
-  const b = randomInt(2, a - 1);
+  const a = randomInt(8, 18);
+  const b = randomInt(3, a - 1);
   const ans = a - b;
   return makeQ('easy', `${a} - ${b} = ?`, ans, `${a} - ${b} = ${ans}`);
 }
 
 function generateWordEasy(): Question {
   const scenarios = [
-    () => { const a = randomInt(8, 16); const b = randomInt(2, a - 2); return { prompt: `小明有 ${a} 顆糖，給了弟弟 ${b} 顆。小明還剩幾顆糖？`, ans: a - b, exp: `${a} - ${b} = ${a - b}` }; },
-    () => { const a = randomInt(10, 18); const b = randomInt(3, a - 2); return { prompt: `書架上有 ${a} 本書，借走了 ${b} 本。書架上還剩幾本書？`, ans: a - b, exp: `${a} - ${b} = ${a - b}` }; },
+    () => { const a = randomInt(10, 18); const b = randomInt(3, a - 2); return { prompt: `小明有 ${a} 顆糖，給了弟弟 ${b} 顆。小明還剩幾顆糖？`, ans: a - b, exp: `${a} - ${b} = ${a - b}` }; },
+    () => { const a = randomInt(12, 18); const b = randomInt(4, a - 2); return { prompt: `書架上有 ${a} 本書，借走了 ${b} 本。書架上還剩幾本書？`, ans: a - b, exp: `${a} - ${b} = ${a - b}` }; },
   ];
   const s = scenarios[randomInt(0, scenarios.length - 1)]();
   return makeQ('easy', s.prompt, s.ans, s.exp);
 }
 
 function generateMissing(): Question {
-  const a = randomInt(10, 18);
+  const a = randomInt(11, 18);
   const ans = randomInt(1, a - 2);
   const b = a - ans;
   return makeQ('medium', `${a} - ☐ = ${ans}，☐ = ?`, b, `${a} - ${b} = ${ans}，所以 ☐ = ${b}`);
@@ -78,25 +78,25 @@ function generateHowManyMore(): Question {
 }
 
 function generateMultiStep(): Question {
-  const a = randomInt(14, 18);
-  const b = randomInt(2, 5);
-  const c = randomInt(2, Math.min(5, a - b - 1));
+  const a = randomInt(15, 18);
+  const b = randomInt(3, 5);
+  const c = randomInt(3, Math.min(5, a - b - 1));
   const ans = a - b - c;
   return makeQ('hard', `小明有 ${a} 顆糖，給了小華 ${b} 顆，又給了小美 ${c} 顆。小明還剩幾顆糖？`, ans,
     `${a} - ${b} - ${c} = ${ans}`);
 }
 
 function generateWordHard(): Question {
-  const total = randomInt(12, 18);
-  const red = randomInt(4, total - 4);
+  const total = randomInt(14, 18);
+  const red = randomInt(5, total - 4);
   const blue = total - red;
   return makeQ('hard', `盒子裡有 ${total} 顆波子，其中 ${red} 顆是紅色的，其餘是藍色的。藍色波子有幾顆？`, blue,
     `${total} - ${red} = ${blue}`);
 }
 
 function generateComparison(): Question {
-  const a = randomInt(10, 18);
-  const fewer = randomInt(3, 7);
+  const a = randomInt(12, 18);
+  const fewer = randomInt(4, 8);
   const b = a - fewer;
   return makeQ('hard', `哥哥有 ${a} 張貼紙，弟弟比哥哥少 ${fewer} 張。弟弟有幾張貼紙？`, b,
     `${a} - ${fewer} = ${b}`);
@@ -111,16 +111,16 @@ function generateRelationship(): Question {
 }
 
 function generateReverseProblem20(): Question {
-  const left = randomInt(3, 10);
-  const gave = randomInt(3, 8);
+  const left = randomInt(4, 10);
+  const gave = randomInt(4, 8);
   const original = left + gave;
   const prompt = `小明給了朋友 ${gave} 張貼紙後，自己還剩 ${left} 張。小明原來有幾張貼紙？`;
   return makeQ('challenge', prompt, original, `剩 ${left} 張 + 給了 ${gave} 張 = 原來 ${original} 張`);
 }
 
 function generateChainMixed(): Question {
-  const a = randomInt(10, 18);
-  const b = randomInt(2, 4);
+  const a = randomInt(12, 18);
+  const b = randomInt(3, 5);
   const c = randomInt(1, 3);
   const d = randomInt(1, Math.min(3, a - b + c));
   const ans = a - b + c - d;
@@ -148,8 +148,8 @@ function generateTrickyAge(): Question {
 }
 
 function generateDoubleSubtract(): Question {
-  const a = randomInt(14, 18);
-  const b = randomInt(2, 5);
+  const a = randomInt(15, 18);
+  const b = randomInt(3, 6);
   const c = randomInt(2, Math.min(5, a - b - 1));
   const ans = a - b - c;
   const prompt = `小明有 ${a} 張貼紙。星期一用了 ${b} 張，星期二用了 ${c} 張。還剩幾張？比原來少了幾張？`;
@@ -159,9 +159,9 @@ function generateDoubleSubtract(): Question {
 }
 
 function generateComparisonChain(): Question {
-  const a = randomInt(10, 15);
-  const diff1 = randomInt(2, 4);
-  const diff2 = randomInt(2, 4);
+  const a = randomInt(12, 16);
+  const diff1 = randomInt(3, 5);
+  const diff2 = randomInt(3, 5);
   const b = a - diff1;
   const c = b - diff2;
   const totalDiff = a - c;
