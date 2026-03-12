@@ -36,6 +36,10 @@ export default function AppLayout() {
       <main className="max-w-4xl mx-auto p-4 md:p-8">
         <Outlet />
       </main>
+
+      <footer className="text-center text-xs text-gray-400 py-3">
+        v{__APP_VERSION__} · 部署時間：{new Date(__BUILD_TIME__).toLocaleString('zh-HK', { timeZone: 'Asia/Hong_Kong' })}
+      </footer>
     </div>
   );
 }
