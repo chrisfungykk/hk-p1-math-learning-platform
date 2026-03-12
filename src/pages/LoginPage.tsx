@@ -35,7 +35,7 @@ export default function LoginPage() {
       <h1 className="text-3xl font-extrabold text-purple-700">🎓 你是誰？</h1>
       <p className="text-gray-500 text-sm">聖公會青衣主恩小學 · 小一數學</p>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col sm:flex-row gap-6">
         {USERS.map((u) => (
           <button
             key={u.username}

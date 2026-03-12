@@ -43,7 +43,7 @@ export default function HomeScreen() {
       <p className="text-gray-500 text-sm">聖公會青衣主恩小學</p>
 
       {/* Hero section — 考試準備 + 模擬試卷 side by side */}
-      <div className="flex gap-4 w-full max-w-3xl">
+      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-3xl">
         <Link
           to={`/exam/${semester.id}`}
           className="flex-1 min-h-20 min-w-12 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xl md:text-2xl font-extrabold px-4 py-5 shadow-xl hover:scale-[1.03] transition-transform ring-2 ring-purple-300"
