@@ -25,8 +25,8 @@ export function generateAddition20Questions(difficulty: DifficultyLevel, count: 
 }
 
 function generateSimple(): Question {
-  const a = randomInt(2, 9);
-  const b = randomInt(2, Math.min(9, 18 - a));
+  const a = randomInt(3, 9);
+  const b = randomInt(3, Math.min(9, 18 - a));
   const ans = a + b;
   return makeQ('easy', `${a} + ${b} = ?`, ans, `${a} + ${b} = ${ans}`);
 }
@@ -34,8 +34,8 @@ function generateSimple(): Question {
 function generatePictureAdd(): Question {
   const items = ['🍎', '⭐', '🌸', '🐟', '✏️'];
   const emoji = items[randomInt(0, items.length - 1)];
-  const a = randomInt(5, 10);
-  const b = randomInt(3, Math.min(8, 18 - a));
+  const a = randomInt(6, 10);
+  const b = randomInt(4, Math.min(8, 18 - a));
   const ans = a + b;
   const prompt = `數一數，一共有幾個？\n${emoji.repeat(a)}  和  ${emoji.repeat(b)}`;
   const q = makeQ('easy', prompt, ans, `${a} + ${b} = ${ans}`);
@@ -45,8 +45,8 @@ function generatePictureAdd(): Question {
 
 function generateWordEasy(): Question {
   const scenarios = [
-    () => { const a = randomInt(5, 10); const b = randomInt(3, Math.min(8, 18 - a)); return { prompt: `桌上有 ${a} 本書，再放 ${b} 本上去。桌上現在有幾本書？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
-    () => { const a = randomInt(4, 9); const b = randomInt(3, Math.min(9, 18 - a)); return { prompt: `籃子裡有 ${a} 個橙，再放入 ${b} 個。籃子裡現在有幾個橙？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
+    () => { const a = randomInt(6, 10); const b = randomInt(3, Math.min(8, 18 - a)); return { prompt: `桌上有 ${a} 本書，再放 ${b} 本上去。桌上現在有幾本書？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
+    () => { const a = randomInt(5, 9); const b = randomInt(3, Math.min(9, 18 - a)); return { prompt: `籃子裡有 ${a} 個橙，再放入 ${b} 個。籃子裡現在有幾個橙？`, ans: a + b, exp: `${a} + ${b} = ${a + b}` }; },
   ];
   const s = scenarios[randomInt(0, scenarios.length - 1)]();
   return makeQ('easy', s.prompt, s.ans, s.exp);
@@ -96,9 +96,9 @@ function generateCarrying(): Question {
 }
 
 function generateThreeNumbers(): Question {
-  const a = randomInt(2, 7);
-  const b = randomInt(2, 6);
-  const c = randomInt(2, Math.min(6, 18 - a - b));
+  const a = randomInt(3, 7);
+  const b = randomInt(3, 6);
+  const c = randomInt(3, Math.min(6, 18 - a - b));
   const ans = a + b + c;
   return makeQ('hard', `${a} + ${b} + ${c} = ?`, ans,
     `先算 ${a} + ${b} = ${a + b}，再加 ${c} 得 ${ans}`);
@@ -139,8 +139,8 @@ function generateDoubleEquation(): Question {
 }
 
 function generateChainFour(): Question {
-  const a = randomInt(2, 5);
-  const b = randomInt(2, 4);
+  const a = randomInt(3, 5);
+  const b = randomInt(3, 5);
   const c = randomInt(1, 3);
   const d = randomInt(1, Math.min(3, 18 - a - b - c));
   const ans = a + b + c + d;
@@ -148,16 +148,16 @@ function generateChainFour(): Question {
 }
 
 function generateTrickyWordProblem(): Question {
-  const gave = randomInt(3, 7);
-  const left = randomInt(3, Math.min(8, 18 - gave));
+  const gave = randomInt(4, 8);
+  const left = randomInt(4, Math.min(8, 18 - gave));
   const original = gave + left;
   const prompt = `小明給了弟弟 ${gave} 顆糖後，自己還剩 ${left} 顆。小明原來有幾顆糖？`;
   return makeQ('challenge', prompt, original, `給了 ${gave} 顆，剩 ${left} 顆，原來有 ${gave} + ${left} = ${original} 顆`);
 }
 
 function generateBalanceProblem(): Question {
-  const a = randomInt(5, 9);
-  const b = randomInt(5, Math.min(9, 18 - a));
+  const a = randomInt(6, 9);
+  const b = randomInt(6, Math.min(9, 18 - a));
   const sum = a + b;
   const prompt = `☐ + ☐ = ${sum}，兩個 ☐ 是同一個數。☐ = ?`;
   if (sum % 2 === 0) {
