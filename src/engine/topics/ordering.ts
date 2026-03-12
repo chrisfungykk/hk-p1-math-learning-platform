@@ -42,6 +42,12 @@ function getStepAndStart(difficulty: DifficultyLevel): { step: number; start: nu
       const start = isDecreasing ? randomInt(20, 30) : randomInt(1, 5);
       return { step, start, isDecreasing };
     }
+    case 'challenge': {
+      const isDecreasing = randomInt(0, 1) === 1;
+      const step = randomInt(5, 10);
+      const start = isDecreasing ? randomInt(50, 100) : randomInt(1, 10);
+      return { step, start, isDecreasing };
+    }
   }
 }
 
