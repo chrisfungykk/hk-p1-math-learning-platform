@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../services/auth';
+import { syncOnLogin } from '../services/storage';
 
 const USERS = [
   { username: 'Nok', emoji: '🧒', color: 'from-blue-400 to-cyan-400' },
@@ -20,12 +21,13 @@ export default function LoginPage() {
     setError('');
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!selected) return;
     const err = login(selected, password);
     if (err) {
       setError(err);
     } else {
+      await syncOnLogin();
       navigate('/', { replace: true });
     }
   };
