@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import type { DifficultyLevel, Question } from '../types';
-import { DIFFICULTY_LABELS, SEMESTERS } from '../constants';
+import { DIFFICULTY_LABELS } from '../constants';
 import { TOPIC_REGISTRY } from '../data/topicRegistry';
 import { generateQuestions } from '../engine/questionGenerator';
 import { evaluateAnswer, computeScoreSummary, createScoreRecord } from '../utils/scoring';
@@ -103,7 +103,6 @@ export default function TestingModule() {
     return <Navigate to="/" replace />;
   }
 
-  const semester = SEMESTERS.find((s) => s.id === topic.semester);
   const answeredCount = Object.keys(answers).length;
 
   // ── Setup Phase ──
