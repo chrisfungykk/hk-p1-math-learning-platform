@@ -100,7 +100,7 @@ function generateHalfHour(): Question {
 
 function generateHowLong(): Question {
   const start = randomInt(1, 10);
-  const duration = randomInt(1, 3);
+  const duration = randomInt(2, 4);
   const end = start + duration;
   const correct = `${duration}小時`;
   const d = new Set<string>([correct]);
@@ -158,7 +158,7 @@ function generateQuarterHour(): Question {
 function generateElapsedTime(): Question {
   const startH = randomInt(1, 9);
   const startM = [0, 30][randomInt(0, 1)];
-  const addHours = randomInt(1, 2);
+  const addHours = randomInt(2, 3);
   const endH = startH + addHours;
   const endM = startM;
   const correct = fmt(endH, endM);
@@ -174,7 +174,7 @@ function generateElapsedTime(): Question {
 
 function generateScheduleProblem(): Question {
   const startH = randomInt(8, 10);
-  const classes = randomInt(2, 4);
+  const classes = randomInt(3, 5);
   const endH = startH + classes;
   const correct = fmt(endH, 0);
   const d = new Set<string>([correct]);
@@ -215,7 +215,7 @@ function generateCalendarProblem(): Question {
 
 function generateElapsedAcrossNoon(): Question {
   const startH = randomInt(10, 11);
-  const duration = randomInt(2, 4);
+  const duration = randomInt(3, 5);
   const endH = startH + duration;
   const endLabel = endH > 12 ? `下午 ${endH - 12}` : `${endH}`;
   const correct = `${endLabel} 點`;
@@ -236,7 +236,7 @@ function generateElapsedAcrossNoon(): Question {
 
 function generateTrickySchedule(): Question {
   const lessonMins = 30;
-  const numLessons = randomInt(3, 5);
+  const numLessons = randomInt(4, 6);
   const breakMins = 10;
   const totalMins = numLessons * lessonMins + (numLessons - 1) * breakMins;
   const totalHours = Math.floor(totalMins / 60);
@@ -258,8 +258,8 @@ function generateTrickySchedule(): Question {
 }
 
 function generateReverseTime(): Question {
-  const endH = randomInt(3, 8);
-  const duration = randomInt(1, 3);
+  const endH = randomInt(5, 8);
+  const duration = randomInt(2, 4);
   const startH = endH - duration;
   const correct = fmt(startH, 0);
   const d = new Set<string>([correct]);
@@ -279,7 +279,7 @@ function generateReverseTime(): Question {
 
 function generateDayCountPuzzle(): Question {
   const startDay = randomInt(0, 6);
-  const daysLater = randomInt(5, 10);
+  const daysLater = randomInt(7, 14);
   const endDay = (startDay + daysLater) % 7;
   const correct = DAYS_OF_WEEK[endDay];
   const pool = new Set<string>([correct]);
@@ -295,8 +295,8 @@ function generateDayCountPuzzle(): Question {
 }
 
 function generateWeeklyTotal(): Question {
-  const hoursPerDay = randomInt(1, 3);
-  const days = randomInt(3, 5);
+  const hoursPerDay = randomInt(2, 3);
+  const days = randomInt(4, 6);
   const total = hoursPerDay * days;
   const correct = `${total}小時`;
   const d = new Set<string>([correct]);
