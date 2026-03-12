@@ -212,7 +212,6 @@ function generateSharedTotal(): Question {
   const total = randomInt(12, 20);
   const gave = randomInt(2, 5);
   const mingAfter = randomInt(3, total - gave - 2);
-  const huaAfter = total - mingAfter;
   const mingBefore = mingAfter + gave;
   return makeQ('challenge',
     `小明和小華一共有 ${total} 顆糖。小明給了小華 ${gave} 顆後，小明剩 ${mingAfter} 顆。小明原來有幾顆糖？`,
