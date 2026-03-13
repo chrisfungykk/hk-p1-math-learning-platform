@@ -11,7 +11,7 @@ import { tenFrameSvg } from '../../utils/illustrations';
 export function generateAddition10Questions(difficulty: DifficultyLevel, count: number): Question[] {
   const questions: Question[] = [];
   const generators: Record<DifficultyLevel, (() => Question)[]> = {
-    easy: [generateSimple, generateWordProblemEasy, generatePictureCount],
+    easy: [generateSimple, generateWordProblemEasy, generatePictureCount, generateAdditionWithZero],
     medium: [generateMissingAddend, generateThreeNumbers, generateWordProblemMedium, generateMakeTen],
     hard: [generateColumnForm, generateComparisonProblem, generateMultiStep, generateRelationship],
     challenge: [generateMagicTriangle, generateChainAddition, generateReverseWordProblem, generateTrickyMissing, generateDoubleUnknown, generateConsecutiveSum],
@@ -176,6 +176,16 @@ function generateConsecutiveSum(): Question {
   const prompt = `三個連續的數字是 ${start}、${start + 1}、${start + 2}。它們加起來等於多少？`;
   return makeQuestion('challenge', prompt, ans, 0, 10,
     `${start} + ${start + 1} + ${start + 2} = ${ans}`);
+}
+
+function generateAdditionWithZero(): Question {
+  const n = randomInt(0, 10);
+  const zeroFirst = randomInt(0, 1) === 0;
+  const a = zeroFirst ? 0 : n;
+  const b = zeroFirst ? n : 0;
+  const prompt = `${a} + ${b} = ?`;
+  return makeQuestion('easy', prompt, n, 0, 10,
+    `${a} + ${b} = ${n}。任何數加 0 都等於它自己。`);
 }
 
 function makeQuestion(difficulty: DifficultyLevel, prompt: string, correct: number, min: number, max: number, explanation: string): Question {

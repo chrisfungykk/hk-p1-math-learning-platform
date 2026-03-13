@@ -15,7 +15,7 @@ const OBJECTS = ['🍎 蘋果', '🍌 香蕉', '⭐ 星星', '🌸 花', '🐟 �
 export function generateCountingQuestions(difficulty: DifficultyLevel, count: number): Question[] {
   const questions: Question[] = [];
   const generators: Record<DifficultyLevel, (() => Question)[]> = {
-    easy: [() => generateCountObjects('easy'), generateWhichNumber, generateNextPrev],
+    easy: [() => generateCountObjects('easy'), generateWhichNumber, generateNextPrev, generateChineseNumberWord, generateNumberSequenceWriting],
     medium: [generateOrdinal, generateTensUnits, generateSkipCount2, generateCompareCount],
     hard: [generatePlaceValue100, generateSkipCount510, generatePatternRecognition, generateBeforeAfter100],
     challenge: [generateGrowingPattern, generatePlaceValuePuzzle, generateOddEvenLogic, generateNumberBond, generateSumOfRange, generateDigitSum],
@@ -220,6 +220,27 @@ function generateDigitSum(): Question {
   return makeQ('challenge', 'counting', prompt, digitSum, 0, 20,
     `${num} 的十位是 ${tens}，個位是 ${units}。${tens} + ${units} = ${digitSum}。`);
 }
+
+const CHINESE_NUMBERS = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十',
+  '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十'];
+
+function generateChineseNumberWord(): Question {
+  const n = randomInt(1, 20);
+  const chineseWord = CHINESE_NUMBERS[n];
+  const prompt = `${chineseWord} 等於哪個數字？`;
+  return makeQ('easy', 'counting', prompt, n, 1, 20,
+    `${chineseWord} 等於 ${n}。`);
+}
+
+function generateNumberSequenceWriting(): Question {
+  const missingPos = randomInt(1, 18);
+  const before = missingPos - 1;
+  const after = missingPos + 1;
+  const prompt = `數字排列：${before > 0 ? before : ''}${before > 0 ? ', ' : ''}☐, ${after}。☐ 是什麼數字？`;
+  return makeQ('easy', 'counting', prompt, missingPos, 1, 20,
+    `${before > 0 ? before + ', ' : ''}${missingPos}, ${after}。☐ = ${missingPos}。`);
+}
+
 
 function makeQ(difficulty: DifficultyLevel, topicId: string, prompt: string, correct: number, min: number, max: number, explanation: string): Question {
   const distractors = new Set<number>();

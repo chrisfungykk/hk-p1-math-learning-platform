@@ -6,11 +6,22 @@ import { generateQuestions } from '../../engine/questionGenerator';
 import type { DifficultyLevel } from '../../types';
 
 const ALL_TOPIC_IDS = [
-  'counting', 'addition-10', 'subtraction-10', 'addition-20', 'subtraction-20', 'shapes', 'coins-notes',
-  'word-problems', 'composing-shapes', 'compare-length-height', 'telling-time', 'ordering-sequences', 'data-handling',
+  // sem1
+  'counting', 'odd-even', 'ordinal-numbers', 'number-composition',
+  'addition-10', 'subtraction-10', 'addition-20', 'subtraction-20',
+  'positions', 'shapes',
+  // sem2
+  'numbers-100', 'two-digit-addition', 'two-digit-subtraction',
+  'compare-length-height', 'measurement', 'flat-shapes',
+  'telling-time', 'ordering-sequences', 'data-handling',
+  'word-problems', 'skip-counting', 'composing-shapes',
+  'directions', 'coins-notes',
 ] as const;
 
-const ARITHMETIC_TOPIC_IDS = ['addition-10', 'subtraction-10', 'addition-20', 'subtraction-20'] as const;
+const ARITHMETIC_TOPIC_IDS = [
+  'addition-10', 'subtraction-10', 'addition-20', 'subtraction-20',
+  'two-digit-addition', 'two-digit-subtraction',
+] as const;
 
 describe('Property 1: Question generator produces valid questions', () => {
   // **Validates: Requirements 3.1, 3.4, 5.2**

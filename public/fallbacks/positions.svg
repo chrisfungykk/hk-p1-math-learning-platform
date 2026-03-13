@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#D1FAE5"/><stop offset="100%" stop-color="#6EE7B7"/></linearGradient></defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <text x="320" y="180" text-anchor="middle" font-size="48" fill="#064E3B">位置</text>
+  <text x="320" y="230" text-anchor="middle" font-size="24" fill="#065F46">Positions</text>
+</svg>

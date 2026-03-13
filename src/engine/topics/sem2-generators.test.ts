@@ -5,6 +5,13 @@ import { generateCompareLengthQuestions } from './compareLength';
 import { generateTellingTimeQuestions } from './tellingTime';
 import { generateOrderingQuestions } from './ordering';
 import { generateDataHandlingQuestions } from './dataHandling';
+import { generateNumbers100Questions } from './numbers100';
+import { generateTwoDigitAdditionQuestions } from './twoDigitAddition';
+import { generateTwoDigitSubtractionQuestions } from './twoDigitSubtraction';
+import { generateMeasurementQuestions } from './measurement';
+import { generateSkipCountingQuestions } from './skipCounting';
+import { generateDirectionsQuestions } from './directions';
+import { generateFlatShapesQuestions } from './flatShapes';
 import type { DifficultyLevel, Question } from '../../types';
 
 const difficulties: DifficultyLevel[] = ['easy', 'medium', 'hard'];
@@ -92,6 +99,69 @@ describe('Semester 2 topic generators', () => {
         for (const q of qs) {
           expect(q.graphicType).toBe('pictogram');
         }
+      });
+    }
+  });
+
+  describe('numbers100', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateNumbers100Questions(d, 5);
+        assertValidQuestions(qs, 'numbers-100', d, 5);
+      });
+    }
+  });
+
+  describe('twoDigitAddition', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateTwoDigitAdditionQuestions(d, 5);
+        assertValidQuestions(qs, 'two-digit-addition', d, 5);
+      });
+    }
+  });
+
+  describe('twoDigitSubtraction', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateTwoDigitSubtractionQuestions(d, 5);
+        assertValidQuestions(qs, 'two-digit-subtraction', d, 5);
+      });
+    }
+  });
+
+  describe('measurement', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateMeasurementQuestions(d, 5);
+        assertValidQuestions(qs, 'measurement', d, 5);
+      });
+    }
+  });
+
+  describe('skipCounting', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateSkipCountingQuestions(d, 5);
+        assertValidQuestions(qs, 'skip-counting', d, 5);
+      });
+    }
+  });
+
+  describe('directions', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateDirectionsQuestions(d, 5);
+        assertValidQuestions(qs, 'directions', d, 5);
+      });
+    }
+  });
+
+  describe('flatShapes', () => {
+    for (const d of difficulties) {
+      it(`generates valid ${d} questions`, () => {
+        const qs = generateFlatShapesQuestions(d, 5);
+        assertValidQuestions(qs, 'flat-shapes', d, 5);
       });
     }
   });

@@ -11,7 +11,7 @@ import { tenFrameSvg } from '../../utils/illustrations';
 export function generateSubtraction10Questions(difficulty: DifficultyLevel, count: number): Question[] {
   const questions: Question[] = [];
   const generators: Record<DifficultyLevel, (() => Question)[]> = {
-    easy: [generateSimple, generateWordEasy, generatePictureSubtract],
+    easy: [generateSimple, generateWordEasy, generatePictureSubtract, generateSubtractionWithZero],
     medium: [generateMissing, generateHowManyMore, generateWordMedium, generateFromTen],
     hard: [generateColumnForm, generateMultiStep, generateRelationship, generateComparison],
     challenge: [generateChainSubtract, generateTrickyComparison, generateReverseProblem, generateBalanceEquation, generateSubtractUnknown, generateWordProblemChallenge],
@@ -170,6 +170,15 @@ function generateWordProblemChallenge(): Question {
   const ans = left + gave2;
   return makeQ('challenge', prompt, ans,
     `小明剩 ${left} 顆。小美還回 ${gave2} 顆後，小明有 ${left} + ${gave2} = ${ans} 顆`);
+}
+
+function generateSubtractionWithZero(): Question {
+  const n = randomInt(0, 10);
+  const subtractSelf = randomInt(0, 1) === 0;
+  if (subtractSelf) {
+    return makeQ('easy', `${n} - ${n} = ?`, 0, `${n} - ${n} = 0。任何數減去它自己都等於 0。`);
+  }
+  return makeQ('easy', `${n} - 0 = ?`, n, `${n} - 0 = ${n}。任何數減去 0 都等於它自己。`);
 }
 
 function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, explanation: string): Question {

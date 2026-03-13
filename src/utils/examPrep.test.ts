@@ -14,10 +14,10 @@ describe('generateExamQuestions', () => {
     expect(questions.length).toBe(28);
   });
 
-  it('clamps totalCount to minimum (at least 15 questions)', () => {
+  it('clamps totalCount to minimum (at least 2 per topic)', () => {
     const questions = generateExamQuestions('sem1', 'easy', 5);
-    // Hard floor is 15, even though 6 topics × 2 = 12
-    expect(questions.length).toBe(15);
+    // Hard floor is topics × 2 = 10 × 2 = 20 for sem1
+    expect(questions.length).toBe(20);
   });
 
   it('clamps totalCount to 30 maximum', () => {

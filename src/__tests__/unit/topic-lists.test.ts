@@ -4,21 +4,32 @@ import { SEMESTERS } from '../../constants';
 
 const SEM1_TOPICS = [
   'counting',
+  'odd-even',
+  'ordinal-numbers',
+  'number-composition',
   'addition-10',
   'subtraction-10',
   'addition-20',
   'subtraction-20',
+  'positions',
   'shapes',
-  'coins-notes',
 ];
 
 const SEM2_TOPICS = [
-  'word-problems',
-  'composing-shapes',
+  'numbers-100',
+  'two-digit-addition',
+  'two-digit-subtraction',
   'compare-length-height',
+  'measurement',
+  'flat-shapes',
   'telling-time',
   'ordering-sequences',
   'data-handling',
+  'word-problems',
+  'skip-counting',
+  'composing-shapes',
+  'directions',
+  'coins-notes',
 ];
 
 const ALL_TOPICS = [...SEM1_TOPICS, ...SEM2_TOPICS];
@@ -53,7 +64,7 @@ describe('Verify topic lists for 聖公會青衣主恩小學 P1 curriculum', () 
     }
   });
 
-  it('TOPIC_REGISTRY has exactly 13 topics', () => {
-    expect(Object.keys(TOPIC_REGISTRY)).toHaveLength(13);
+  it('TOPIC_REGISTRY has exactly 24 topics', () => {
+    expect(Object.keys(TOPIC_REGISTRY)).toHaveLength(24);
   });
 });

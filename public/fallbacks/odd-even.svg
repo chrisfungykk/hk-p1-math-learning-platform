@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FEF3C7"/><stop offset="100%" stop-color="#FDE68A"/></linearGradient></defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <text x="320" y="180" text-anchor="middle" font-size="48" fill="#92400E">單數和雙數</text>
+  <text x="320" y="230" text-anchor="middle" font-size="24" fill="#B45309">Odd &amp; Even</text>
+</svg>
