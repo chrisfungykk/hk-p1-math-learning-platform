@@ -43,8 +43,8 @@ export function generateDataHandlingQuestions(difficulty: DifficultyLevel, count
 }
 
 function genData(difficulty: DifficultyLevel): PictogramData {
-  const n = difficulty === 'easy' ? randomInt(2, 3) : difficulty === 'medium' ? 3 : randomInt(3, 4);
-  const maxC = difficulty === 'easy' ? 6 : difficulty === 'medium' ? 8 : 10;
+  const n = difficulty === 'easy' ? randomInt(2, 3) : difficulty === 'medium' ? randomInt(3, 4) : randomInt(3, 5);
+  const maxC = difficulty === 'easy' ? 8 : difficulty === 'medium' ? 10 : 12;
   const selected = shuffleArray(ITEMS).slice(0, n);
   return { items: selected.map(item => ({ item, count: randomInt(1, maxC) })) };
 }

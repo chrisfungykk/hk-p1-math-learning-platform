@@ -47,8 +47,8 @@ function makeQ(difficulty: DifficultyLevel, prompt: string, correct: number, min
 function generateShoppingEasy(): Question {
   const items = ['蘋果', '香蕉', '橙', '糖果', '餅乾'];
   const item = items[randomInt(0, items.length - 1)];
-  const a = randomInt(3, 10);
-  const b = randomInt(2, Math.min(8, 18 - a));
+  const a = randomInt(4, 10);
+  const b = randomInt(3, Math.min(8, 18 - a));
   const ans = a + b;
   const q = makeQ('easy', `媽媽買了 ${a} 個${item}，爸爸又買了 ${b} 個。一共買了幾個${item}？`, ans, 0, 20,
     `${a} + ${b} = ${ans}，一共買了 ${ans} 個${item}。`);
@@ -57,16 +57,16 @@ function generateShoppingEasy(): Question {
 }
 
 function generateSharingEasy(): Question {
-  const a = randomInt(8, 18);
-  const b = randomInt(2, a - 2);
+  const a = randomInt(10, 18);
+  const b = randomInt(3, a - 2);
   const ans = a - b;
   return makeQ('easy', `小明有 ${a} 顆糖果，給了弟弟 ${b} 顆。小明還剩幾顆糖果？`, ans, 0, 20,
     `${a} - ${b} = ${ans}，小明還剩 ${ans} 顆糖果。`);
 }
 
 function generateGroupEasy(): Question {
-  const boys = randomInt(3, 10);
-  const girls = randomInt(3, Math.min(10, 18 - boys));
+  const boys = randomInt(4, 10);
+  const girls = randomInt(4, Math.min(10, 18 - boys));
   const ans = boys + girls;
   const q = makeQ('easy', `課室裡有 ${boys} 個男生和 ${girls} 個女生。課室裡一共有幾個學生？`, ans, 0, 20,
     `${boys} + ${girls} = ${ans}，一共有 ${ans} 個學生。`);
@@ -77,8 +77,8 @@ function generateGroupEasy(): Question {
 // --- Medium: two-step, comparison ---
 
 function generateTwoStepAdd(): Question {
-  const a = randomInt(3, 8);
-  const b = randomInt(2, 6);
+  const a = randomInt(4, 8);
+  const b = randomInt(3, 6);
   const c = randomInt(2, Math.min(5, 20 - a - b));
   const ans = a + b + c;
   return makeQ('medium',
@@ -87,8 +87,8 @@ function generateTwoStepAdd(): Question {
 }
 
 function generateComparisonMedium(): Question {
-  const a = randomInt(5, 12);
-  const b = randomInt(3, Math.min(10, a - 1));
+  const a = randomInt(6, 14);
+  const b = randomInt(4, Math.min(10, a - 1));
   const diff = a - b;
   return makeQ('medium',
     `小明有 ${a} 顆波子，小華有 ${b} 顆波子。小明比小華多幾顆波子？`,
@@ -96,8 +96,8 @@ function generateComparisonMedium(): Question {
 }
 
 function generateGiveAndReceive(): Question {
-  const start = randomInt(8, 15);
-  const gave = randomInt(2, 5);
+  const start = randomInt(10, 16);
+  const gave = randomInt(3, 6);
   const received = randomInt(1, 4);
   const ans = start - gave + received;
   return makeQ('medium',
@@ -117,9 +117,9 @@ function generatePartWhole(): Question {
 // --- Hard: multi-step, mixed ops, reverse ---
 
 function generateThreeStep(): Question {
-  const a = randomInt(5, 10);
-  const b = randomInt(2, 5);
-  const c = randomInt(1, 4);
+  const a = randomInt(6, 12);
+  const b = randomInt(3, 6);
+  const c = randomInt(2, 4);
   const d = randomInt(1, Math.min(3, a + b - c));
   const ans = a + b - c - d;
   return makeQ('hard',
@@ -128,8 +128,8 @@ function generateThreeStep(): Question {
 }
 
 function generateMixedOps(): Question {
-  const onBus = randomInt(8, 15);
-  const getOff = randomInt(2, 5);
+  const onBus = randomInt(10, 16);
+  const getOff = randomInt(3, 6);
   const getOn = randomInt(1, 4);
   const ans = onBus - getOff + getOn;
   return makeQ('hard',
@@ -138,8 +138,8 @@ function generateMixedOps(): Question {
 }
 
 function generateReverseProblem(): Question {
-  const left = randomInt(3, 10);
-  const gave = randomInt(3, 8);
+  const left = randomInt(4, 10);
+  const gave = randomInt(4, 8);
   const original = left + gave;
   return makeQ('hard',
     `小明給了朋友 ${gave} 顆糖果後，自己還剩 ${left} 顆。小明原來有幾顆糖果？`,
@@ -169,8 +169,8 @@ function generateLogicPuzzle(): Question {
 }
 
 function generateDistribution(): Question {
-  const perPerson = randomInt(2, 5);
-  const people = randomInt(2, 4);
+  const perPerson = randomInt(3, 6);
+  const people = randomInt(3, 4);
   const total = perPerson * people;
   return makeQ('challenge',
     `${people} 個小朋友平均分 ${total} 顆糖果，每人分到幾顆？`,
@@ -178,9 +178,9 @@ function generateDistribution(): Question {
 }
 
 function generateMultiPerson(): Question {
-  const ming = randomInt(3, 8);
-  const hua = randomInt(3, 8);
-  const mei = randomInt(3, 8);
+  const ming = randomInt(4, 9);
+  const hua = randomInt(4, 9);
+  const mei = randomInt(4, 9);
   const total = ming + hua + mei;
   return makeQ('challenge',
     `小明有 ${ming} 顆波子，小華有 ${hua} 顆，小美有 ${mei} 顆。三人一共有幾顆波子？最多的比最少的多幾顆？\n（回答三人一共有幾顆）`,
@@ -209,8 +209,8 @@ function generateAgeRiddle(): Question {
 }
 
 function generateSharedTotal(): Question {
-  const total = randomInt(12, 20);
-  const gave = randomInt(2, 5);
+  const total = randomInt(14, 20);
+  const gave = randomInt(3, 6);
   const mingAfter = randomInt(3, total - gave - 2);
   const mingBefore = mingAfter + gave;
   return makeQ('challenge',

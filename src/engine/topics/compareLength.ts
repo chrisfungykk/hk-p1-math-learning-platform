@@ -79,8 +79,8 @@ function generateWordProblemEasy(): Question {
 }
 
 function generateCmCompare(): Question {
-  const a = randomInt(5, 15);
-  const b = randomInt(5, 15);
+  const a = randomInt(6, 18);
+  const b = randomInt(6, 18);
   while (b === a) return generateCmCompare();
   const prompt = `鉛筆甲長 ${a} 厘米，鉛筆乙長 ${b} 厘米。哪支鉛筆比較長？`;
   const correct = a > b ? '鉛筆甲' : '鉛筆乙';
@@ -118,8 +118,8 @@ function generateOrderThree(): Question {
 }
 
 function generateHowMuchMore(): Question {
-  const a = randomInt(10, 20);
-  const b = randomInt(5, a - 2);
+  const a = randomInt(12, 22);
+  const b = randomInt(6, a - 2);
   const diff = a - b;
   const prompt = `繩子甲長 ${a} 厘米，繩子乙長 ${b} 厘米。繩子甲比繩子乙長多少厘米？`;
   return makeCompareQuestion('medium', prompt, `${diff}`,
@@ -172,9 +172,9 @@ function generateInferenceProblem(): Question {
 }
 
 function generateMultiStepCompare(): Question {
-  const a = randomInt(10, 15);
-  const diff1 = randomInt(2, 5);
-  const diff2 = randomInt(2, 5);
+  const a = randomInt(12, 18);
+  const diff1 = randomInt(3, 6);
+  const diff2 = randomInt(3, 6);
   const b = a + diff1;
   const c = b + diff2;
   const totalDiff = c - a;
@@ -185,8 +185,8 @@ function generateMultiStepCompare(): Question {
 }
 
 function generateCmCalculation(): Question {
-  const a = randomInt(8, 18);
-  const b = randomInt(5, 15);
+  const a = randomInt(10, 20);
+  const b = randomInt(7, 18);
   const total = a + b;
   const prompt = `一條繩子長 ${a} 厘米，另一條長 ${b} 厘米。兩條繩子接起來一共長多少厘米？`;
   return makeCompareQuestion('hard', prompt, `${total}`,
@@ -205,9 +205,9 @@ function generateTransitiveChain(): Question {
 }
 
 function generateIndirectMeasure(): Question {
-  const aLen = randomInt(8, 12);
-  const diff1 = randomInt(2, 4);
-  const diff2 = randomInt(2, 4);
+  const aLen = randomInt(10, 15);
+  const diff1 = randomInt(3, 5);
+  const diff2 = randomInt(3, 5);
   const bLen = aLen + diff1;
   const cLen = bLen - diff2;
   const prompt = `繩子甲長 ${aLen} 厘米。繩子乙比繩子甲長 ${diff1} 厘米。繩子丙比繩子乙短 ${diff2} 厘米。繩子丙長多少厘米？`;
@@ -220,9 +220,9 @@ function generateIndirectMeasure(): Question {
 function generateTrickyCompare(): Question {
   const names = shuffleArray(['小明', '小華', '小美']);
   const a = names[0]; const b = names[1]; const c = names[2];
-  const hA = randomInt(100, 110);
-  const hB = hA + randomInt(3, 8);
-  const hC = hB + randomInt(3, 8);
+  const hA = randomInt(100, 108);
+  const hB = hA + randomInt(4, 10);
+  const hC = hB + randomInt(4, 10);
   const diff = hC - hA;
   const prompt = `${a}高 ${hA} 厘米，${b}高 ${hB} 厘米，${c}高 ${hC} 厘米。最高和最矮相差多少厘米？`;
   const correct = `${diff}`;
@@ -232,7 +232,7 @@ function generateTrickyCompare(): Question {
 }
 
 function generateReverseMeasure(): Question {
-  const total = randomInt(15, 25);
+  const total = randomInt(18, 28);
   const a = randomInt(5, total - 5);
   const b = total - a;
   const prompt = `兩條繩子接起來一共長 ${total} 厘米。其中一條長 ${a} 厘米。另一條比這條長還是短？長或短多少厘米？`;
@@ -244,9 +244,9 @@ function generateReverseMeasure(): Question {
 }
 
 function generateCombinedLength(): Question {
-  const a = randomInt(5, 12);
-  const b = randomInt(5, 12);
-  const c = randomInt(3, 8);
+  const a = randomInt(6, 14);
+  const b = randomInt(6, 14);
+  const c = randomInt(4, 10);
   const total = a + b + c;
   const prompt = `三條繩子分別長 ${a} 厘米、${b} 厘米和 ${c} 厘米。接起來一共長多少厘米？`;
   return makeCompareQuestion('challenge', prompt, `${total}`,

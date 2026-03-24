@@ -24,7 +24,7 @@ export function generateSubtraction10Questions(difficulty: DifficultyLevel, coun
 }
 
 function generateSimple(): Question {
-  const a = randomInt(3, 10);
+  const a = randomInt(4, 10);
   const b = randomInt(1, a);
   const ans = a - b;
   return makeQ('easy', `${a} - ${b} = ?`, ans, `${a} - ${b} = ${ans}`);
@@ -33,7 +33,7 @@ function generateSimple(): Question {
 function generatePictureSubtract(): Question {
   const items = ['🍎', '⭐', '🌸', '🐟'];
   const emoji = items[randomInt(0, items.length - 1)];
-  const a = randomInt(4, 9);
+  const a = randomInt(5, 10);
   const b = randomInt(1, a - 1);
   const ans = a - b;
   const prompt = `有 ${emoji.repeat(a)}，拿走 ${b} 個，還剩幾個？`;
@@ -44,15 +44,15 @@ function generatePictureSubtract(): Question {
 
 function generateWordEasy(): Question {
   const scenarios = [
-    () => { const a = randomInt(4, 9); const b = randomInt(1, a - 1); return { prompt: `小明有 ${a} 個蘋果，吃了 ${b} 個。還剩幾個蘋果？`, ans: a - b, exp: `${a} - ${b} = ${a - b}` }; },
-    () => { const a = randomInt(5, 10); const b = randomInt(1, a - 1); return { prompt: `池塘裡有 ${a} 條魚，游走了 ${b} 條。還剩幾條魚？`, ans: a - b, exp: `${a} - ${b} = ${a - b}` }; },
+    () => { const a = randomInt(5, 10); const b = randomInt(1, a - 1); return { prompt: `小明有 ${a} 個蘋果，吃了 ${b} 個。還剩幾個蘋果？`, ans: a - b, exp: `${a} - ${b} = ${a - b}` }; },
+    () => { const a = randomInt(6, 10); const b = randomInt(1, a - 1); return { prompt: `池塘裡有 ${a} 條魚，游走了 ${b} 條。還剩幾條魚？`, ans: a - b, exp: `${a} - ${b} = ${a - b}` }; },
   ];
   const s = scenarios[randomInt(0, scenarios.length - 1)]();
   return makeQ('easy', s.prompt, s.ans, s.exp);
 }
 
 function generateMissing(): Question {
-  const a = randomInt(5, 10);
+  const a = randomInt(6, 10);
   const ans = randomInt(0, a - 1);
   const b = a - ans;
   return makeQ('medium', `${a} - ☐ = ${ans}，☐ = ?`, b, `${a} - ${b} = ${ans}，所以 ☐ = ${b}`);
@@ -67,7 +67,7 @@ function generateFromTen(): Question {
 }
 
 function generateHowManyMore(): Question {
-  const a = randomInt(4, 10);
+  const a = randomInt(5, 10);
   const b = randomInt(1, a - 1);
   const ans = a - b;
   return makeQ('medium', `小明有 ${a} 顆糖，小華有 ${b} 顆糖。小明比小華多幾顆？`, ans,
@@ -91,8 +91,8 @@ function generateColumnForm(): Question {
 }
 
 function generateMultiStep(): Question {
-  const a = randomInt(7, 10);
-  const b = randomInt(1, 3);
+  const a = randomInt(8, 10);
+  const b = randomInt(2, 3);
   const c = randomInt(1, Math.min(3, a - b));
   const ans = a - b - c;
   return makeQ('hard', `小明有 ${a} 塊餅乾，早上吃了 ${b} 塊，下午又吃了 ${c} 塊。還剩幾塊？`, ans,
@@ -116,7 +116,7 @@ function generateComparison(): Question {
 }
 
 function generateChainSubtract(): Question {
-  const a = randomInt(8, 10);
+  const a = randomInt(9, 10);
   const b = randomInt(1, 3);
   const c = randomInt(1, Math.min(2, a - b - 1));
   const d = randomInt(1, Math.min(2, a - b - c));
@@ -125,8 +125,8 @@ function generateChainSubtract(): Question {
 }
 
 function generateTrickyComparison(): Question {
-  const ming = randomInt(3, 7);
-  const hua = randomInt(3, 7);
+  const ming = randomInt(4, 8);
+  const hua = randomInt(4, 8);
   const diff = Math.abs(ming - hua);
   const who = ming > hua ? '小明' : ming < hua ? '小華' : '一樣多';
   const prompt = `小明有 ${ming} 顆糖，小華有 ${hua} 顆糖。誰的糖比較多？多幾顆？`;
@@ -135,8 +135,8 @@ function generateTrickyComparison(): Question {
 }
 
 function generateReverseProblem(): Question {
-  const ans = randomInt(3, 8);
-  const taken = randomInt(1, 3);
+  const ans = randomInt(4, 9);
+  const taken = randomInt(2, 4);
   const original = ans + taken;
   const prompt = `小明吃了 ${taken} 個蘋果後，還剩 ${ans} 個。他原來有幾個蘋果？`;
   return makeQ('challenge', prompt, original, `還剩 ${ans} 個，吃了 ${taken} 個，原來有 ${ans} + ${taken} = ${original} 個`);
@@ -162,7 +162,7 @@ function generateSubtractUnknown(): Question {
 }
 
 function generateWordProblemChallenge(): Question {
-  const total = randomInt(7, 10);
+  const total = randomInt(8, 10);
   const gave1 = randomInt(1, 3);
   const gave2 = randomInt(1, Math.min(3, total - gave1 - 1));
   const left = total - gave1 - gave2;
